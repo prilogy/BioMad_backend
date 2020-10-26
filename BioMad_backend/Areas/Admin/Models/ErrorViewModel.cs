@@ -1,6 +1,6 @@
 using System;
 
-namespace BioMad_backend.Models
+namespace BioMad_backend.Areas.Admin.Models
 {
     public class ErrorViewModel
     {
