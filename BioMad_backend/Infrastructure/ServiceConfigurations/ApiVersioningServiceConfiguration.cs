@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BioMad_backend.Helpers;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BioMad_backend.Infrastructure.ServiceConfigurations
@@ -7,12 +9,7 @@ namespace BioMad_backend.Infrastructure.ServiceConfigurations
     {
         public static IServiceCollection ConfigureApiVersioning(this IServiceCollection services)
         {
-            services.AddApiVersioning(o =>
-            {
-                o.AssumeDefaultVersionWhenUnspecified = true;
-                o.DefaultApiVersion = new ApiVersion(1, 0);
-            });
-
+            services.AddApiVersioning();
             return services;
         }
     }

@@ -35,7 +35,10 @@ namespace BioMad_backend
                 .ConfigureApiVersioning()
                 .ConfigureSwaggerService()
                 .AddCors()
-                .AddControllersWithViews()
+                .AddControllersWithViews(options =>
+                {
+                    options.Conventions.Add(new ControllerVersioningConvention());
+                })
                 .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
@@ -59,11 +62,7 @@ namespace BioMad_backend
             app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseStaticFiles();
             
-            app.UseSwagger();
-            app.UseSwaggerUI(opts =>
-            {
-                opts.SwaggerEndpoint("/swagger/v1/swagger.json", "My API v1");
-            });
+            app.UseSwaggerWithCustomConfiguration();
             
             app.UseRouting();
 
