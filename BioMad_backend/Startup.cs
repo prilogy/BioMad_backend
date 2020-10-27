@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BioMad_backend.Data;
 using BioMad_backend.Helpers;
+using BioMad_backend.Infrastructure.ServiceConfigurations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,22 +28,16 @@ namespace BioMad_backend
         
         public void ConfigureServices(IServiceCollection services)
         {
-            services.ConfigureAppSettings(Configuration);
-            
-            services.AddCors();
-            services.AddControllersWithViews()
+            services.ConfigureAppSettings(Configuration)
+                .ConfigureDbService(Configuration)
+                .ConfigureCustomAuthentication(Configuration)
+                .AddCors()
+                .AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                 {
-                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 });
-            
-            services.AddDbContext<ApplicationContext>(options =>
-            {
-                var connect = Configuration.GetConnectionString("Default");
-                options.UseLazyLoadingProxies();
-                options.UseNpgsql(connect);
-            });
         }
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

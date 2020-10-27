@@ -10,6 +10,7 @@ namespace BioMad_backend.Data
         public DbSet<Member> Members { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Gender> Genders { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         public ApplicationContext(DbContextOptions options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder builder)
