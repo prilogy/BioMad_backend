@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BioMad_backend.Data;
+using BioMad_backend.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -22,10 +24,11 @@ namespace BioMad_backend
         }
 
         public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
+        
         public void ConfigureServices(IServiceCollection services)
         {
+            services.ConfigureAppSettings(Configuration);
+            
             services.AddCors();
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
@@ -34,15 +37,14 @@ namespace BioMad_backend
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 });
             
-            services.AddDbContext<Data.ApplicationContext>(options =>
+            services.AddDbContext<ApplicationContext>(options =>
             {
                 var connect = Configuration.GetConnectionString("Default");
                 options.UseLazyLoadingProxies();
                 options.UseNpgsql(connect);
             });
         }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

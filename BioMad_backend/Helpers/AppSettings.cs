@@ -7,16 +7,24 @@ namespace BioMad_backend.Helpers
     public class AppSettings
     {
         public string Secret { get; set; }
-    }
-  
-    public static class AppSettingsExtensions {
-        public static byte[] ConfigureAppSettings(this IServiceCollection services, IConfiguration configuration)
+
+        public const string Key = "AppSettings";
+    } 
+
+    public static class AppSettingsExtensions
+    {
+        public static IServiceCollection ConfigureAppSettings(this IServiceCollection services,
+            IConfiguration configuration)
         {
-            var appSettingsSection = configuration.GetSection("AppSettings");
+            var appSettingsSection = configuration.GetSection(AppSettings.Key);
             services.Configure<AppSettings>(appSettingsSection);
-            var appSettings = appSettingsSection.Get<AppSettings>();
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-            return key;
+            return services;
+        }
+
+        public static byte[] GetHashedKey(this IServiceCollection serviceCollection, IConfiguration configuration)
+        {
+            var appSettings = configuration.GetSection(AppSettings.Key).Get<AppSettings>();
+            return Encoding.ASCII.GetBytes(appSettings.Secret);
         }
     }
 }
