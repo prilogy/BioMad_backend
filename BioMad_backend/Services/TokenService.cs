@@ -2,6 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using BioMad_backend.Data;
@@ -32,10 +33,26 @@ namespace BioMad_backend.Services
             };
             
             await _applicationContext.RefreshTokens.AddAsync(refreshToken);
+            await _applicationContext.SaveChangesAsync();
             return refreshToken;
         }
 
-        public static string GenerateRefreshToken()
+        public async Task<bool> VerifyRefreshToken(User user, string refreshToken)
+        {
+            var refreshTokens = user.RefreshTokens;
+            foreach (var token in refreshTokens)
+            {
+                if (!Hasher.Verify(token.Token, refreshToken)) continue;
+                
+                _applicationContext.RefreshTokens.Remove(token);
+                await _applicationContext.SaveChangesAsync();
+                return true;
+            }
+
+            return false;
+        }
+
+        private static string GenerateRefreshToken()
         {
             var randomNumber = new byte[32];
             using var rng = RandomNumberGenerator.Create();

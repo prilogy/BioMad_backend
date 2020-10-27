@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 
 namespace BioMad_backend
@@ -31,6 +32,8 @@ namespace BioMad_backend
             services.ConfigureAppSettings(Configuration)
                 .ConfigureDbService(Configuration)
                 .ConfigureCustomAuthentication(Configuration)
+                .ConfigureApiVersioning()
+                .ConfigureSwaggerService()
                 .AddCors()
                 .AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
@@ -55,7 +58,13 @@ namespace BioMad_backend
             app.UseAuthentication();
             app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseStaticFiles();
-
+            
+            app.UseSwagger();
+            app.UseSwaggerUI(opts =>
+            {
+                opts.SwaggerEndpoint("/swagger/v1/swagger.json", "My API v1");
+            });
+            
             app.UseRouting();
 
             app.UseAuthorization();

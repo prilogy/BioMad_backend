@@ -12,6 +12,8 @@ namespace BioMad_backend.Infrastructure.ServiceConfigurations
         public static IServiceCollection ConfigureCustomAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             var key = services.GetHashedKey(configuration);
+
+            var appSettings = configuration.GetSection(AppSettings.Key).Get<AppSettings>();
             
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(x =>
@@ -23,6 +25,7 @@ namespace BioMad_backend.Infrastructure.ServiceConfigurations
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(key),
                         ValidateIssuer = true,
+                        ValidIssuer = appSettings.JwtIssuer,
                         ValidateAudience = false
                     };
                 })

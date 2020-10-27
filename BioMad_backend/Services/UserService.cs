@@ -2,6 +2,6 @@
 {
     public class UserService
     {
-        public const string MemberId = "MemberId";
+        
     }
 }
