@@ -14,12 +14,12 @@ namespace BioMad_backend.Entities
         public static Role User = new Role { Id = 1, Key = Keys.User };
         public static Role Admin = new Role { Id = 2, Key = Keys.Admin };
 
-        public static RoleKeys Keys => new RoleKeys();
+        public static class Keys
+        {
+            public const string Admin = "admin";
+            public const string User = "user";
+        }
     }
 
-    public class RoleKeys
-    {
-        public string Admin = "admin";
-        public string User = "user";
-    }
+    
 }

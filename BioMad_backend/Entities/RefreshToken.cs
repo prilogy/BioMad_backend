@@ -15,7 +15,7 @@ namespace BioMad_backend.Entities
 
         public RefreshToken()
         {
-            DateExpiration = DateTime.UtcNow.AddDays(30);
+            DateExpiration = DateTime.UtcNow.AddMonths(6);
         }
     }
 }

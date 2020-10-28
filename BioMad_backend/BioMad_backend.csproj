@@ -4,6 +4,11 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.9" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.9" />
@@ -24,10 +29,8 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin" />
-    <Folder Include="Areas\Api\V1" />
     <Folder Include="Areas\Share" />
     <Folder Include="Extensions" />
-    <Folder Include="Models" />
   </ItemGroup>
 
 </Project>

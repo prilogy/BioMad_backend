@@ -1,18 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BioMad_backend.Data;
 using BioMad_backend.Helpers;
 using BioMad_backend.Infrastructure.ServiceConfigurations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 
 namespace BioMad_backend
@@ -32,8 +24,8 @@ namespace BioMad_backend
             services.ConfigureAppSettings(Configuration)
                 .ConfigureDbService(Configuration)
                 .ConfigureCustomAuthentication(Configuration)
-                .ConfigureApiVersioning()
                 .ConfigureSwaggerService()
+                .AddHelperServices()
                 .AddCors()
                 .AddControllersWithViews(options =>
                 {

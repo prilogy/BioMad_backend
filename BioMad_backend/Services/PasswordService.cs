@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BioMad_backend.Services
 {
-    public sealed class PasswordHasherService : IPasswordHasher<User>
+    public sealed class PasswordService : IPasswordHasher<User>
     {
         public string HashPassword(User user, string password)
         {
