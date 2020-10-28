@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using BioMad_backend.Infrastructure.Interfaces;
+using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities
 {
@@ -14,6 +15,7 @@ namespace BioMad_backend.Entities
         [EmailAddress]
         public string Email { get; set; }
         
+        [JsonIgnore]
         public string Password { get; set; }
 
         public DateTime DateCreatedAt { get; set; }
@@ -25,14 +27,14 @@ namespace BioMad_backend.Entities
 
 
         #region [ Role definition ]
-
-        [NotMapped]
+        [JsonIgnore]
         public int RoleId { get; set; }
-        [NotMapped]
+        [JsonIgnore]
         public virtual Role Role { get; set; }
         
 
         #endregion
+        [JsonIgnore]
         public virtual List<RefreshToken> RefreshTokens { get; set; }
 
         public User()

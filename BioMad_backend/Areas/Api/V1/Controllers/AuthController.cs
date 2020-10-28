@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using BioMad_backend.Areas.Api.V1.Models;
 using BioMad_backend.Entities;
+using BioMad_backend.Models;
 using BioMad_backend.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +15,12 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserService _userService;
+        private readonly AuthService _authService;
 
-        public AuthController(UserService userService)
+        public AuthController(UserService userService, AuthService authService)
         {
             _userService = userService;
+            _authService = authService;
         }
 
         /// <summary>
@@ -28,10 +31,13 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         /// <response code="200">If authentication is succeeded</response>
         /// <response code="404">If credentials are invalid</response>
         [HttpPost("logIn")]
-        public async Task<IActionResult> LogIn(LogInWithCredentialsModel model)
+        public async Task<ActionResult<AuthenticationResult>> LogIn(LogInWithCredentialsModel model)
         {
+            var result = await _authService.Authenticate(model);
+            if (result == null)
+                return BadRequest();
 
-            throw new NotImplementedException();
+            return Ok(result);
         }
 
         /// <summary>
@@ -46,6 +52,22 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         public async Task<IActionResult> SignUp(SignUpModel model)
         {
             return await SignUpInternal(async () => await _userService.Create(model));
+        }
+
+        /// <summary>
+        /// Authenticates user with model contains refresh token
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Authentication result</returns>
+        /// <response code="200">If everything went ok</response>
+        /// <response code="400">If anything went wrong</response> 
+        [HttpPost("refreshToken")]
+        public async Task<IActionResult> RefreshToken(RefreshTokenAuthenticationModel model)
+        {
+            var result = await _authService.Authenticate(model);
+            if (result == null)
+                return BadRequest();
+            return Ok(result);
         }
 
 

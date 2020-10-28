@@ -24,32 +24,62 @@ namespace BioMad_backend.Services
             _applicationContext = applicationContext;
         }
 
+        #region [ Access token implementation ]
+
+        public string GenerateAccessToken(User user, Member currentMember = null)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenDescriptor = GenerateTokenDescriptor(user, currentMember);
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
+        #endregion
+
+        #region [ Refresh token implementation ]
+
         public async Task<RefreshToken> CreateRefreshToken(User user)
         {
+            var nonHashedRefreshToken = GenerateRefreshToken(); 
             var refreshToken = new RefreshToken
             {
-                Token = GenerateRefreshToken(),
+                Token = Hasher.Hash(nonHashedRefreshToken),
                 UserId = user.Id
             };
-            
+
             await _applicationContext.RefreshTokens.AddAsync(refreshToken);
             await _applicationContext.SaveChangesAsync();
+
+            refreshToken.Token = nonHashedRefreshToken;
+            
             return refreshToken;
         }
 
-        public async Task<bool> VerifyRefreshToken(User user, string refreshToken)
+        public async Task<bool> RevokeRefreshToken(User user, string refreshToken)
+        {
+            var token = FindRefreshToken(user, refreshToken);
+            return await RevokeRefreshToken(token);
+        }
+
+        public async Task<bool> RevokeRefreshToken(RefreshToken refreshToken)
+        {
+            if (refreshToken == null)
+                return false;
+
+            _applicationContext.Remove(refreshToken);
+            await _applicationContext.SaveChangesAsync();
+            return true;
+        }
+
+        public RefreshToken FindRefreshToken(User user, string refreshToken)
         {
             var refreshTokens = user.RefreshTokens;
             foreach (var token in refreshTokens)
-            {
-                if (!Hasher.Verify(token.Token, refreshToken)) continue;
-                
-                _applicationContext.RefreshTokens.Remove(token);
-                await _applicationContext.SaveChangesAsync();
-                return true;
-            }
+                if (Hasher.Verify(token.Token, refreshToken))
+                    return token;
 
-            return false;
+
+            return null;
         }
 
         private static string GenerateRefreshToken()
@@ -59,14 +89,10 @@ namespace BioMad_backend.Services
             rng.GetBytes(randomNumber);
             return Convert.ToBase64String(randomNumber);
         }
-        
-        public string GenerateAccessToken(User user, Member currentMember = null)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var tokenDescriptor = GenerateTokenDescriptor(user, currentMember);
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
-        }
+
+        #endregion
+
+        #region [ Token description implementation ]
 
         private SecurityTokenDescriptor GenerateTokenDescriptor(User user, Member currentMember = null)
         {
@@ -75,7 +101,8 @@ namespace BioMad_backend.Services
             {
                 Subject = GenerateClaimsIdentity(user, currentMember),
                 Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature)
             };
             return tokenDescriptor;
         }
@@ -89,10 +116,12 @@ namespace BioMad_backend.Services
                 // TODO: add culture claim
             }, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
 
-            if(currentMember != null)
+            if (currentMember != null)
                 claims.AddClaim(new Claim(CustomClaimTypes.MemberId, currentMember.Id.ToString()));
-            
+
             return claims;
         }
+
+        #endregion
     }
 }
