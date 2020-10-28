@@ -12,8 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BioMad_backend.Areas.Api.V1.Controllers
 {
-    [Route("api/v1/[controller]")]
     [ApiController]
+    [Route("api/v1/[controller]")]
     public class AuthController : ControllerBase
     {
         private readonly UserService _userService;
@@ -71,20 +71,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
                 return BadRequest();
             return Ok(result);
         }
-
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [HttpGet("secure")]
-        public IActionResult Secure()
-        {
-            Console.WriteLine();
-            return Ok(new
-            {
-                _userService.UserId,
-                _userService.CurrentMemberId
-            });
-        }
-
-
+        
         private async Task<IActionResult> SignUpInternal(Func<Task<User>> createUser)
         {
             try

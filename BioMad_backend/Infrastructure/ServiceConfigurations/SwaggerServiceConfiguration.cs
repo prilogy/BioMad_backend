@@ -15,12 +15,12 @@ namespace BioMad_backend.Infrastructure.ServiceConfigurations
     {
         public const string TitleBase = "BioMad API";
         public const string Description = "Web API documentation for BioMad application.";
-        
+
         public static OpenApiLicense License = new OpenApiLicense
         {
             Name = "MIT"
         };
-        
+
         public static OpenApiContact Contact = new OpenApiContact()
         {
             Name = "Artyom Lukyanov",
@@ -46,7 +46,7 @@ namespace BioMad_backend.Infrastructure.ServiceConfigurations
                 Contact = Contact
             }
         };
-        
+
         public static IServiceCollection ConfigureSwaggerService(this IServiceCollection services)
         {
             services.AddSwaggerGen(config =>
@@ -55,7 +55,7 @@ namespace BioMad_backend.Infrastructure.ServiceConfigurations
                 {
                     config.SwaggerDoc(v.Version, v);
                 }
-                
+
                 config.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
                 {
                     Type = SecuritySchemeType.Http,
@@ -63,9 +63,9 @@ namespace BioMad_backend.Infrastructure.ServiceConfigurations
                     In = ParameterLocation.Header,
                     Scheme = "bearer"
                 });
-                
+
                 config.OperationFilter<AuthenticationRequirementsOperationFilter>();
-                
+
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 config.IncludeXmlComments(xmlPath);
@@ -73,23 +73,7 @@ namespace BioMad_backend.Infrastructure.ServiceConfigurations
 
             return services;
         }
-        
-        public class AuthenticationRequirementsOperationFilter : IOperationFilter
-        {
-            public void Apply(OpenApiOperation operation, OperationFilterContext context)
-            {
-                if (operation.Security == null)
-                    operation.Security = new List<OpenApiSecurityRequirement>();
 
-
-                var scheme = new OpenApiSecurityScheme { Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "bearer" } };
-                operation.Security.Add(new OpenApiSecurityRequirement
-                {
-                    [scheme] = new List<string>()
-                });
-            }
-        }
-        
         public static void UseSwaggerWithCustomConfiguration(this IApplicationBuilder app)
         {
             app.UseSwagger();
@@ -101,6 +85,21 @@ namespace BioMad_backend.Infrastructure.ServiceConfigurations
                     config.SwaggerEndpoint($"/swagger/{v.Version}/swagger.json", v.Title);
                 }
             });
+        }
+
+        private class AuthenticationRequirementsOperationFilter : IOperationFilter
+        {
+            public void Apply(OpenApiOperation operation, OperationFilterContext context)
+            {
+                operation.Security ??= new List<OpenApiSecurityRequirement>();
+
+                var scheme = new OpenApiSecurityScheme
+                    { Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "bearer" } };
+                operation.Security.Add(new OpenApiSecurityRequirement
+                {
+                    [scheme] = new List<string>()
+                });
+            }
         }
     }
 }

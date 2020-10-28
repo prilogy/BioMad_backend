@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using BioMad_backend.Infrastructure.Interfaces;
+using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities
 {
@@ -18,7 +19,9 @@ namespace BioMad_backend.Entities
         public int GenderId { get; set; }
         public virtual Gender Gender { get; set; }
         
+        [JsonIgnore]
         public int UserId { get; set; }
+        [JsonIgnore]
         public virtual User User { get; set; }
 
         public Member()

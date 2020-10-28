@@ -66,7 +66,7 @@ namespace BioMad_backend.Services
         /// </summary>
         public async Task<AuthenticationResult> Authenticate(User user, Member member)
         {
-            user.CurrentMember = member;
+            user.CurrentMemberId = member.Id;
             
             var result = new AuthenticationResult
             {

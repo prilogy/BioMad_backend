@@ -23,7 +23,7 @@ namespace BioMad_backend.Entities
         public virtual List<Member> Members { get; set; }
         
         [NotMapped]
-        public Member CurrentMember { get; set; }
+        public int CurrentMemberId { get; set; }
 
 
         #region [ Role definition ]
@@ -32,8 +32,8 @@ namespace BioMad_backend.Entities
         [JsonIgnore]
         public virtual Role Role { get; set; }
         
-
         #endregion
+        
         [JsonIgnore]
         public virtual List<RefreshToken> RefreshTokens { get; set; }
 
