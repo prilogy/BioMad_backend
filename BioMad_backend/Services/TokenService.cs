@@ -101,8 +101,7 @@ namespace BioMad_backend.Services
             {
                 Subject = GenerateClaimsIdentity(user, currentMember),
                 Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
-                    SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             return tokenDescriptor;
         }

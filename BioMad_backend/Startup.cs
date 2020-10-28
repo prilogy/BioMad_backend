@@ -49,15 +49,13 @@ namespace BioMad_backend
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
-
-            app.UseAuthentication();
+            
             app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseStaticFiles();
-
             app.UseSwaggerWithCustomConfiguration();
-
+            
+            app.UseAuthentication();
             app.UseRouting();
-
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

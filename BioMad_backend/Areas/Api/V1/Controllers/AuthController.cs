@@ -5,6 +5,8 @@ using BioMad_backend.Areas.Api.V1.Models;
 using BioMad_backend.Entities;
 using BioMad_backend.Models;
 using BioMad_backend.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -68,6 +70,18 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
             if (result == null)
                 return BadRequest();
             return Ok(result);
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("secure")]
+        public IActionResult Secure()
+        {
+            Console.WriteLine();
+            return Ok(new
+            {
+                _userService.UserId,
+                _userService.CurrentMemberId
+            });
         }
 
 

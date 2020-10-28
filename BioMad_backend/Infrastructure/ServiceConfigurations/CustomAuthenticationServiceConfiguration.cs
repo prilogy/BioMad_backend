@@ -1,4 +1,5 @@
-﻿using BioMad_backend.Helpers;
+﻿using System;
+using BioMad_backend.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -13,7 +14,6 @@ namespace BioMad_backend.Infrastructure.ServiceConfigurations
         {
             var key = services.GetHashedKey(configuration);
 
-            var appSettings = configuration.GetSection(AppSettings.Key).Get<AppSettings>();
             
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(x =>
@@ -24,15 +24,9 @@ namespace BioMad_backend.Infrastructure.ServiceConfigurations
                     {
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(key),
-                        ValidateIssuer = true,
-                        ValidIssuer = appSettings.JwtIssuer,
+                        ValidateIssuer = false,
                         ValidateAudience = false
                     };
-                })
-                .AddCookie(x =>
-                {
-                    x.LoginPath = new PathString("/admin/auth/login");
-                    // x.LogoutPath = new PathString("/admin/auth/logout");
                 });
 
             return services;
