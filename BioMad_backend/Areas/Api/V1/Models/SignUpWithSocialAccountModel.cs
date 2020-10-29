@@ -2,7 +2,6 @@
 {
     public class SignUpWithSocialAccountModel : SignUpModel
     {
-        // TODO: impelement
-        public int SocialAccountId { get; set; }
+        public SocialAuthenticationCore.Models.SocialAuthenticationIdentity Identity { get; set; }
     }
 }

@@ -7,6 +7,9 @@ namespace BioMad_backend.Data
     public class ApplicationContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+        
+        public DbSet<SocialAccount> SocialAccounts { get; set; }
+        public DbSet<SocialAccountProvider> SocialAccountProviders { get; set; }
         public DbSet<Member> Members { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Gender> Genders { get; set; }
@@ -17,6 +20,8 @@ namespace BioMad_backend.Data
         {
             builder.ApplyConfiguration(new RoleEntityConfiguration());
             builder.ApplyConfiguration(new GenderEntityConfiguration());
+            builder.ApplyConfiguration(new SocialAccountProviderEntityConfiguration());
+            builder.ApplyConfiguration(new SocialAccountEntityConfiguration());
         }
     }
 }

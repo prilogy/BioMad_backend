@@ -24,7 +24,8 @@ namespace BioMad_backend.Entities
         
         [NotMapped]
         public int CurrentMemberId { get; set; }
-
+        
+        public virtual List<SocialAccount> SocialAccounts { get; set; }
 
         #region [ Role definition ]
         [JsonIgnore]

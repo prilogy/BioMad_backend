@@ -25,10 +25,10 @@ namespace BioMad_backend
             var appSettings = services.ConfigureAppSettings(Configuration);
 
             services.ConfigureDbService(Configuration)
-                .ConfigureCustomAuthentication(Configuration)
                 .ConfigureSwaggerService()
                 .AddHelperServices()
                 .AddSocialAuthenticationService(options => options.GoogleClientId = appSettings.GoogleClientId)
+                .ConfigureCustomAuthentication(Configuration)
                 .AddCors()
                 .AddControllersWithViews(options => options.Conventions.Add(new ControllerVersioningConvention()))
                 .AddNewtonsoftJson(options =>

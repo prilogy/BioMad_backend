@@ -66,8 +66,6 @@ namespace BioMad_backend.Services
                 await _db.Users.AddAsync(user);
                 await _db.SaveChangesAsync();
 
-                Console.WriteLine($"User id: {user.Id}");
-
                 var member = new Member
                 {
                     GenderId = model.GenderId,

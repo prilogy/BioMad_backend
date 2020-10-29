@@ -23,6 +23,8 @@ namespace BioMad_backend.Services
             _passwordService = passwordService;
         }
 
+        #region [ Authentication flows implementation ]
+        
         /// <summary>
         /// Authenticates user with given credentials
         /// </summary>
@@ -33,9 +35,8 @@ namespace BioMad_backend.Services
                 _passwordService.VerifyHashedPassword(user, user.Password, model.Password) ==
                 PasswordVerificationResult.Failed)
                 return null;
-
-            var member = user.Members.OrderBy(x => x.DateCreatedAt).FirstOrDefault();
-            return await Authenticate(user, member);
+            
+            return await Authenticate(user);
         }
         
 
@@ -60,6 +61,16 @@ namespace BioMad_backend.Services
 
             return await Authenticate(user, member);
         }
+
+        /// <summary>
+        /// Authenticates user with User data and no MemberId
+        /// Takes earliest member of User
+        /// </summary>
+        public async Task<AuthenticationResult> Authenticate(User user)
+        {
+            var member = user.Members.OrderBy(x => x.DateCreatedAt).FirstOrDefault();
+            return await Authenticate(user, member);
+        }
         
         /// <summary>
         /// Authenticates user with given user and member
@@ -77,5 +88,7 @@ namespace BioMad_backend.Services
 
             return result;
         }
+
+        #endregion
     }
 }
