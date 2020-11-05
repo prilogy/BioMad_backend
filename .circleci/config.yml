@@ -18,7 +18,7 @@ jobs:
       - checkout
       # - run: cd BioMad_backend
       - run: dotnet build --runtime linux-x64 --configuration Release --framework netcoreapp3.1
-      # persisting build files to workspace
+      # persisting build files to workspace 
       - persist_to_workspace:
           root: . # specifying path from where we want to persist next paths
           paths: # specifying path we want to persist
