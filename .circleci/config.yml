@@ -16,7 +16,7 @@ jobs:
     steps:
       # uploading repository to our path(~/app-build)
       - checkout
-      - run: cd BioMad_backend
+      # - run: cd BioMad_backend
       - run: ls
       - run: dotnet build --runtime linux-x64 --configuration Release --framework netcoreapp3.1
       - run: ls
