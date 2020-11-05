@@ -44,7 +44,7 @@ jobs:
           command: |
             pwd
             ls
-            scp -r ./bin/Release/netcoreapp3.1/linux-x64/* $SSH_USER@${SSH_HOST}:$SSH_FOLDER
+            scp -r ./BioMad_backend/bin/Release/netcoreapp3.1/linux-x64/* $SSH_USER@${SSH_HOST}:$SSH_FOLDER
             ssh $SSH_USER@$SSH_HOST "sudo supervisorctl restart BioMad"
 
 
