@@ -37,7 +37,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         /// <returns>Returns social providers list</returns>
         /// <response code="200">If everything went OK</response>
         [HttpGet("provider")]
-        public async Task<IActionResult> Providers() =>
+        public async Task<ActionResult<IEnumerable<SocialAccountProvider>>> Providers() =>
             Ok(await _applicationContext.SocialAccountProviders.ToListAsync());
 
         /// <summary>

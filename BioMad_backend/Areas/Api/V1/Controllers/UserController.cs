@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using BioMad_backend.Areas.Api.V1.Models;
+using BioMad_backend.Entities;
 using BioMad_backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +27,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         /// <returns>Returns user data</returns>
         /// <response code="200">If user data successfully returned</response> 
         [HttpGet]
-        public IActionResult GetInfo() => Ok(_userService.User);
+        public ActionResult<User> GetInfo() => Ok(_userService.User);
 
         /// <summary>
         /// Edits user's data

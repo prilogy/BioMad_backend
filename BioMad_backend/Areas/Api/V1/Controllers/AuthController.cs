@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SocialAuthenticationCore.Models;
 
 namespace BioMad_backend.Areas.Api.V1.Controllers
 {
@@ -81,7 +82,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         /// <response code="200">If everything went ok</response>
         /// <response code="400">If anything went wrong</response> 
         [HttpPost("refreshToken")]
-        public async Task<IActionResult> RefreshToken(RefreshTokenAuthenticationModel model)
+        public async Task<ActionResult<AuthenticationResult>> RefreshToken(RefreshTokenAuthenticationModel model)
         {
             var result = await _authService.Authenticate(model);
             if (result == null)
@@ -104,7 +105,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         /// <response code="400">If anything went BAD</response>
         /// <response code="404">If social provider is invalid</response> 
         [HttpPost("logIn/{type}")]
-        public async Task<IActionResult> SocialLogIn([Required] string token, string type)
+        public async Task<ActionResult<AuthenticationResult>> SocialLogIn([Required] string token, string type)
         {
             var handler = GetSocialServiceHandler(type);
             if (handler == null)
@@ -131,7 +132,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         /// <response code="400">If something else went wrong</response>
         /// <response code="404">If type is invalids</response> 
         [HttpPost("signUp/{type}/identity")]
-        public async Task<IActionResult> SocialSignUpInfo([Required] string token, string type)
+        public async Task<ActionResult<SocialAuthenticationIdentity>> SocialSignUpInfo([Required] string token, string type)
         {
             var handler = GetSocialServiceHandler(type);
             if (handler == null)

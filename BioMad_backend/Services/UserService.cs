@@ -45,13 +45,7 @@ namespace BioMad_backend.Services
         #endregion
 
         #region [ User related implementation ]
-
-        /// <summary>
-        /// Creates user
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns>User if everything went good, null if user with given email already exists</returns>
-        /// <exception cref="Exception">If some unexpected thing happened while processing user creation</exception>
+        
         public async Task<User> Create(SignUpModel model)
         {
             if (await _db.Users.AnyAsync(x => x.Email == model.Email))
