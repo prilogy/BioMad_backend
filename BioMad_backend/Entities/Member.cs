@@ -12,6 +12,8 @@ namespace BioMad_backend.Entities
         
         public string Name { get; set; }
 
+        public string Color { get; set; }
+        
         public DateTime DateCreatedAt { get; set; }
         
         public DateTime DateBirthday { get; set; }

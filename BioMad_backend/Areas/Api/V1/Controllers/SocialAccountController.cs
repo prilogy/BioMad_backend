@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using BioMad_backend.Areas.Api.V1.Models;
 using BioMad_backend.Data;
 using BioMad_backend.Entities;
 using BioMad_backend.Infrastructure.AbstractClasses;
@@ -43,20 +44,20 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         /// <summary>
         /// Adds social account to current user
         /// </summary>
-        /// <param name="token">Token of social provider account</param>
+        /// <param name="model">Model contains token of social provider account</param>
         /// <param name="type">Social provider name</param>
         /// <returns>Returns action result</returns>
         /// <response code="200">If everything went OK</response>
         /// <response code="404">If provider isn't valid</response>
         /// <response code="400">If anything went BAD</response> 
         [HttpPost("{type}")]
-        public async Task<IActionResult> Add([Required] string token, string type)
+        public async Task<IActionResult> Add([Required] TokenModel model, string type)
         {
             var handler = GetSocialServiceHandler(type);
             if (handler == null)
                 return NotFound();
 
-            var account = await handler.CreateAccount(token);
+            var account = await handler.CreateAccount(model.Token);
             if (account == null)
                 return BadRequest();
 

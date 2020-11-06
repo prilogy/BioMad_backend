@@ -18,6 +18,7 @@ using SocialAuthenticationCore.Models;
 namespace BioMad_backend.Areas.Api.V1.Controllers
 {
     [ApiController]
+    [AllowAnonymous]
     [Route("api/v1/[controller]")]
     public class AuthController : ControllerBase
     {
@@ -98,20 +99,20 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         /// <summary>
         /// Logs in user by its social account
         /// </summary>
-        /// <param name="token">Token of social provider identity</param>
+        /// <param name="model">Model contains token of social provider identity</param>
         /// <param name="type">Name of social provider</param>
         /// <returns>Returns action result</returns>
         /// <response code="200">If everything went OK</response>
         /// <response code="400">If anything went BAD</response>
         /// <response code="404">If social provider is invalid</response> 
         [HttpPost("logIn/{type}")]
-        public async Task<ActionResult<AuthenticationResult>> SocialLogIn([Required] string token, string type)
+        public async Task<ActionResult<AuthenticationResult>> SocialLogIn([Required] TokenModel model, string type)
         {
             var handler = GetSocialServiceHandler(type);
             if (handler == null)
                 return NotFound();
 
-            var user = await handler.FindUser(token);
+            var user = await handler.FindUser(model.Token);
             if (user == null)
                 return NotFound();
 
@@ -125,20 +126,21 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         /// <summary>
         /// Gets social provider identity to provide data for auth flow
         /// </summary>
-        /// <param name="token">Token of social account identity</param>
+        /// <param name="model">Model contains token of social account identity</param>
         /// <param name="type">Name of social provider</param>
         /// <returns>Returns social identity</returns>
         /// <response code="200">If everything went OK</response>
         /// <response code="400">If something else went wrong</response>
         /// <response code="404">If type is invalids</response> 
         [HttpPost("signUp/{type}/identity")]
-        public async Task<ActionResult<SocialAuthenticationIdentity>> SocialSignUpInfo([Required] string token, string type)
+        public async Task<ActionResult<SocialAuthenticationIdentity>> SocialSignUpInfo([Required]TokenModel model, string type)
         {
             var handler = GetSocialServiceHandler(type);
+            
             if (handler == null)
                 return NotFound();
 
-            var identity = await handler.GetIdentity(token);
+            var identity = await handler.GetIdentity(model.Token);
             if (identity == null)
                 return BadRequest();
 

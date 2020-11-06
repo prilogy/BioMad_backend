@@ -59,7 +59,7 @@ namespace BioMad_backend.Services
 
         public class FacebookAuthenticationService : SocialAuthenticationServiceWithIdentity
         {
-            public override SocialAccountProvider Provider => SocialAccountProvider.Vk;
+            public override SocialAccountProvider Provider => SocialAccountProvider.Facebook;
 
             public FacebookAuthenticationService(ApplicationContext db,
                 SocialAuthenticationCore.Services.SocialAuthenticationService socialIdentityService)

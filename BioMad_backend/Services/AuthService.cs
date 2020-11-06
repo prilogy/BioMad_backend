@@ -53,7 +53,8 @@ namespace BioMad_backend.Services
             if (token == null || !token.IsValid)
                 return null;
 
-            var member = await _applicationContext.Members.FirstOrDefaultAsync(x => x.Id == model.MemberId);
+            var member = user.Members.FirstOrDefault(x => x.Id == model.MemberId) 
+                         ?? user.Members.OrderBy(x => x.DateCreatedAt).FirstOrDefault();
             if (member == null || member.UserId != user.Id)
                 return null;
 

@@ -65,7 +65,8 @@ namespace BioMad_backend.Services
                     GenderId = model.GenderId,
                     DateBirthday = model.DateBirthday,
                     Name = model.Name,
-                    UserId = user.Id
+                    UserId = user.Id,
+                    Color = model.Color
                 };
 
                 await _db.Members.AddAsync(member);
@@ -115,7 +116,8 @@ namespace BioMad_backend.Services
                 Name = model.Name,
                 DateBirthday = model.DateBirthday,
                 GenderId = model.GenderId,
-                UserId = UserId
+                UserId = UserId,
+                Color = model.Color
             };
 
             try
@@ -162,6 +164,8 @@ namespace BioMad_backend.Services
                     member.DateBirthday = model.DateBirthday;
                 if (model.Name != null)
                     member.Name = model.Name;
+                if (model.Color != null)
+                    member.Color = model.Color;
 
                 await _db.SaveChangesAsync();
                 return true;

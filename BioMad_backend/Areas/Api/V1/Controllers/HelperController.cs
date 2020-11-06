@@ -25,6 +25,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         /// <returns>Returns list of genders</returns>
         /// <response code="200">If everything went OK</response>
         [HttpPost("gender")]
+        [AllowAnonymous]
         public ActionResult<List<Gender>> Genders() => Ok(_applicationContext.Genders);
     }
 }
