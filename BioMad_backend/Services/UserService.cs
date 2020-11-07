@@ -17,13 +17,15 @@ namespace BioMad_backend.Services
         private readonly ApplicationContext _db;
         private readonly PasswordService _passwordService;
         private readonly HttpContext _httpContext;
-
+        private readonly ConfirmationService _confirmationService;
+        
         public UserService(ApplicationContext db, PasswordService passwordService,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor, ConfirmationService confirmationService)
         {
             _db = db;
             _passwordService = passwordService;
             _httpContext = httpContextAccessor.HttpContext;
+            _confirmationService = confirmationService;
         }
 
         #region [ User and member context implementation ]
@@ -91,12 +93,12 @@ namespace BioMad_backend.Services
             try
             {
                 if (model.Email != null)
+                {
                     user.Email = model.Email;
-                if (model.Password != null)
-                    user.Password = Hasher.Hash(model.Password);
+                    await _confirmationService.Send.Email(user);
+                }
 
                 await _db.SaveChangesAsync();
-                // TODO: #EMAIL send email confirmation
                 return true;
             }
             catch (Exception)

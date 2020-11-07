@@ -14,6 +14,7 @@ namespace BioMad_backend.Infrastructure.ServiceConfigurations
             services.AddSingleton<PasswordService>();
             services.AddScoped<UserService>();
             services.AddScoped<AuthService>();
+            services.AddScoped<ConfirmationService>();
             return services;
         }
     }
