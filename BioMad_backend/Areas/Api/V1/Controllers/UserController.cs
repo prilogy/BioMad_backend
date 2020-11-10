@@ -2,10 +2,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using BioMad_backend.Areas.Api.V1.Models;
+using BioMad_backend.Data;
 using BioMad_backend.Entities;
 using BioMad_backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BioMad_backend.Areas.Api.V1.Controllers
@@ -17,11 +19,13 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
     {
         private readonly UserService _userService;
         private readonly ConfirmationService _confirmationService;
+        private readonly ApplicationContext _applicationContext;
 
-        public UserController(UserService userService, ConfirmationService confirmationService)
+        public UserController(UserService userService, ConfirmationService confirmationService, ApplicationContext applicationContext)
         {
             _userService = userService;
             _confirmationService = confirmationService;
+            _applicationContext = applicationContext;
         }
 
         // TODO: add password reset action
@@ -63,6 +67,15 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
                 return Ok();
 
             return BadRequest();
+        }
+
+        [AllowAnonymous]
+        [HttpGet("test")]
+        public async Task<IActionResult> Test()
+        {
+            var g = await _applicationContext.Genders.FirstOrDefaultAsync();
+            g.Content = g.Translations[_userService.Culture];
+            return Ok(await _applicationContext.Genders.FirstOrDefaultAsync());
         }
 
         /// <summary>

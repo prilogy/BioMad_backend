@@ -7,6 +7,7 @@ using BioMad_backend.Areas.Api.V1.Models;
 using BioMad_backend.Data;
 using BioMad_backend.Entities;
 using BioMad_backend.Helpers;
+using BioMad_backend.Infrastructure.Constants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
@@ -44,6 +45,11 @@ namespace BioMad_backend.Services
             ? int.Parse(_httpContext.User.Claims.First(x => x.Type == CustomClaimTypes.MemberId).Value)
             : default;
 
+        public Culture Culture => _httpContext.Request.Headers.ContainsKey(HeaderKeys.Culture)
+            ? Culture.All.FirstOrDefault(x => x.Key == _httpContext.Request.Headers[HeaderKeys.Culture])
+            : Culture.En;
+            
+        
         #endregion
 
         #region [ User related implementation ]

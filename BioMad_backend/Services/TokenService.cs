@@ -101,7 +101,7 @@ namespace BioMad_backend.Services
             {
                 Subject = GenerateClaimsIdentity(user, currentMember),
                 Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
             };
             return tokenDescriptor;
         }
@@ -112,7 +112,7 @@ namespace BioMad_backend.Services
             {
                 new Claim(ClaimTypes.Name, user.Id.ToString()),
                 new Claim(ClaimTypes.Role, user.Role.Key),
-                // TODO: add culture claim
+                new Claim(ClaimTypes.Locality, Culture.En.Key), //TODO: inject from Headers ***************
             }, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
 
             if (currentMember != null)

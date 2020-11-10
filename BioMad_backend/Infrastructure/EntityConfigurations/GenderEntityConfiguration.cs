@@ -15,6 +15,9 @@ namespace BioMad_backend.Infrastructure.EntityConfigurations
                 Gender.Female,
                 Gender.Neutral
             });
+            builder.HasMany(x => x.Translations)
+                .WithOne(x => x.BaseEntity)
+                .HasForeignKey(x => x.BaseEntityId);
         }
     }
 }

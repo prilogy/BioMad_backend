@@ -23,6 +23,7 @@ namespace BioMad_backend.Data
             builder.ApplyConfiguration(new GenderEntityConfiguration());
             builder.ApplyConfiguration(new SocialAccountProviderEntityConfiguration());
             builder.ApplyConfiguration(new SocialAccountEntityConfiguration());
+            builder.ApplyConfiguration(new CultureEntityConfiguration());
         }
     }
 }
