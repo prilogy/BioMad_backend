@@ -10,7 +10,8 @@ namespace BioMad_backend.Infrastructure.AbstractClasses
         
         public T this[Culture culture]
         {
-            get => this.FirstOrDefault(x => x.CultureId == culture.Id);
+            get => this.FirstOrDefault(x => x.CultureId == culture.Id) 
+                   ?? this.FirstOrDefault(x => x.CultureId == Culture.Fallback.Id);
             set
             {
                 var translation = this.FirstOrDefault(x => x.CultureId == culture.Id);
