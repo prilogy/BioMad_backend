@@ -10,17 +10,7 @@ namespace BioMad_backend.Infrastructure.AbstractClasses
         
         public T this[Culture culture]
         {
-            get
-            {
-                var translation = this.FirstOrDefault(x => x.CultureId == culture.Id);
-                if (translation != null) return translation;
-                
-                translation = new T();
-                translation.CultureId = culture.Id;
-                Add(translation);
-
-                return translation;
-            }
+            get => this.FirstOrDefault(x => x.CultureId == culture.Id);
             set
             {
                 var translation = this.FirstOrDefault(x => x.CultureId == culture.Id);

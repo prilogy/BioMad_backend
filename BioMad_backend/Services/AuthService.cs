@@ -1,9 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using BioMad_backend.Areas.Api.V1.Models;
 using BioMad_backend.Data;
 using BioMad_backend.Entities;
+using BioMad_backend.Infrastructure.Constants;
 using BioMad_backend.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,17 +17,19 @@ namespace BioMad_backend.Services
         private readonly ApplicationContext _applicationContext;
         private readonly TokenService _tokenService;
         private readonly PasswordService _passwordService;
+        private readonly HttpContext _httpContext;
 
         public AuthService(ApplicationContext applicationContext, TokenService tokenService,
-            PasswordService passwordService)
+            PasswordService passwordService, IHttpContextAccessor httpContextAccessor)
         {
             _applicationContext = applicationContext;
             _tokenService = tokenService;
             _passwordService = passwordService;
+            _httpContext = httpContextAccessor.HttpContext;
         }
 
         #region [ Authentication flows implementation ]
-        
+
         /// <summary>
         /// Authenticates user with given credentials
         /// </summary>
@@ -35,10 +40,10 @@ namespace BioMad_backend.Services
                 _passwordService.VerifyHashedPassword(user, user.Password, model.Password) ==
                 PasswordVerificationResult.Failed)
                 return null;
-            
+
             return await Authenticate(user);
         }
-        
+
 
         /// <summary>
         /// Authenticates user with given userId, memberId and refreshToken
@@ -53,7 +58,7 @@ namespace BioMad_backend.Services
             if (token == null || !token.IsValid)
                 return null;
 
-            var member = user.Members.FirstOrDefault(x => x.Id == model.MemberId) 
+            var member = user.Members.FirstOrDefault(x => x.Id == model.MemberId)
                          ?? user.Members.OrderBy(x => x.DateCreatedAt).FirstOrDefault();
             if (member == null || member.UserId != user.Id)
                 return null;
@@ -72,23 +77,69 @@ namespace BioMad_backend.Services
             var member = user.Members.OrderBy(x => x.DateCreatedAt).FirstOrDefault();
             return await Authenticate(user, member);
         }
-        
+
         /// <summary>
         /// Authenticates user with given user and member
         /// </summary>
         public async Task<AuthenticationResult> Authenticate(User user, Member member)
         {
+            var metaHeaders = GetMetaHeaders();
+
+            try
+            {
+                if (user.Culture != null)
+                {
+                    var culture = Culture.All.FirstOrDefault(x => x.Key == metaHeaders.Culture);
+                    if (culture != null)
+                        user.CultureId = culture.Id;
+                    else metaHeaders.Culture = user.Culture.Key;
+                }
+                else
+                {
+                    var culture = Culture.All.FirstOrDefault(x => x.Key == metaHeaders.Culture);
+                    if (culture != null)
+                        user.CultureId = culture.Id;
+                    else
+                    {
+                        culture = Culture.Fallback;
+                        user.CultureId = culture.Id;
+                        metaHeaders.Culture = culture.Key;
+                    }
+                }
+
+                await _applicationContext.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                var culture = Culture.Fallback;
+                user.CultureId = culture.Id;
+                metaHeaders.Culture = culture.Key;
+                await _applicationContext.SaveChangesAsync();
+            }
+
+
             user.CurrentMemberId = member.Id;
-            
+
             var result = new AuthenticationResult
             {
                 User = user,
-                AccessToken = _tokenService.GenerateAccessToken(user, member),
+                AccessToken = _tokenService.GenerateAccessToken(user, member, metaHeaders),
                 RefreshToken = await _tokenService.CreateRefreshToken(user)
             };
 
             return result;
         }
+
+        #endregion
+
+        #region [ Heplper functionality]
+
+        private MetaHeaders GetMetaHeaders() => new MetaHeaders
+        {
+            Culture = _httpContext.Request.Headers.ContainsKey(HeaderKeys.Culture)
+                ? _httpContext.Request.Headers[HeaderKeys.Culture]
+                : default
+        };
 
         #endregion
     }

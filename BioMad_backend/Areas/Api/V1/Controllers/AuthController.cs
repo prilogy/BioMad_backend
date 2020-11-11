@@ -43,11 +43,12 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         /// Logs in user with given credentials
         /// </summary>
         /// <param name="model"></param>
+        /// <param name="culture">Header represents current culture</param>
         /// <returns>Authentication result</returns>
         /// <response code="200">If authentication is succeeded</response>
         /// <response code="404">If credentials are invalid</response>
         [HttpPost("logIn")]
-        public async Task<ActionResult<AuthenticationResult>> LogIn(LogInWithCredentialsModel model)
+        public async Task<ActionResult<AuthenticationResult>> LogIn(LogInWithCredentialsModel model, [FromHeader] string culture)
         {
             var result = await _authService.Authenticate(model);
             if (result == null)
@@ -79,11 +80,12 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         /// Revokes given refresh token and provides with new
         /// </summary>
         /// <param name="model"></param>
+        /// <param name="culture">Header represents current culture</param>
         /// <returns>Authentication result</returns>
         /// <response code="200">If everything went ok</response>
         /// <response code="400">If anything went wrong</response> 
         [HttpPost("refreshToken")]
-        public async Task<ActionResult<AuthenticationResult>> RefreshToken(RefreshTokenAuthenticationModel model)
+        public async Task<ActionResult<AuthenticationResult>> RefreshToken(RefreshTokenAuthenticationModel model, [FromHeader] string culture)
         {
             var result = await _authService.Authenticate(model);
             if (result == null)
@@ -92,8 +94,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         }
 
         #endregion
-
-        // TODO: test on front-end
+        
         #region [ Social auth flow ]
 
         /// <summary>
@@ -101,12 +102,14 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         /// </summary>
         /// <param name="model">Model contains token of social provider identity</param>
         /// <param name="type">Name of social provider</param>
+        /// 
+        /// <param name="culture">Header represents current culture</param>
         /// <returns>Returns action result</returns>
         /// <response code="200">If everything went OK</response>
         /// <response code="400">If anything went BAD</response>
         /// <response code="404">If social provider is invalid</response> 
         [HttpPost("logIn/{type}")]
-        public async Task<ActionResult<AuthenticationResult>> SocialLogIn([Required] TokenModel model, string type)
+        public async Task<ActionResult<AuthenticationResult>> SocialLogIn([Required] TokenModel model, string type, [FromHeader] string culture)
         {
             var handler = GetSocialServiceHandler(type);
             if (handler == null)

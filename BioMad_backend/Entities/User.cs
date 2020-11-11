@@ -21,6 +21,9 @@ namespace BioMad_backend.Entities
         [JsonIgnore] public string Password { get; set; }
 
         public DateTime DateCreatedAt { get; set; }
+        
+        public int? CultureId { get; set; }
+        public virtual Culture Culture { get; set; }
 
         public virtual List<Member> Members { get; set; }
 

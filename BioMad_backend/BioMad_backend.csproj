@@ -32,7 +32,6 @@
   <ItemGroup>
     <Folder Include="Areas\Admin" />
     <Folder Include="Areas\Share" />
-    <Folder Include="Extensions" />
   </ItemGroup>
 
 </Project>

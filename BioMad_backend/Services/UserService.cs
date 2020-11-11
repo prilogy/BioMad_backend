@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using BioMad_backend.Areas.Api.V1.Models;
 using BioMad_backend.Data;
@@ -19,7 +20,7 @@ namespace BioMad_backend.Services
         private readonly PasswordService _passwordService;
         private readonly HttpContext _httpContext;
         private readonly ConfirmationService _confirmationService;
-        
+
         public UserService(ApplicationContext db, PasswordService passwordService,
             IHttpContextAccessor httpContextAccessor, ConfirmationService confirmationService)
         {
@@ -45,15 +46,15 @@ namespace BioMad_backend.Services
             ? int.Parse(_httpContext.User.Claims.First(x => x.Type == CustomClaimTypes.MemberId).Value)
             : default;
 
-        public Culture Culture => _httpContext.Request.Headers.ContainsKey(HeaderKeys.Culture)
-            ? Culture.All.FirstOrDefault(x => x.Key == _httpContext.Request.Headers[HeaderKeys.Culture])
-            : Culture.En;
-            
-        
+        public Culture Culture => Culture.All
+                                      .FirstOrDefault(x => x.Key == _httpContext.User.Claims
+                                          .FirstOrDefault(y => y.Type == ClaimTypes.Locality)?.Value)
+                                  ?? Culture.Fallback;
+
         #endregion
 
         #region [ User related implementation ]
-        
+
         public async Task<User> Create(SignUpModel model)
         {
             if (await _db.Users.AnyAsync(x => x.Email == model.Email))
@@ -80,9 +81,9 @@ namespace BioMad_backend.Services
                 await _db.Members.AddAsync(member);
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
-                
+
                 // TODO: #EMAIL send email confirmation
-                
+
                 return user;
             }
             catch (Exception)

@@ -7,6 +7,7 @@ namespace BioMad_backend.Data
     public class ApplicationContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<Culture> Cultures { get; set; }
         
         public DbSet<SocialAccount> SocialAccounts { get; set; }
         public DbSet<SocialAccountProvider> SocialAccountProviders { get; set; }

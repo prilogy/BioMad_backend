@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using BioMad_backend.Data;
 using BioMad_backend.Entities;
 using BioMad_backend.Helpers;
+using BioMad_backend.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -26,10 +27,10 @@ namespace BioMad_backend.Services
 
         #region [ Access token implementation ]
 
-        public string GenerateAccessToken(User user, Member currentMember = null)
+        public string GenerateAccessToken(User user, Member currentMember, MetaHeaders metaHeaders)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var tokenDescriptor = GenerateTokenDescriptor(user, currentMember);
+            var tokenDescriptor = GenerateTokenDescriptor(user, currentMember, metaHeaders);
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
@@ -94,25 +95,25 @@ namespace BioMad_backend.Services
 
         #region [ Token description implementation ]
 
-        private SecurityTokenDescriptor GenerateTokenDescriptor(User user, Member currentMember = null)
+        private SecurityTokenDescriptor GenerateTokenDescriptor(User user, Member currentMember, MetaHeaders metaHeaders)
         {
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = GenerateClaimsIdentity(user, currentMember),
+                Subject = GenerateClaimsIdentity(user, currentMember, metaHeaders),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
             };
             return tokenDescriptor;
         }
 
-        private ClaimsIdentity GenerateClaimsIdentity(User user, Member currentMember = null)
+        private ClaimsIdentity GenerateClaimsIdentity(User user, Member currentMember, MetaHeaders metaHeaders)
         {
             var claims = new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.Name, user.Id.ToString()),
                 new Claim(ClaimTypes.Role, user.Role.Key),
-                new Claim(ClaimTypes.Locality, Culture.En.Key), //TODO: inject from Headers ***************
+                new Claim(ClaimTypes.Locality, metaHeaders.Culture),
             }, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
 
             if (currentMember != null)

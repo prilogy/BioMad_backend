@@ -69,15 +69,6 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
             return BadRequest();
         }
 
-        [AllowAnonymous]
-        [HttpGet("test")]
-        public async Task<IActionResult> Test()
-        {
-            var g = await _applicationContext.Genders.FirstOrDefaultAsync();
-            g.Content = g.Translations[_userService.Culture];
-            return Ok(await _applicationContext.Genders.FirstOrDefaultAsync());
-        }
-
         /// <summary>
         /// Verifies user's email with given code
         /// </summary>
