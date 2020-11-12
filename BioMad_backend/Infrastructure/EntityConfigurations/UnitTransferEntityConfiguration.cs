@@ -9,11 +9,11 @@ namespace BioMad_backend.Infrastructure.EntityConfigurations
         public void Configure(EntityTypeBuilder<UnitTransfer> builder)
         {
             builder.HasOne(x => x.UnitA)
-                .WithMany(x => x.Transfers)
+                .WithMany(x => x.TransfersTo)
                 .HasForeignKey(x => x.UnitAId);
 
             builder.HasOne(x => x.UnitB)
-                .WithMany(x => x.Transfers)
+                .WithMany(x => x.TransfersFrom)
                 .HasForeignKey(x => x.UnitBId);
         }
     }

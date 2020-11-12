@@ -19,15 +19,15 @@ namespace BioMad_backend.Entities
         [NotMapped]
         public IEnumerable<Biomarker> Biomarkers => BiomarkerUnits.Select(x => x.Biomarker);
 
-        [NotMapped] public IEnumerable<Unit> TransferableTo => Transfers.Select(x => x.UnitB);
-        
+        [NotMapped] public IEnumerable<int> TransfersToIds => TransfersTo.Select(x => x.UnitB.Id);
+        [NotMapped] public IEnumerable<int> TransfersFromIds => TransfersFrom.Select(x => x.UnitA.Id);
+        public virtual List<UnitTransfer> TransfersTo { get; set; }
+        public virtual List<UnitTransfer> TransfersFrom { get; set; }
         
         #region [ Many to many ]
 
         [JsonIgnore]
         public virtual List<BiomarkerUnit> BiomarkerUnits { get; set; }
-        [JsonIgnore]
-        public virtual List<UnitTransfer> Transfers { get; set; }
 
         #endregion
     }

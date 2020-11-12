@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BioMad_backend.Data;
 using BioMad_backend.Entities;
@@ -43,5 +44,6 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<List<Culture>>> Cultures() =>
             Ok(await _applicationContext.Cultures.ToListAsync());
+        
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities
 {
@@ -8,9 +9,11 @@ namespace BioMad_backend.Entities
         public int Id { get; set; }
         
         public int UnitAId { get; set; }
+        [JsonIgnore]
         public virtual Unit UnitA { get; set; }
 
         public int UnitBId { get; set; }
+        [JsonIgnore]
         public virtual Unit UnitB { get; set; }
 
         /// <summary>
