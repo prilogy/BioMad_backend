@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BioMad_backend.Data;
 using BioMad_backend.Extensions;
@@ -31,23 +32,47 @@ namespace BioMad_backend.Areas.Api.V1.Helpers
             _userService = userService;
         }
 
+        /// <summary>
+        /// Gets paged resources of type
+        /// </summary>
+        /// <param name="page">Number of page to get(starts from 1)</param>
+        /// <param name="pageSize">Number of objects on one page</param>
+        /// <param name="orderByDate">Order by date(asc|desc)</param>
+        /// <response code="200">If everything went OK</response>
+        /// <returns>List of resources of type</returns>
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] int page, [FromQuery] int pageSize,
+        public async Task<ActionResult<List<T>>> GetAll([FromQuery] int page, [FromQuery] int pageSize,
             [FromQuery] string orderByDate)
         {
             return await Paging(Queryable.AsQueryable(), page, pageSize, orderByDate);
         }
         
+        /// <summary>
+        /// Gets paged resources of type of given ids
+        /// </summary>
+        /// <param name="ids">Ids of resources to get</param>
+        /// <param name="page">Number of page to get(starts from 1)</param>
+        /// <param name="pageSize">Number of objects on one page</param>
+        /// <param name="orderByDate">Order by date(asc|desc)</param>
+        /// <response code="200">If everything went OK</response>
+        /// <returns>List of resources of type of given ids</returns>
         [HttpPost]
-        public async Task<IActionResult> GetByIds(int[] ids, [FromQuery] int page, [FromQuery] int pageSize,
+        public async Task<ActionResult<List<T>>> GetByIds(int[] ids, [FromQuery] int page, [FromQuery] int pageSize,
             [FromQuery] string orderByDate = null)
         {
             var list = Queryable.Where(x => ids.Contains(x.Id));
             return await Paging(list, page, pageSize, orderByDate);
         }
 
+        /// <summary>
+        /// Gets 0resource of type of given id
+        /// </summary>
+        /// <param name="id">Number of page to get(starts from 1)</param>
+        /// <response code="200">If everything went OK</response>
+        /// <response code="204">If no resource was found</response> 
+        /// <returns>Resource of type</returns>
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<ActionResult<T>> GetById(int id)
         {
             var entity = await Queryable.FirstOrDefaultAsync(x => x.Id == id);
 
@@ -63,7 +88,7 @@ namespace BioMad_backend.Areas.Api.V1.Helpers
         //     return await Task.Run(() => { return NotFound(); });
         // }
 
-        protected async Task<IActionResult> Paging(IQueryable<T> q, int page, int pageSize, string orderByDate=null)
+        protected async Task<ActionResult<List<T>>> Paging(IQueryable<T> q, int page, int pageSize, string orderByDate=null)
         {
             if (orderByDate == "asc")
                 q = q.OrderBy(x => x.Id);

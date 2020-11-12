@@ -19,6 +19,7 @@ namespace BioMad_backend.Entities
         public DateTime DateBirthday { get; set; }
 
         public int GenderId { get; set; }
+        [JsonIgnore]
         public virtual Gender Gender { get; set; }
         
         [JsonIgnore]
