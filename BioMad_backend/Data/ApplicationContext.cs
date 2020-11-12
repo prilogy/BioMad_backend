@@ -25,12 +25,14 @@ namespace BioMad_backend.Data
         public DbSet<Category> Categories { get; set; }
         
         public DbSet<Unit> Units { get; set; }
+        public DbSet<UnitTransfer> UnitTransfers { get; set; }
         
         // Biomarker system
         public DbSet<Biomarker> Biomarkers { get; set; }
         public DbSet<BiomarkerType> BiomarkerTypes { get; set; }
         public DbSet<BiomarkerArticleType> BiomarkerArticleTypes { get; set; }
         public DbSet<BiomarkerArticle> BiomarkerArticles { get; set; }
+        public DbSet<BiomarkerUnit> BiomarkerUnits { get; set; }
         
         
         public ApplicationContext(DbContextOptions options) : base(options)
@@ -43,7 +45,8 @@ namespace BioMad_backend.Data
             builder.ApplyConfiguration(new SocialAccountProviderEntityConfiguration());
             builder.ApplyConfiguration(new SocialAccountEntityConfiguration());
             builder.ApplyConfiguration(new CultureEntityConfiguration());
-
+            builder.ApplyConfiguration(new UnitTransferEntityConfiguration());
+            
             builder.ApplyConfiguration(new CategoryBiomarkerEntityConfiguration());
             builder.ApplyConfiguration(new BiomarkerArticleEntityConfiguration());
             builder.ApplyConfiguration(new BiomarkerUnitEntityConfiguration());
