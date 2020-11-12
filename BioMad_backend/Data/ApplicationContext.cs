@@ -1,4 +1,5 @@
 ﻿using BioMad_backend.Entities;
+using BioMad_backend.Entities.ManyToMany;
 using BioMad_backend.Infrastructure.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,16 +9,33 @@ namespace BioMad_backend.Data
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Culture> Cultures { get; set; }
-        
+
         public DbSet<SocialAccount> SocialAccounts { get; set; }
         public DbSet<SocialAccountProvider> SocialAccountProviders { get; set; }
         public DbSet<Member> Members { get; set; }
+        
         public DbSet<Role> Roles { get; set; }
         public DbSet<Gender> Genders { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<ConfirmationCode> ConfirmationCodes { get; set; }
-        public ApplicationContext(DbContextOptions options) : base(options) { }
 
+        public DbSet<Article> Articles { get; set; }
+        public DbSet<ArticleType> ArticleTypes { get; set; }
+        
+        public DbSet<Category> Categories { get; set; }
+        
+        public DbSet<Unit> Units { get; set; }
+        
+        // Biomarker system
+        public DbSet<Biomarker> Biomarkers { get; set; }
+        public DbSet<BiomarkerType> BiomarkerTypes { get; set; }
+        public DbSet<BiomarkerArticleType> BiomarkerArticleTypes { get; set; }
+        public DbSet<BiomarkerArticle> BiomarkerArticles { get; set; }
+        
+        
+        public ApplicationContext(DbContextOptions options) : base(options)
+        {
+        }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new RoleEntityConfiguration());
@@ -25,6 +43,11 @@ namespace BioMad_backend.Data
             builder.ApplyConfiguration(new SocialAccountProviderEntityConfiguration());
             builder.ApplyConfiguration(new SocialAccountEntityConfiguration());
             builder.ApplyConfiguration(new CultureEntityConfiguration());
+
+            builder.ApplyConfiguration(new CategoryBiomarkerEntityConfiguration());
+            builder.ApplyConfiguration(new BiomarkerArticleEntityConfiguration());
+            builder.ApplyConfiguration(new BiomarkerUnitEntityConfiguration());
+            builder.ApplyConfiguration(new BiomarkerArticleTypeEntityConfiguration());
         }
     }
 }

@@ -35,7 +35,7 @@ namespace BioMad_backend.Entities
         }
     }
 
-    public class GenderTranslation : Translation<GenderTranslation>, ITranslationEntity<Gender>
+    public class GenderTranslation : Translation<GenderTranslation>, ITranslationEntity<Gender>, IWithName
     {
         public string Name { get; set; }
         [JsonIgnore]
