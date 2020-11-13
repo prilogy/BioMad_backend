@@ -7,7 +7,7 @@ namespace BioMad_backend.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        public BiomarkerReferenceConfigDependency.Types Type { get; set; }
+        public BiomarkerReferenceConfigDependencyType Type { get; set; }
         
         public int RangeId { get; set; }
         public virtual BiomarkerReferenceConfigDependencyRange Range { get; set; }
@@ -15,9 +15,10 @@ namespace BioMad_backend.Entities
         public int ConfigId { get; set; }
         public virtual BiomarkerReferenceConfig Config { get; set; }
         
-        public enum Types
-        {
-            Age
-        }
+    }
+
+    public enum BiomarkerReferenceConfigDependencyType
+    {
+        Age
     }
 }

@@ -17,6 +17,7 @@ namespace BioMad_backend.Entities
         [NotMapped] public UnitTranslation Content { get; set; }
 
         [NotMapped]
+        [JsonIgnore]
         public IEnumerable<Biomarker> Biomarkers => BiomarkerUnits.Select(x => x.Biomarker);
 
         [NotMapped] public IEnumerable<int> TransfersToIds => TransfersTo.Select(x => x.UnitB.Id);

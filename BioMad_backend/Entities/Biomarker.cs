@@ -31,7 +31,7 @@ namespace BioMad_backend.Entities
         [NotMapped]
         public IEnumerable<Unit> Units => BiomarkerUnits.Select(x => x.Unit);
         
-        public virtual IEnumerable<BiomarkerReference> References { get; set; }
+        public virtual List<BiomarkerReference> References { get; set; }
 
         #region [ Many to many ]
 
