@@ -65,7 +65,7 @@ namespace BioMad_backend.Areas.Api.V1.Helpers
         }
 
         /// <summary>
-        /// Gets 0resource of type of given id
+        /// Gets resource of type of given id
         /// </summary>
         /// <param name="id">Number of page to get(starts from 1)</param>
         /// <response code="200">If everything went OK</response>

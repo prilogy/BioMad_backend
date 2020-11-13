@@ -7,6 +7,10 @@ namespace BioMad_backend.Data
 {
     public class ApplicationContext : DbContext
     {
+        public ApplicationContext(DbContextOptions options) : base(options)
+        {
+        }
+        
         public DbSet<User> Users { get; set; }
         public DbSet<Culture> Cultures { get; set; }
 
@@ -34,10 +38,12 @@ namespace BioMad_backend.Data
         public DbSet<BiomarkerArticle> BiomarkerArticles { get; set; }
         public DbSet<BiomarkerUnit> BiomarkerUnits { get; set; }
         
+        public DbSet<BiomarkerReference> BiomarkerReferences { get; set; }
+        public DbSet<BiomarkerReferenceConfig> BiomarkerReferenceConfigs { get; set; }
+        public DbSet<BiomarkerReferenceConfigDependency> BiomarkerReferenceConfigDependencies { get; set; }
+        public DbSet<BiomarkerReferenceConfigDependencyRange> BiomarkerReferenceConfigDependencyRanges { get; set; }
+        public DbSet<BiomarkerReferenceUser> BiomarkerReferenceUsers { get; set; }
         
-        public ApplicationContext(DbContextOptions options) : base(options)
-        {
-        }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new RoleEntityConfiguration());
@@ -51,6 +57,7 @@ namespace BioMad_backend.Data
             builder.ApplyConfiguration(new BiomarkerArticleEntityConfiguration());
             builder.ApplyConfiguration(new BiomarkerUnitEntityConfiguration());
             builder.ApplyConfiguration(new BiomarkerArticleTypeEntityConfiguration());
+            builder.ApplyConfiguration(new BiomarkerReferenceUserEntityConfiguration());
         }
     }
 }

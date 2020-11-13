@@ -17,8 +17,6 @@ namespace BioMad_backend.Entities
         public int TypeId { get; set; }
         public virtual BiomarkerType Type { get; set; }
         
-        
-
         #region [ Localization ]
 
         [JsonIgnore] public virtual TranslationCollection<BiomarkerTranslation> Translations { get; set; }
@@ -32,6 +30,8 @@ namespace BioMad_backend.Entities
         public IEnumerable<Article> Articles => BiomarkerArticles.Select(x => x.Article);
         [NotMapped]
         public IEnumerable<Unit> Units => BiomarkerUnits.Select(x => x.Unit);
+        
+        public virtual IEnumerable<BiomarkerReference> References { get; set; }
 
         #region [ Many to many ]
 
