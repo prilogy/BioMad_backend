@@ -14,7 +14,7 @@ namespace BioMad_backend.Entities
         public int Id { get; set; }
 
         [EmailAddress] public string Email { get; set; }
-
+        
         public bool EmailIsVerified => ConfirmationCodes.Any(x =>
             x.IsConfirmed && x.HelperValue == Email && x.Type == ConfirmationCode.Types.EmailConfirmation);
 
