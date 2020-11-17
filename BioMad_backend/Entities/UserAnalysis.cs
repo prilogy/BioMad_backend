@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using BioMad_backend.Infrastructure.Interfaces;
+using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities
 {
@@ -15,6 +16,7 @@ namespace BioMad_backend.Entities
         public DateTime Date { get; set; }
         
         public int UserId { get; set; }
+        [JsonIgnore]
         public virtual User User { get; set; }
         
         public int? LabId { get; set; }

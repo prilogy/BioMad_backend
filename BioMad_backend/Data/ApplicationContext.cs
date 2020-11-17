@@ -1,10 +1,7 @@
 using BioMad_backend.Entities;
 using BioMad_backend.Entities.ManyToMany;
 using BioMad_backend.Infrastructure.EntityConfigurations;
-using BioMad_backend.Migrations;
 using Microsoft.EntityFrameworkCore;
-using BiomarkerUnit = BioMad_backend.Entities.ManyToMany.BiomarkerUnit;
-using UnitTransfer = BioMad_backend.Entities.UnitTransfer;
 
 namespace BioMad_backend.Data
 {
@@ -68,6 +65,6 @@ namespace BioMad_backend.Data
             builder.ApplyConfiguration(new BiomarkerReferenceUserEntityConfiguration());
         }
         
-        public DbSet<BioMad_backend.Entities.UserAnalysis> UserAnalysis { get; set; }
+        public DbSet<UserAnalysis> UserAnalysis { get; set; }
     }
 }
