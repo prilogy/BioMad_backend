@@ -45,13 +45,6 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<List<Culture>>> Cultures() =>
             Ok(await _applicationContext.Cultures.ToListAsync());
-
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> Test()
-        {
-            return Ok(_applicationContext.Labs.FirstOrDefault()
-                .Localize<Lab, LabTranslation>(Culture.En, true));
-        }
+        
     }
 }

@@ -1,7 +1,10 @@
-﻿using BioMad_backend.Entities;
+using BioMad_backend.Entities;
 using BioMad_backend.Entities.ManyToMany;
 using BioMad_backend.Infrastructure.EntityConfigurations;
+using BioMad_backend.Migrations;
 using Microsoft.EntityFrameworkCore;
+using BiomarkerUnit = BioMad_backend.Entities.ManyToMany.BiomarkerUnit;
+using UnitTransfer = BioMad_backend.Entities.UnitTransfer;
 
 namespace BioMad_backend.Data
 {
@@ -46,6 +49,8 @@ namespace BioMad_backend.Data
         
         public DbSet<City> Cities { get; set; }
         public DbSet<Lab> Labs { get; set; }
+        public DbSet<UserAnalysis> UserAnalyzes { get; set; }
+        public DbSet<UserBiomarker> UserBiomarkers { get; set; }
         
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -62,5 +67,7 @@ namespace BioMad_backend.Data
             builder.ApplyConfiguration(new BiomarkerArticleTypeEntityConfiguration());
             builder.ApplyConfiguration(new BiomarkerReferenceUserEntityConfiguration());
         }
+        
+        public DbSet<BioMad_backend.Entities.UserAnalysis> UserAnalysis { get; set; }
     }
 }

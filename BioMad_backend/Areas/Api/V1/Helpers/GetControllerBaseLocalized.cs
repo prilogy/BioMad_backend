@@ -15,8 +15,9 @@ namespace BioMad_backend.Areas.Api.V1.Helpers
     [Authorize]
     [ApiController]
     [Route("api/v1/[controller]")]
-    public abstract class GetControllerBase<T> : ControllerBase
-        where T : IWithId
+    public abstract class GetControllerBaseLocalized<T, T2> : ControllerBase
+        where T : ILocalizedEntity<T2>
+        where T2 : Translation<T2>, new()
     {
         protected readonly ApplicationContext _db;
         protected readonly UserService _userService;
@@ -25,7 +26,7 @@ namespace BioMad_backend.Areas.Api.V1.Helpers
 
         protected virtual int PAGE_SIZE => 10;
 
-        public GetControllerBase(ApplicationContext db, UserService userService)
+        public GetControllerBaseLocalized(ApplicationContext db, UserService userService)
         {
             _db = db;
             _userService = userService;
@@ -40,7 +41,7 @@ namespace BioMad_backend.Areas.Api.V1.Helpers
         /// <response code="200">If everything went OK</response>
         /// <returns>List of resources of type</returns>
         [HttpGet]
-        public virtual async Task<ActionResult<List<T>>> GetAll([FromQuery] int page, [FromQuery] int pageSize,
+        public async Task<ActionResult<List<T>>> GetAll([FromQuery] int page, [FromQuery] int pageSize,
             [FromQuery] string orderByDate)
         {
             return await Paging(Queryable.AsQueryable(), page, pageSize, orderByDate);
@@ -76,7 +77,7 @@ namespace BioMad_backend.Areas.Api.V1.Helpers
             var entity = await Queryable.FirstOrDefaultAsync(x => x.Id == id);
 
             if(entity != null)
-                return Ok(entity);
+                return Ok(entity.Localize<T, T2>(_userService.Culture));
             
             return NoContent();
         }
@@ -96,7 +97,7 @@ namespace BioMad_backend.Areas.Api.V1.Helpers
 
             return Ok((page == 0
                 ? await q.ToListAsync()
-                : await q.Page(page, pageSize == 0 ? PAGE_SIZE : pageSize).ToListAsync()));
+                : await q.Page(page, pageSize == 0 ? PAGE_SIZE : pageSize).ToListAsync()).Localize<T, T2>(_userService.Culture));
         }
     }
 }

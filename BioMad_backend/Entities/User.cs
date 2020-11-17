@@ -26,6 +26,8 @@ namespace BioMad_backend.Entities
         public virtual Culture Culture { get; set; }
 
         public virtual List<Member> Members { get; set; }
+        
+        public virtual List<UserAnalysis> Analyzes { get; set; } 
 
         [NotMapped] public int CurrentMemberId { get; set; }
 
