@@ -11,6 +11,9 @@ namespace BioMad_backend.Entities
         public int UnitId { get; set; }
         public virtual Unit Unit { get; set; }
         
+        public int? UserId { get; set; }
+        public virtual User User { get; set; }
+        
         public int BiomarkerId { get; set; }
         public virtual Biomarker Biomarker { get; set; }
         

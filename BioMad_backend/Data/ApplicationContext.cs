@@ -44,6 +44,9 @@ namespace BioMad_backend.Data
         public DbSet<BiomarkerReferenceConfigDependencyRange> BiomarkerReferenceConfigDependencyRanges { get; set; }
         public DbSet<BiomarkerReferenceUser> BiomarkerReferenceUsers { get; set; }
         
+        public DbSet<City> Cities { get; set; }
+        public DbSet<Lab> Labs { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new RoleEntityConfiguration());

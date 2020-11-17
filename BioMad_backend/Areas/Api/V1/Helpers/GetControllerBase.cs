@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using BioMad_backend.Data;
+using BioMad_backend.Entities;
 using BioMad_backend.Extensions;
 using BioMad_backend.Infrastructure.AbstractClasses;
 using BioMad_backend.Infrastructure.Interfaces;
