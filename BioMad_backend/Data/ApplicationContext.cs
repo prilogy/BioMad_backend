@@ -46,8 +46,8 @@ namespace BioMad_backend.Data
         
         public DbSet<City> Cities { get; set; }
         public DbSet<Lab> Labs { get; set; }
-        public DbSet<UserAnalysis> UserAnalyzes { get; set; }
-        public DbSet<UserBiomarker> UserBiomarkers { get; set; }
+        public DbSet<MemberAnalysis> MemberAnalyzes { get; set; }
+        public DbSet<MemberBiomarker> MemberBiomarkers { get; set; }
         
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -65,6 +65,6 @@ namespace BioMad_backend.Data
             builder.ApplyConfiguration(new BiomarkerReferenceUserEntityConfiguration());
         }
         
-        public DbSet<UserAnalysis> UserAnalysis { get; set; }
+        public DbSet<MemberAnalysis> UserAnalysis { get; set; }
     }
 }

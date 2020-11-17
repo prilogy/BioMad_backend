@@ -27,7 +27,8 @@ namespace BioMad_backend.Entities
 
         public virtual List<Member> Members { get; set; }
         
-        public virtual List<UserAnalysis> Analyzes { get; set; } 
+        [JsonIgnore]
+        public virtual List<MemberAnalysis> Analyzes { get; set; } 
 
         [NotMapped] public int CurrentMemberId { get; set; }
 

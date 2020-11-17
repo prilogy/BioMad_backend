@@ -25,12 +25,13 @@ namespace BioMad_backend.Entities
         #endregion
         
         [NotMapped]
+        [JsonIgnore]
         public IEnumerable<Category> Categories => CategoryBiomarkers.Select(x => x.Category);
         [NotMapped]
         public IEnumerable<Article> Articles => BiomarkerArticles.Select(x => x.Article);
         [NotMapped]
         public IEnumerable<Unit> Units => BiomarkerUnits.Select(x => x.Unit);
-        
+        [JsonIgnore]
         public virtual List<BiomarkerReference> References { get; set; }
 
         #region [ Many to many ]

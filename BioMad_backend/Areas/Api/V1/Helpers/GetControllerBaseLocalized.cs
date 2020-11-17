@@ -25,6 +25,7 @@ namespace BioMad_backend.Areas.Api.V1.Helpers
         protected abstract IQueryable<T> Queryable { get; }
 
         protected virtual int PAGE_SIZE => 10;
+        protected virtual bool LOCALIZE_PROPERTIES => false;
 
         public GetControllerBaseLocalized(ApplicationContext db, UserService userService)
         {
@@ -77,7 +78,7 @@ namespace BioMad_backend.Areas.Api.V1.Helpers
             var entity = await Queryable.FirstOrDefaultAsync(x => x.Id == id);
 
             if(entity != null)
-                return Ok(entity.Localize<T, T2>(_userService.Culture));
+                return Ok(entity.Localize<T, T2>(_userService.Culture, LOCALIZE_PROPERTIES));
             
             return NoContent();
         }
@@ -97,7 +98,7 @@ namespace BioMad_backend.Areas.Api.V1.Helpers
 
             return Ok((page == 0
                 ? await q.ToListAsync()
-                : await q.Page(page, pageSize == 0 ? PAGE_SIZE : pageSize).ToListAsync()).Localize<T, T2>(_userService.Culture));
+                : await q.Page(page, pageSize == 0 ? PAGE_SIZE : pageSize).ToListAsync()).Localize<T, T2>(_userService.Culture, LOCALIZE_PROPERTIES));
         }
     }
 }

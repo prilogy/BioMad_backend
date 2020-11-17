@@ -15,7 +15,7 @@ namespace BioMad_backend.Entities
         public virtual TranslationCollection<BiomarkerTypeTranslation> Translations { get; set; }
         [NotMapped]
         public BiomarkerTypeTranslation Content { get; set; }
-        
+        [JsonIgnore]
         public virtual List<Biomarker> Biomarkers { get; set; }
     }
 

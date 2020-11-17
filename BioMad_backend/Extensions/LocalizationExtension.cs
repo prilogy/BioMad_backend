@@ -28,7 +28,7 @@ namespace BioMad_backend.Extensions
             where T2 : Translation<T2>, new()
             => collection.Select(x => x.Localize<T, T2>(culture, localizeProperties)).ToList();
 
-        public static void LocalizeProperties(object entity, Culture culture)
+        public static T LocalizeProperties<T>(T entity, Culture culture)
         {
             foreach (var property in entity.GetType().GetProperties())
             {
@@ -38,7 +38,8 @@ namespace BioMad_backend.Extensions
                 var types = type?.GetInterfaces()
                     .FirstOrDefault(x =>
                         x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ILocalizedEntity<>))
-                    ?.GetGenericArguments();
+                    ?.GetGenericArguments(); 
+                // TODO: добавить случай если список !!!!!!!!!!!!!!!
 
                 var translationType = types?.FirstOrDefault(x => x.Name.ToLower().Contains("translation"));
 
@@ -52,13 +53,21 @@ namespace BioMad_backend.Extensions
                         .FirstOrDefault(x => x.Name == nameof(Localize) && !(x.ReturnType is IList));
 
                     localize?.MakeGenericMethod(type, translationType)
-                        .Invoke(obj, new[] { obj, culture, false }); // Might be needed to set true here
+                        .Invoke(obj, new[] { obj, culture, true }); // Might be needed to set true here
+                    
                 }
                 catch (Exception)
                 {
                     continue;
                 }
             }
+
+            return entity;
+        }
+
+        public static List<T> LocalizeProperties<T>(this List<T> list, Culture culture)
+        {
+            return list.Select(x => LocalizeProperties(x, culture)).ToList();
         }
     }
 }

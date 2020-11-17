@@ -1,9 +1,10 @@
 ﻿using System;
 using BioMad_backend.Infrastructure.Interfaces;
+using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities
 {
-    public class UserBiomarker : IWithDateCreated
+    public class MemberBiomarker : IWithDateCreated
     {
         public int Id { get; set; }
         
@@ -14,7 +15,11 @@ namespace BioMad_backend.Entities
         public int UnitId { get; set; }
         public virtual Unit Unit { get; set; }
         
+        public int BiomarkerId { get; set; }
+        public virtual Biomarker Biomarker { get; set; }
+        
         public int AnalysisId { get; set; }
-        public virtual UserAnalysis Analysis { get; set; }
+        [JsonIgnore]
+        public virtual MemberAnalysis Analysis { get; set; }
     }
 }
