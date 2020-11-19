@@ -28,11 +28,12 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         /// <summary>
         /// Gets list of genders
         /// </summary>
+        /// <param name="culture">Culture of user</param>
         /// <returns>Returns list of genders</returns>
         /// <response code="200">If everything went OK</response>
         [HttpPost("gender")]
         [AllowAnonymous]
-        public async Task<ActionResult<List<Gender>>> Genders() =>
+        public async Task<ActionResult<List<Gender>>> Genders([FromHeader] string culture) =>
             Ok((await _applicationContext.Genders.ToListAsync()).Localize<Gender, GenderTranslation>(_userService
                 .Culture));
 
@@ -50,8 +51,10 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Test()
         {
-            return Ok(_applicationContext.Labs.FirstOrDefault()
-                .Localize<Lab, LabTranslation>(Culture.Ru, true));
+            return Ok(LocalizationExtension.LocalizeProperties(new {
+                city = _applicationContext.Cities.FirstOrDefault(),
+                genders = _applicationContext.Genders.ToList()
+            }, Culture.Ru));
         }
     }
 }

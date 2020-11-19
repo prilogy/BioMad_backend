@@ -6,6 +6,7 @@ using System.Linq;
 using BioMad_backend.Entities;
 using BioMad_backend.Infrastructure.AbstractClasses;
 using BioMad_backend.Infrastructure.Interfaces;
+using BioMad_backend.Services;
 
 namespace BioMad_backend.Extensions
 {
@@ -35,28 +36,52 @@ namespace BioMad_backend.Extensions
                 var obj = property.GetValue(entity, null);
                 var type = obj?.GetType();
 
-                var types = type?.GetInterfaces()
-                    .FirstOrDefault(x =>
+                if (type == null)
+                    continue;
+
+                var isList = type.GetInterfaces()
+                    .Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+
+                var entityType = isList
+                    ? type.GetInterfaces()
+                        .FirstOrDefault(x =>
+                            x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>)
+                                            && x.GetGenericArguments()
+                                                .Any(y =>
+                                                    y.GetInterfaces().Any(z =>
+                                                        z.IsGenericType &&
+                                                        z.GetGenericTypeDefinition() ==
+                                                        typeof(ILocalizedEntity<>))))
+                        ?.GetGenericArguments()
+                        .FirstOrDefault(x =>
+                            x.GetInterfaces().Any(y =>
+                                y.IsGenericType &&
+                                y.GetGenericTypeDefinition() ==
+                                typeof(ILocalizedEntity<>)))
+                    : type;
+
+                var translationType = entityType?.GetInterfaces().FirstOrDefault(x =>
                         x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ILocalizedEntity<>))
-                    ?.GetGenericArguments(); 
-                // TODO: добавить случай если список !!!!!!!!!!!!!!!
+                    ?.GetGenericArguments().FirstOrDefault(x => x.Name.ToLower().Contains("translation"));
 
-                var translationType = types?.FirstOrDefault(x => x.Name.ToLower().Contains("translation"));
 
-                if (translationType == null)
+                if (entityType == null || translationType == null)
                     continue;
 
                 try
                 {
                     var localize = typeof(LocalizationExtension)
                         .GetMethods()
-                        .FirstOrDefault(x => x.Name == nameof(Localize) && !(x.ReturnType is IList));
+                        .FirstOrDefault(x => x.Name == nameof(Localize) &&
+                                             isList
+                            ? x.ReturnType.IsGenericType && x.ReturnType.GetGenericTypeDefinition() == typeof(List<>)
+                            : !(x.ReturnType.IsGenericType &&
+                                x.ReturnType.GetGenericTypeDefinition() == typeof(List<>)));
 
-                    localize?.MakeGenericMethod(type, translationType)
-                        .Invoke(obj, new[] { obj, culture, true }); // Might be needed to set true here
-                    
+                    localize?.MakeGenericMethod(entityType, translationType)
+                        .Invoke(obj, new[] { obj, culture, true });
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     continue;
                 }
