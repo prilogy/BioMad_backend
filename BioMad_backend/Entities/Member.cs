@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using BioMad_backend.Infrastructure.Interfaces;
 using Newtonsoft.Json;
@@ -21,7 +22,9 @@ namespace BioMad_backend.Entities
         public int GenderId { get; set; }
         [JsonIgnore]
         public virtual Gender Gender { get; set; }
-        
+
+        [JsonIgnore] public virtual List<MemberAnalysis> Analyzes { get; set; }
+
         [JsonIgnore]
         public int UserId { get; set; }
         [JsonIgnore]

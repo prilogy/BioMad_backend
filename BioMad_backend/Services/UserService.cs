@@ -46,6 +46,12 @@ namespace BioMad_backend.Services
             ? int.Parse(_httpContext.User.Claims.First(x => x.Type == CustomClaimTypes.MemberId).Value)
             : default;
 
+        private Member _currentMember;
+        
+        public Member CurrentMember => _currentMember ??=  _httpContext.User.Identity.IsAuthenticated
+            ? _db.Members.FirstOrDefault(u => u.Id == CurrentMemberId)
+            : null;
+
         public Culture Culture => Culture.All
                                       .FirstOrDefault(x => x.Key == _httpContext.User.Claims
                                           .FirstOrDefault(y => y.Type == ClaimTypes.Locality)?.Value)

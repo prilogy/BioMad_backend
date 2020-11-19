@@ -26,6 +26,8 @@ namespace BioMad_backend.Areas.Api.V1.Helpers
         protected virtual int PAGE_SIZE => 10;
         protected virtual bool LOCALIZE_PROPERTIES => false;
 
+        protected TZ Localize<TZ>(TZ obj) => LocalizationExtension.LocalizeProperties(obj, _userService.Culture);
+
         public GetControllerBase(ApplicationContext db, UserService userService)
         {
             _db = db;
@@ -77,7 +79,7 @@ namespace BioMad_backend.Areas.Api.V1.Helpers
             var entity = await Queryable.FirstOrDefaultAsync(x => x.Id == id);
 
             if(entity != null)
-                return Ok(LOCALIZE_PROPERTIES ? LocalizationExtension.LocalizeProperties(entity, _userService.Culture) : entity);
+                return Ok(LOCALIZE_PROPERTIES ? Localize(entity) : entity);
             
             return NoContent();
         }
@@ -99,7 +101,7 @@ namespace BioMad_backend.Areas.Api.V1.Helpers
                 ? await q.ToListAsync()
                 : await q.Page(page, pageSize == 0 ? PAGE_SIZE : pageSize).ToListAsync();
 
-            return Ok(LOCALIZE_PROPERTIES ? l.LocalizeProperties(_userService.Culture) : l);
+            return Ok(LOCALIZE_PROPERTIES ? LocalizationExtension.LocalizeProperties(l, _userService.Culture) : l);
         }
     }
 }

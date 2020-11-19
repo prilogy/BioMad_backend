@@ -90,7 +90,7 @@ namespace BioMad_backend.Extensions
             return entity;
         }
 
-        public static List<T> LocalizeProperties<T>(this List<T> list, Culture culture)
+        public static List<T> LocalizeProperties<T>(List<T> list, Culture culture)
         {
             return list.Select(x => LocalizeProperties(x, culture)).ToList();
         }
