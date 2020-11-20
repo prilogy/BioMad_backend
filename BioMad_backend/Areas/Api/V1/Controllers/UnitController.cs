@@ -12,12 +12,14 @@ using Microsoft.EntityFrameworkCore;
 namespace BioMad_backend.Areas.Api.V1.Controllers
 {
     
-    public class UnitController : GetControllerBaseLocalized<Unit, UnitTranslation>
+    public class UnitController : GetControllerBase<Unit>
     {
         public UnitController(ApplicationContext db, UserService userService) : base(db, userService)
         {
         }
 
         protected override IQueryable<Unit> Queryable => _db.Units;
+
+        protected override Unit LocalizationStrategy(Unit m) => m.Localize(_userService.Culture);
     }
 }

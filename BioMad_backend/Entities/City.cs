@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities
 {
-    public class City : ILocalizedEntity<CityTranslation>
+    public class City : ILocalizedEntity<CityTranslation>, ILocalizable<City>
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -16,6 +16,12 @@ namespace BioMad_backend.Entities
         [NotMapped] public CityTranslation Content { get; set; }
 
         #endregion
+
+        public City Localize(Culture culture)
+        {
+            Content = Translations[culture];
+            return this;
+        }
     }
 
     public class CityTranslation : Translation<CityTranslation>, ITranslationEntity<City>, IWithName

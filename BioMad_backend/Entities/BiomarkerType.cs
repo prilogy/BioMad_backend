@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities
 {
-    public class BiomarkerType : ILocalizedEntity<BiomarkerTypeTranslation>
+    public class BiomarkerType : ILocalizedEntity<BiomarkerTypeTranslation>, ILocalizable<BiomarkerType>
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -17,6 +17,12 @@ namespace BioMad_backend.Entities
         public BiomarkerTypeTranslation Content { get; set; }
         [JsonIgnore]
         public virtual List<Biomarker> Biomarkers { get; set; }
+
+        public BiomarkerType Localize(Culture culture)
+        {
+            Content = Translations[culture];
+            return this;
+        }
     }
 
     public class BiomarkerTypeTranslation : Translation<BiomarkerTypeTranslation>, ITranslationEntity<BiomarkerType>,

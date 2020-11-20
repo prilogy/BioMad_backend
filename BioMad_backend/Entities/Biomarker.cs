@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using BioMad_backend.Entities.ManyToMany;
+using BioMad_backend.Extensions;
 using BioMad_backend.Infrastructure.AbstractClasses;
 using BioMad_backend.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.DataProtection.XmlEncryption;
@@ -9,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities
 {
-    public class Biomarker : ILocalizedEntity<BiomarkerTranslation>
+    public class Biomarker : ILocalizedEntity<BiomarkerTranslation>, ILocalizable<Biomarker>, IWithId
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -27,10 +28,20 @@ namespace BioMad_backend.Entities
         [NotMapped]
         [JsonIgnore]
         public IEnumerable<Category> Categories => CategoryBiomarkers.Select(x => x.Category);
+        
         [NotMapped]
-        public IEnumerable<Article> Articles => BiomarkerArticles.Select(x => x.Article);
+        [JsonIgnore]
+        private IEnumerable<Article> _articles => BiomarkerArticles.Select(x => x.Article);
         [NotMapped]
-        public IEnumerable<Unit> Units => BiomarkerUnits.Select(x => x.Unit);
+        public IEnumerable<Article> Articles { get; set; }
+        
+        [NotMapped]
+        [JsonIgnore]
+        public IEnumerable<Unit> _units => BiomarkerUnits.Select(x => x.Unit);
+        [NotMapped]
+        public IEnumerable<Unit> Units { get; set; }
+        
+        
         [JsonIgnore]
         public virtual List<BiomarkerReference> References { get; set; }
 
@@ -44,6 +55,15 @@ namespace BioMad_backend.Entities
         public virtual List<BiomarkerUnit> BiomarkerUnits { get; set; }
 
         #endregion
+
+        public Biomarker Localize(Culture culture)
+        {
+            Content = Translations[culture];
+            Type = Type.Localize(culture);
+            Articles = _articles.Localize(culture);
+            Units = _units.Localize(culture);
+            return this;
+        }
     }
 
     public class BiomarkerTranslation : Translation<BiomarkerTranslation>, ITranslationEntity<Biomarker>,

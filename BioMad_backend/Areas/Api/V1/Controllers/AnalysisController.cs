@@ -17,9 +17,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace BioMad_backend.Areas.Api.V1.Controllers
 {
-    [Authorize]
-    [ApiController]
-    [Route("api/v1/[controller]")]
     public class AnalysisController : GetControllerBase<MemberAnalysis>
     {
         public AnalysisController(ApplicationContext db, UserService userService) : base(db, userService)
@@ -27,18 +24,24 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
             
         }
 
-        protected override bool LOCALIZE_PROPERTIES => true;
+        protected override MemberAnalysis LocalizationStrategy(MemberAnalysis m) => m.Localize(_userService.Culture);
+
         protected override IQueryable<MemberAnalysis> Queryable => _db.UserAnalysis.Where(x => x.MemberId == _userService.CurrentMemberId);
+        
+        #region [ MemberAnalysis CRUD ]
         
         /// <summary>
         /// Adds new analysis
         /// </summary>
+        /// <remarks>
+        /// "Biomarkers" property IS required
+        /// </remarks>
         /// <param name="model">Model of analysis</param>
-        /// <returns>Just added analysis</returns>
+        /// <returns>Id of newly created analysis</returns>
         /// <response code="200">If everything went OK</response>
         /// <response code="400">If anything went BAD</response> 
-        [HttpPost("add")]
-        public async Task<ActionResult<MemberAnalysis>> Add([Required] MemberAnalysisModel model)
+        [HttpPost("member")]
+        public async Task<ActionResult<int>> Add([Required] MemberAnalysisModel model)
         {
             var analysis = new MemberAnalysis
             {
@@ -48,7 +51,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
                 Description = model.Description,
                 LabId = model.LabId
             };
-            
+
             await using var transaction = await _db.Database.BeginTransactionAsync();
             try
             {
@@ -66,7 +69,8 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
                 await _db.MemberBiomarkers.AddRangeAsync(biomarkers);
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
-                return Ok(Localize(analysis)); // LOCALIZE
+
+                return Ok(analysis.Id);
             }
             catch (Exception)
             {
@@ -78,15 +82,18 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         /// <summary>
         /// Edits analysis of given id
         /// </summary>
+        /// <remarks>
+        /// "Biomarkers" property IS NOT required
+        /// </remarks>
         /// <param name="model">New data</param>
         /// <param name="id">Id of analysis</param>
         /// <returns>Analysis with edited data</returns>
         /// <response code="200">If everything went OK</response>
         /// <response code="400">If anything went BAD</response> 
-        [HttpPatch("{id}")]
+        [HttpPatch("member/{id}")]
         public async Task<ActionResult<MemberAnalysis>> Edit([Required] MemberAnalysisModel model, int id)
         {
-            var m = _userService.CurrentMember.Analyzes.FirstOrDefault(x => x.Id == id);
+            var m = FindAnalysis(id);
             if (m == null)
                 return BadRequest();
 
@@ -102,7 +109,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
             try
             {
                 await _db.SaveChangesAsync();
-                return Ok(Localize(m));
+                return Ok(m.Localize(_userService.Culture));
             }
             catch (Exception)
             {
@@ -117,10 +124,10 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         /// <returns>Action result</returns>
         /// <response code="200">If everything went OK</response>
         /// <response code="400">If anything went BAD</response> 
-        [HttpDelete("{id}")]
+        [HttpDelete("member/{id}")]
         public async Task<ActionResult<MemberAnalysis>> Delete(int id)
         {
-            var m = _userService.CurrentMember.Analyzes.FirstOrDefault(x => x.Id == id);
+            var m = FindAnalysis(id);
             if (m == null)
                 return BadRequest();
 
@@ -135,5 +142,9 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
                 return BadRequest();
             }
         }
+
+        #endregion
+        
+        private MemberAnalysis FindAnalysis(int id) => _userService.CurrentMember.Analyzes.FirstOrDefault(x => x.Id == id);
     }
 }

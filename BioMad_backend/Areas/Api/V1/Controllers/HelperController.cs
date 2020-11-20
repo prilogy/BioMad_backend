@@ -34,7 +34,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         [HttpPost("gender")]
         [AllowAnonymous]
         public async Task<ActionResult<List<Gender>>> Genders([FromHeader] string culture) =>
-            Ok((await _applicationContext.Genders.ToListAsync()).Localize<Gender, GenderTranslation>(_userService
+            Ok((await _applicationContext.Genders.ToListAsync()).Localize(_userService
                 .Culture));
 
         /// <summary>
@@ -51,10 +51,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Test()
         {
-            return Ok(LocalizationExtension.LocalizeProperties(new {
-                city = _applicationContext.Cities.FirstOrDefault(),
-                genders = _applicationContext.Genders.ToList()
-            }, Culture.Ru));
+            return Ok(_applicationContext.Biomarkers.FirstOrDefault().Localize(_userService.Culture));
         }
     }
 }

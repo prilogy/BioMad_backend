@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using BioMad_backend.Extensions;
 using BioMad_backend.Infrastructure.AbstractClasses;
 using BioMad_backend.Infrastructure.Interfaces;
 using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities
 {
-    public class Article : ILocalizedEntity<ArticleTranslation>
+    public class Article : ILocalizedEntity<ArticleTranslation>, ILocalizable<Article>
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -16,6 +17,12 @@ namespace BioMad_backend.Entities
         [NotMapped] public ArticleTranslation Content { get; set; }
 
         #endregion
+        
+        public Article Localize(Culture culture)
+        {
+            Content = Translations[culture];
+            return this;
+        }
     }
 
     public class ArticleTranslation : Translation<ArticleTranslation>, ITranslationEntity<Article>, IWithName

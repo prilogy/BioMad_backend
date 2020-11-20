@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities
 {
-    public class Gender : ILocalizedEntity<GenderTranslation>
+    public class Gender : ILocalizedEntity<GenderTranslation>, ILocalizable<Gender>
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -21,6 +21,12 @@ namespace BioMad_backend.Entities
         public static readonly Gender Male = new Gender { Id = 1, Key = Keys.Male };
         public static readonly Gender Female = new Gender { Id = 2, Key = Keys.Female };
         public static readonly Gender Neutral = new Gender { Id = 3, Key = Keys.Neutral };
+
+        public Gender Localize(Culture culture)
+        {
+            Content = Translations[culture];
+            return this;
+        }
 
         public Gender()
         {

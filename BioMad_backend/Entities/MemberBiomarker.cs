@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities
 {
-    public class MemberBiomarker : IWithDateCreated
+    public class MemberBiomarker : IWithDateCreated, ILocalizable<MemberBiomarker>
     {
         public int Id { get; set; }
         
@@ -21,5 +21,17 @@ namespace BioMad_backend.Entities
         public int AnalysisId { get; set; }
         [JsonIgnore]
         public virtual MemberAnalysis Analysis { get; set; }
+
+        public MemberBiomarker()
+        {
+            DateCreatedAt = DateTime.UtcNow;
+        }
+
+        public MemberBiomarker Localize(Culture culture)
+        {
+            Unit = Unit.Localize(culture);
+            Biomarker = Biomarker.Localize(culture);
+            return this;
+        }
     }
 }
