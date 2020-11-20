@@ -14,45 +14,33 @@ namespace BioMad_backend.Entities
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        
+
         public int TypeId { get; set; }
         public virtual BiomarkerType Type { get; set; }
-        
+
         #region [ Localization ]
 
         [JsonIgnore] public virtual TranslationCollection<BiomarkerTranslation> Translations { get; set; }
         [NotMapped] public BiomarkerTranslation Content { get; set; }
 
         #endregion
-        
-        [NotMapped]
-        [JsonIgnore]
-        public IEnumerable<Category> Categories => CategoryBiomarkers.Select(x => x.Category);
-        
-        [NotMapped]
-        [JsonIgnore]
-        private IEnumerable<Article> _articles => BiomarkerArticles.Select(x => x.Article);
-        [NotMapped]
-        public IEnumerable<Article> Articles { get; set; }
-        
-        [NotMapped]
-        [JsonIgnore]
-        public IEnumerable<Unit> _units => BiomarkerUnits.Select(x => x.Unit);
-        [NotMapped]
-        public IEnumerable<Unit> Units { get; set; }
-        
-        
-        [JsonIgnore]
-        public virtual List<BiomarkerReference> References { get; set; }
+
+        [NotMapped] [JsonIgnore] public IEnumerable<Category> Categories => CategoryBiomarkers.Select(x => x.Category);
+        [NotMapped] public IEnumerable<int> CategoryIds => CategoryBiomarkers.Select(x => x.CategoryId);
+
+        [NotMapped] [JsonIgnore] public IEnumerable<Article> Articles { get; set; }
+        [NotMapped] private IEnumerable<int> ArticleIds => BiomarkerArticles.Select(x => x.ArticleId);
+
+        [NotMapped] [JsonIgnore] public IEnumerable<Unit> Units => BiomarkerUnits.Select(x => x.Unit);
+        [NotMapped] public IEnumerable<int> UnitIds => BiomarkerUnits.Select(x => x.UnitId);
+
+        [JsonIgnore] public virtual List<BiomarkerReference> References { get; set; }
 
         #region [ Many to many ]
 
-        [JsonIgnore]
-        public virtual List<CategoryBiomarker> CategoryBiomarkers { get; set; }
-        [JsonIgnore]
-        public virtual List<BiomarkerArticle> BiomarkerArticles { get; set; }
-        [JsonIgnore]
-        public virtual List<BiomarkerUnit> BiomarkerUnits { get; set; }
+        [JsonIgnore] public virtual List<CategoryBiomarker> CategoryBiomarkers { get; set; }
+        [JsonIgnore] public virtual List<BiomarkerArticle> BiomarkerArticles { get; set; }
+        [JsonIgnore] public virtual List<BiomarkerUnit> BiomarkerUnits { get; set; }
 
         #endregion
 
@@ -60,8 +48,6 @@ namespace BioMad_backend.Entities
         {
             Content = Translations[culture];
             Type = Type.Localize(culture);
-            Articles = _articles.Localize(culture);
-            Units = _units.Localize(culture);
             return this;
         }
     }

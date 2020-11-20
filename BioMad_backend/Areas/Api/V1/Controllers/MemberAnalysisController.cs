@@ -17,9 +17,10 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace BioMad_backend.Areas.Api.V1.Controllers
 {
-    public class AnalysisController : GetControllerBase<MemberAnalysis>
+    [Route("api/v1/member/analysis")]
+    public class MemberAnalysisController : GetControllerBase<MemberAnalysis>
     {
-        public AnalysisController(ApplicationContext db, UserService userService) : base(db, userService)
+        public MemberAnalysisController(ApplicationContext db, UserService userService) : base(db, userService)
         {
             
         }
@@ -40,7 +41,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         /// <returns>Id of newly created analysis</returns>
         /// <response code="200">If everything went OK</response>
         /// <response code="400">If anything went BAD</response> 
-        [HttpPost("member")]
+        [HttpPost("add")]
         public async Task<ActionResult<int>> Add([Required] MemberAnalysisModel model)
         {
             var analysis = new MemberAnalysis
@@ -90,7 +91,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         /// <returns>Analysis with edited data</returns>
         /// <response code="200">If everything went OK</response>
         /// <response code="400">If anything went BAD</response> 
-        [HttpPatch("member/{id}")]
+        [HttpPatch("{id}")]
         public async Task<ActionResult<MemberAnalysis>> Edit([Required] MemberAnalysisModel model, int id)
         {
             var m = FindAnalysis(id);
@@ -124,7 +125,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         /// <returns>Action result</returns>
         /// <response code="200">If everything went OK</response>
         /// <response code="400">If anything went BAD</response> 
-        [HttpDelete("member/{id}")]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<MemberAnalysis>> Delete(int id)
         {
             var m = FindAnalysis(id);

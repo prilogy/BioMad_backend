@@ -5,16 +5,17 @@ using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities
 {
-    public class Lab : ILocalizedEntity<LabTranslation>, ILocalizable<Lab>
+    public class Lab : ILocalizedEntity<LabTranslation>, ILocalizable<Lab>, IWithId
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         
         public string PhoneNumber { get; set; }
         public int CityId { get; set; }
+        [JsonIgnore]
         public virtual City City { get; set; }
 
-            #region [ Localization ]
+        #region [ Localization ]
 
         [JsonIgnore] public virtual TranslationCollection<LabTranslation> Translations { get; set; }
         [NotMapped] public LabTranslation Content { get; set; }

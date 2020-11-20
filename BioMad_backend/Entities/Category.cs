@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities
 {
-    public class Category : ILocalizedEntity<CategoryTranslation>, ILocalizable<Category>
+    public class Category : ILocalizedEntity<CategoryTranslation>, ILocalizable<Category>, IWithId
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -18,9 +18,10 @@ namespace BioMad_backend.Entities
         [JsonIgnore] public virtual TranslationCollection<CategoryTranslation> Translations { get; set; }
         [NotMapped] public CategoryTranslation Content { get; set; }
 
-        [NotMapped]
         [JsonIgnore]
+        [NotMapped]
         public IEnumerable<Biomarker> Biomarkers => CategoryBiomarkers.Select(x => x.Biomarker);
+        public IEnumerable<int> BiomarkerIds => CategoryBiomarkers.Select(x => x.BiomarkerId);
 
         #region [ Many to many ]
 
