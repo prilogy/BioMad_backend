@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities
 {
-    public class MemberCategoryState : IWithDateCreated
+    public class MemberCategoryState : IWithDateCreated, IWithId, ILocalizable<MemberCategoryState>
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -22,6 +22,12 @@ namespace BioMad_backend.Entities
         public virtual Member Member { get; set; }
         
         public DateTime DateCreatedAt { get; set; }
+
+        public MemberCategoryState Localize(Culture culture)
+        {
+            Category = Category.Localize(culture);
+            return this;
+        }
 
         public MemberCategoryState()
         {

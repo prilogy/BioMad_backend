@@ -46,7 +46,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         [HttpGet("{id}/history")]
         public async Task<ActionResult<List<MemberBiomarker>>> GetHistory(int id, [FromQuery] int page,
             [FromQuery] int pageSize,
-            [FromQuery] string orderByDate = null)
+            [FromQuery] string orderByDate = "desc")
         {
             var list = _db.MemberBiomarkers.Where(x => x.BiomarkerId == id).AsQueryable();
             return await PagingExtension.Paging(list, page, (x) => x.Localize(_userService.Culture), pageSize,
