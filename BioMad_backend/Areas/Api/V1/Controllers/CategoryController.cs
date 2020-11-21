@@ -8,10 +8,18 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
 {
     public class CategoryController : GetControllerBase<Category>
     {
-        public CategoryController(ApplicationContext db, UserService userService) : base(db, userService)
+        private readonly MonitoringService _monitoringService;
+        public CategoryController(ApplicationContext db, UserService userService, MonitoringService monitoringService) : base(db, userService)
         {
+            _monitoringService = monitoringService;
         }
         protected override IQueryable<Category> Queryable => _db.Categories;
-        protected override Category LocalizationStrategy(Category m) => m.Localize(_userService.Culture);
+
+        protected override Category ProcessStrategy(Category m)
+        {
+            m = m.Localize(_userService.Culture);
+            m.State = _monitoringService.CategoryStates.FirstOrDefault(x => x.CategoryId == m.Id);
+            return m;
+        }
     }
 }

@@ -1,5 +1,6 @@
 using BioMad_backend.Entities;
 using BioMad_backend.Entities.ManyToMany;
+using BioMad_backend.Infrastructure.DataConfigurations;
 using BioMad_backend.Infrastructure.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,8 +17,7 @@ namespace BioMad_backend.Data
 
         public DbSet<SocialAccount> SocialAccounts { get; set; }
         public DbSet<SocialAccountProvider> SocialAccountProviders { get; set; }
-        public DbSet<Member> Members { get; set; }
-        
+
         public DbSet<Role> Roles { get; set; }
         public DbSet<Gender> Genders { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
@@ -40,14 +40,15 @@ namespace BioMad_backend.Data
         
         public DbSet<BiomarkerReference> BiomarkerReferences { get; set; }
         public DbSet<BiomarkerReferenceConfig> BiomarkerReferenceConfigs { get; set; }
-        public DbSet<BiomarkerReferenceConfigDependency> BiomarkerReferenceConfigDependencies { get; set; }
-        public DbSet<BiomarkerReferenceConfigDependencyRange> BiomarkerReferenceConfigDependencyRanges { get; set; }
+        public DbSet<BiomarkerReferenceConfigRange> BiomarkerReferenceConfigDependencyRanges { get; set; }
         public DbSet<BiomarkerReferenceUser> BiomarkerReferenceUsers { get; set; }
         
         public DbSet<City> Cities { get; set; }
         public DbSet<Lab> Labs { get; set; }
+        public DbSet<Member> Members { get; set; }
         public DbSet<MemberAnalysis> MemberAnalyzes { get; set; }
         public DbSet<MemberBiomarker> MemberBiomarkers { get; set; }
+        public DbSet<MemberCategoryState> MemberCategoryStates { get; set; }
         
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -63,8 +64,8 @@ namespace BioMad_backend.Data
             builder.ApplyConfiguration(new BiomarkerUnitEntityConfiguration());
             builder.ApplyConfiguration(new BiomarkerArticleTypeEntityConfiguration());
             builder.ApplyConfiguration(new BiomarkerReferenceUserEntityConfiguration());
+            
+            builder.SeedData();
         }
-        
-        public DbSet<MemberAnalysis> UserAnalysis { get; set; }
     }
 }

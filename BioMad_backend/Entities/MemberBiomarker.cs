@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using BioMad_backend.Helpers;
 using BioMad_backend.Infrastructure.Interfaces;
 using Newtonsoft.Json;
 
@@ -32,6 +34,22 @@ namespace BioMad_backend.Entities
             Unit = Unit.Localize(culture);
             Biomarker = Biomarker.Localize(culture);
             return this;
+        }
+
+        public bool? CalcIsNormal(Member member)
+        {
+            var reference = Biomarker.FindReference(member);
+            if (reference == null)
+                return null;
+            
+            var r = reference.UnitId == UnitId 
+                ? reference 
+                : reference.InUnit(Unit);
+
+            if (r == null)
+                return null;
+
+            return Value >= r.ValueA && Value < r.ValueB || Value <= r.ValueA && Value > r.ValueB;
         }
     }
 }

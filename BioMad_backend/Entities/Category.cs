@@ -18,15 +18,17 @@ namespace BioMad_backend.Entities
         [JsonIgnore] public virtual TranslationCollection<CategoryTranslation> Translations { get; set; }
         [NotMapped] public CategoryTranslation Content { get; set; }
 
+        [NotMapped] public MemberCategoryState State { get; set; }
+
         [JsonIgnore]
         [NotMapped]
         public IEnumerable<Biomarker> Biomarkers => CategoryBiomarkers.Select(x => x.Biomarker);
+
         public IEnumerable<int> BiomarkerIds => CategoryBiomarkers.Select(x => x.BiomarkerId);
 
         #region [ Many to many ]
 
-        [JsonIgnore]
-        public virtual List<CategoryBiomarker> CategoryBiomarkers { get; set; }
+        [JsonIgnore] public virtual List<CategoryBiomarker> CategoryBiomarkers { get; set; }
 
         #endregion
 
@@ -37,11 +39,12 @@ namespace BioMad_backend.Entities
         }
     }
 
-    public class CategoryTranslation : Translation<CategoryTranslation>, ITranslationEntity<Category>, IWithNameDescription
+    public class CategoryTranslation : Translation<CategoryTranslation>, ITranslationEntity<Category>,
+        IWithNameDescription
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        
+
         [JsonIgnore] public int BaseEntityId { get; set; }
         public Category BaseEntity { get; set; }
     }

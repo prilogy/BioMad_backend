@@ -5,29 +5,26 @@ using System.Linq;
 using System.Threading.Tasks;
 using BioMad_backend.Areas.Api.V1.Helpers;
 using BioMad_backend.Areas.Api.V1.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using BioMad_backend.Data;
 using BioMad_backend.Entities;
-using BioMad_backend.Extensions;
-using BioMad_backend.Infrastructure.Interfaces;
 using BioMad_backend.Services;
-using Microsoft.AspNetCore.Authorization;
 
 namespace BioMad_backend.Areas.Api.V1.Controllers
 {
     [Route("api/v1/member/analysis")]
     public class MemberAnalysisController : GetControllerBase<MemberAnalysis>
     {
-        public MemberAnalysisController(ApplicationContext db, UserService userService) : base(db, userService)
+        private readonly MonitoringService _monitoringService;
+        
+        public MemberAnalysisController(ApplicationContext db, UserService userService, MonitoringService monitoringService) : base(db, userService)
         {
-            
+            _monitoringService = monitoringService;
         }
 
-        protected override MemberAnalysis LocalizationStrategy(MemberAnalysis m) => m.Localize(_userService.Culture);
+        protected override MemberAnalysis ProcessStrategy(MemberAnalysis m) => m.Localize(_userService.Culture);
 
-        protected override IQueryable<MemberAnalysis> Queryable => _db.UserAnalysis.Where(x => x.MemberId == _userService.CurrentMemberId);
+        protected override IQueryable<MemberAnalysis> Queryable => _db.MemberAnalyzes.Where(x => x.MemberId == _userService.CurrentMemberId);
         
         #region [ MemberAnalysis CRUD ]
         
@@ -65,12 +62,15 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
                     UnitId = x.UnitId,
                     Value = x.Value,
                     BiomarkerId = x.BiomarkerId
-                });
+                }).ToList();
 
-                await _db.MemberBiomarkers.AddRangeAsync(biomarkers);
+                await _db.AddRangeAsync(biomarkers);
                 await _db.SaveChangesAsync();
+                
+                await _monitoringService.UpdateCategoryStates(biomarkers);
+                
                 await transaction.CommitAsync();
-
+                
                 return Ok(analysis.Id);
             }
             catch (Exception)
@@ -132,10 +132,15 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
             if (m == null)
                 return BadRequest();
 
+            var changedBiomarkerIds = m.Biomarkers.Select(x => x.BiomarkerId);
+
             try
             {
                 _db.Remove(m);
                 await _db.SaveChangesAsync();
+
+                await _monitoringService.UpdateCategoryStates(changedBiomarkerIds);
+                
                 return Ok();
             }
             catch (Exception)

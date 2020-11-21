@@ -47,11 +47,11 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         public async Task<ActionResult<List<Culture>>> Cultures() =>
             Ok(await _applicationContext.Cultures.ToListAsync());
 
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> Test()
-        {
-            return Ok(_applicationContext.Biomarkers.FirstOrDefault().Localize(_userService.Culture));
-        }
+        // [HttpGet]
+        // [AllowAnonymous]
+        // public async Task<IActionResult> Test()
+        // {
+        //     return Ok(_applicationContext.Biomarkers.FirstOrDefault().Localize(_userService.Culture));
+        // }
     }
 }

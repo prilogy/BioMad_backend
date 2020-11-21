@@ -24,7 +24,7 @@ namespace BioMad_backend.Areas.Api.V1.Helpers
         protected abstract IQueryable<T> Queryable { get; }
 
         protected virtual int PageSize => 10;
-        protected abstract T LocalizationStrategy(T m);
+        protected abstract T ProcessStrategy(T m);
 
         public GetControllerBase(ApplicationContext db, UserService userService)
         {
@@ -69,7 +69,7 @@ namespace BioMad_backend.Areas.Api.V1.Helpers
         /// </summary>
         /// <param name="id">Number of page to get(starts from 1)</param>
         /// <response code="200">If everything went OK</response>
-        /// <response code="204">If no resource was found</response> 
+        /// <response code="404">If no resource was found</response> 
         /// <returns>Resource of type</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<T>> GetById(int id)
@@ -77,29 +77,13 @@ namespace BioMad_backend.Areas.Api.V1.Helpers
             var entity = await Queryable.FirstOrDefaultAsync(x => x.Id == id);
 
             if(entity != null)
-                return Ok(LocalizationStrategy(entity));
+                return Ok(ProcessStrategy(entity));
             
-            return NoContent();
+            return NotFound();
         }
 
-        // [HttpPost("{id}/search")]
-        // public virtual async Task<IActionResult> Search([FromBody] string query, [FromRoute] int id)
-        // {
-        //     return await Task.Run(() => { return NotFound(); });
-        // }
-
-        protected async Task<ActionResult<List<T>>> Paging(IQueryable<T> q, int page, int pageSize, string orderByDate=null)
-        {
-            if (orderByDate == "asc")
-                q = q.OrderBy(x => x.Id);
-            else if (orderByDate == "desc")
-                q = q.OrderByDescending(x => x.Id);
-            
-            var l = page == 0
-                ? await q.ToListAsync()
-                : await q.Page(page, pageSize == 0 ? PageSize : pageSize).ToListAsync();
-
-            return Ok(l.Select(LocalizationStrategy));
-        }
+        protected async Task<ActionResult<List<T>>> Paging(IQueryable<T> q, int page, int pageSize,
+            string orderByDate = null)
+            => await PagingExtension.Paging(q, page, ProcessStrategy, pageSize, orderByDate);
     }
 }

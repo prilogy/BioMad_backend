@@ -20,6 +20,6 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
 
         protected override IQueryable<Unit> Queryable => _db.Units;
 
-        protected override Unit LocalizationStrategy(Unit m) => m.Localize(_userService.Culture);
+        protected override Unit ProcessStrategy(Unit m) => m.Localize(_userService.Culture);
     }
 }

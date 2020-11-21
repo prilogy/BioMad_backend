@@ -15,6 +15,7 @@ namespace BioMad_backend.Infrastructure.ServiceConfigurations
             services.AddScoped<UserService>();
             services.AddScoped<AuthService>();
             services.AddScoped<ConfirmationService>();
+            services.AddScoped<MonitoringService>();
             return services;
         }
     }

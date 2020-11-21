@@ -13,6 +13,6 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         }
 
         protected override IQueryable<Lab> Queryable => _db.Labs;
-        protected override Lab LocalizationStrategy(Lab m) => m.Localize(_userService.Culture);
+        protected override Lab ProcessStrategy(Lab m) => m.Localize(_userService.Culture);
     }
 }

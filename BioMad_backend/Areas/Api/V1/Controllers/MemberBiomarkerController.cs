@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,19 +16,23 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
     [Route("api/v1/member/biomarker")]
     public class MemberBiomarkerController : GetControllerBase<MemberBiomarker>
     {
-        public MemberBiomarkerController(ApplicationContext db, UserService userService) : base(db, userService)
+        private readonly MonitoringService _monitoringService;
+
+        public MemberBiomarkerController(ApplicationContext db, UserService userService,
+            MonitoringService monitoringService) : base(db, userService)
         {
+            _monitoringService = monitoringService;
         }
 
         protected override IQueryable<MemberBiomarker> Queryable => _db.MemberBiomarkers.Where(x =>
             _userService.CurrentMember.Analyzes.Select(y => y.Id).Contains(x.AnalysisId));
 
-        protected override MemberBiomarker LocalizationStrategy(MemberBiomarker m) => m.Localize(_userService.Culture);
+        protected override MemberBiomarker ProcessStrategy(MemberBiomarker m) => m.Localize(_userService.Culture);
 
         #region [ MemberBiomarker CRUD ]
 
         /// <summary>
-        /// Adds new biomarker
+        /// Adds new member biomarker
         /// </summary>
         /// <param name="model">Model of biomarker</param>
         /// <returns>Id of newly created biomarker</returns>
@@ -51,6 +56,8 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
 
+                await _monitoringService.UpdateCategoryStates(new List<MemberBiomarker> { biomarker });
+
                 return Ok(biomarker.Id);
             }
             catch (Exception)
@@ -61,7 +68,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         }
 
         /// <summary>
-        /// Edits biomarker of given id
+        /// Edits member's biomarker of given id
         /// </summary>
         /// <remarks>
         /// "AnalysisId" is ignored
@@ -88,6 +95,9 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
             try
             {
                 await _db.SaveChangesAsync();
+                
+                await _monitoringService.UpdateCategoryStates(new List<MemberBiomarker> { m });
+                
                 return Ok(m.Localize(_userService.Culture));
             }
             catch (Exception)
@@ -97,7 +107,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         }
 
         /// <summary>
-        /// Deletes biomarker of given id
+        /// Deletes member's biomarker of given id
         /// </summary>
         /// <param name="id">Id of biomarker</param>
         /// <returns>Action result</returns>
@@ -110,10 +120,15 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
             if (m == null)
                 return BadRequest();
 
+            var changedBiomarkerIds = new List<int> {m.BiomarkerId};
+            
             try
             {
                 _db.Remove(m);
                 await _db.SaveChangesAsync();
+                
+                await _monitoringService.UpdateCategoryStates(changedBiomarkerIds);
+                
                 return Ok();
             }
             catch (Exception)

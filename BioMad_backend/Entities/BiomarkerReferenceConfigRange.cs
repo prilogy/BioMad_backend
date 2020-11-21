@@ -2,7 +2,7 @@
 
 namespace BioMad_backend.Entities
 {
-    public class BiomarkerReferenceConfigDependencyRange
+    public class BiomarkerReferenceConfigRange
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }

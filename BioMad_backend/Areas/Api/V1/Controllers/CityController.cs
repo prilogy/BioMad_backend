@@ -13,6 +13,6 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         }
 
         protected override IQueryable<City> Queryable => _db.Cities;
-        protected override City LocalizationStrategy(City m) => m.Localize(_userService.Culture);
+        protected override City ProcessStrategy(City m) => m.Localize(_userService.Culture);
     }
 }

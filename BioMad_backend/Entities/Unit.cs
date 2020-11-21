@@ -20,8 +20,8 @@ namespace BioMad_backend.Entities
 
         [NotMapped] public IEnumerable<int> TransfersToIds => TransfersTo.Select(x => x.UnitB.Id);
         [NotMapped] public IEnumerable<int> TransfersFromIds => TransfersFrom.Select(x => x.UnitA.Id);
-        public virtual IEnumerable<UnitTransfer> TransfersTo { get; set; }
-        public virtual IEnumerable<UnitTransfer> TransfersFrom { get; set; }
+        [JsonIgnore] public virtual IEnumerable<UnitTransfer> TransfersTo { get; set; }
+        [JsonIgnore] public virtual IEnumerable<UnitTransfer> TransfersFrom { get; set; }
 
         #region [ Many to many ]
 
@@ -41,5 +41,6 @@ namespace BioMad_backend.Entities
         public string Name { get; set; }
         [JsonIgnore] public int BaseEntityId { get; set; }
         public Unit BaseEntity { get; set; }
+        public string Shorthand { get; set; }
     }
 }

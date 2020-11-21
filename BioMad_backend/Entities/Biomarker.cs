@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using BioMad_backend.Entities.ManyToMany;
@@ -34,6 +35,9 @@ namespace BioMad_backend.Entities
         [NotMapped] [JsonIgnore] public IEnumerable<Unit> Units => BiomarkerUnits.Select(x => x.Unit);
         [NotMapped] public IEnumerable<int> UnitIds => BiomarkerUnits.Select(x => x.UnitId);
 
+        [NotMapped] public BiomarkerReference Reference;
+        [NotMapped] public MemberBiomarker CurrentValue;
+
         [JsonIgnore] public virtual List<BiomarkerReference> References { get; set; }
 
         #region [ Many to many ]
@@ -50,7 +54,22 @@ namespace BioMad_backend.Entities
             Type = Type.Localize(culture);
             return this;
         }
+
+        public BiomarkerReference FindReference(Member member)
+        {
+            var referencesByGender = References.Where(x => x.Config != null && x.Config.GenderId == member.GenderId).ToList();
+            if (referencesByGender.Count == 0)
+                referencesByGender = References;
+            
+            var referencesByAge = referencesByGender
+                .OrderBy(x => x.Config.AgeRange).ToList();
+
+            return  referencesByAge.FirstOrDefault(x => x.Config.AgeRange?.Lower > member.Age)
+                ?? referencesByAge.LastOrDefault();
+        }
+        
     }
+    
 
     public class BiomarkerTranslation : Translation<BiomarkerTranslation>, ITranslationEntity<Biomarker>,
         IWithNameDescription
