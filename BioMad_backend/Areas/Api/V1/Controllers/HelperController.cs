@@ -18,11 +18,14 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
     {
         private readonly ApplicationContext _applicationContext;
         private readonly UserService _userService;
+        private readonly MonitoringService _monitoringService;
 
-        public HelperController(ApplicationContext applicationContext, UserService userService)
+        public HelperController(ApplicationContext applicationContext, UserService userService,
+            MonitoringService monitoringService)
         {
             _applicationContext = applicationContext;
             _userService = userService;
+            _monitoringService = monitoringService;
         }
 
         /// <summary>
@@ -47,11 +50,60 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         public async Task<ActionResult<List<Culture>>> Cultures() =>
             Ok(await _applicationContext.Cultures.ToListAsync());
 
-        // [HttpGet]
-        // [AllowAnonymous]
-        // public async Task<IActionResult> Test()
-        // {
-        //     return Ok(_applicationContext.Biomarkers.FirstOrDefault().Localize(_userService.Culture));
-        // }
+        [HttpGet("test")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Test()
+        {
+            var list = (await (_applicationContext.MemberCategoryStates
+                    .FromSqlRaw(
+                        "WITH summary AS (SELECT *, ROW_NUMBER() OVER(PARTITION BY p.\"CategoryId\" ORDER BY p.\"Id\" DESC) AS rk FROM \"MemberCategoryStates\" p WHERE \"MemberId\"={0}) SELECT s.* FROM summary s WHERE s.rk = 1",
+                        1)
+                ).ToListAsync());
+
+            return Ok(list);
+        }
+
+        [HttpGet("test2")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Test2()
+        {
+            // var lst = _applicationContext.MemberCategoryStates
+            //     .Where(x => x.MemberId == 1)
+            //     .GroupByAndSelect((m) => new
+            //         {
+            //             m.CategoryId
+            //         },
+            //         (m, x) => m.CategoryId == x.CategoryId,
+            //         q => q.FirstOrDefault());
+
+            var q = _applicationContext.MemberCategoryStates
+                .Where(x => x.MemberId == 1);
+            
+
+            var s = q
+                .Select(x =>
+                    new
+                    {
+                        Key = new
+                        {
+                            x.CategoryId
+                        },
+                        Entity = x
+                    });
+            
+            
+            var query = s.Select(e => e.Key)
+                .Distinct()
+                .Select(key => s
+                    .Where(e => e.Key.CategoryId == key.CategoryId)
+                    .Select(x => x.Entity)
+                    .OrderByDescending(x => x.Id)
+                    .Take(1)
+                );
+
+            var lst = query.Select(x => x.FirstOrDefault()).AsEnumerable();
+
+            return Ok(lst);
+        } // TODO: test and complete
     }
 }

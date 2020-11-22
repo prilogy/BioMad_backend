@@ -39,7 +39,8 @@ namespace BioMad_backend.Services
                                 },
                                 MemberCategoryState = x
                             });
-                    var query = s.Select(e => e.Key).Distinct()
+                    var query = s.Select(e => e.Key)
+                        .Distinct()
                         .Select(key => s
                             .Where(e => e.Key.CategoryId == key.CategoryId)
                             .Select(x => x.MemberCategoryState)
@@ -55,7 +56,7 @@ namespace BioMad_backend.Services
 
         public async Task<bool> UpdateCategoryStates(IEnumerable<MemberBiomarker> biomarkers)
             => await UpdateCategoryStates(biomarkers.Select(x => x.BiomarkerId));
-        
+
 
         public async Task<bool> UpdateCategoryStates(IEnumerable<int> biomarkerIds)
         {
@@ -101,9 +102,8 @@ namespace BioMad_backend.Services
                 await _db.SaveChangesAsync();
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Console.WriteLine("SSSSSSSSSSSSSSSSSSSSSSSSSSSS" + e);
                 return false;
             }
         }

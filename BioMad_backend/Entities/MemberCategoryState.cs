@@ -14,7 +14,7 @@ namespace BioMad_backend.Entities
         public double Difference { get; set; }
 
         public int CategoryId { get; set; }
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual Category Category { get; set; }
 
         public int MemberId { get; set; }

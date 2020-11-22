@@ -164,6 +164,24 @@ namespace BioMad_backend.Infrastructure.DataConfigurations
                 }
             });
 
+            builder.Entity<UnitTransfer>().HasData(new []
+            {
+                new UnitTransfer
+                {
+                    Id = 1,
+                    UnitAId = 1,
+                    UnitBId = 2,
+                    Coefficient = 1000
+                },
+                new UnitTransfer
+                {
+                    Id = 2,
+                    UnitAId = 3,
+                    UnitBId = 4,
+                    Coefficient = 1000
+                }
+            });
+
             builder.Entity<Biomarker>().HasData(new[]
             {
                 new Biomarker
