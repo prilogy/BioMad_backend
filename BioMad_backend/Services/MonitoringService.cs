@@ -20,34 +20,20 @@ namespace BioMad_backend.Services
             _userService = userService;
         }
 
-        private IEnumerable<MemberCategoryState> _categoryStates;
+        private List<MemberCategoryState> _categoryStates;
 
-        public IEnumerable<MemberCategoryState> CategoryStates
+        public List<MemberCategoryState> CategoryStates
         {
             get
             {
                 if (_categoryStates == null)
                 {
-                    var s = _db.MemberCategoryStates
-                        .Where(x => x.MemberId == _userService.CurrentMemberId)
+                    var lst = _db.MemberCategoryStates.Where(x => x.MemberId == _userService.CurrentMemberId)
+                        .GroupBy(x => x.CategoryId)
                         .Select(x =>
-                            new
-                            {
-                                Key = new
-                                {
-                                    x.CategoryId
-                                },
-                                MemberCategoryState = x
-                            });
-                    var query = s.Select(e => e.Key)
-                        .Distinct()
-                        .Select(key => s
-                            .Where(e => e.Key.CategoryId == key.CategoryId)
-                            .Select(x => x.MemberCategoryState)
-                            .OrderByDescending(x => x.Id)
-                            .Take(1)
-                        );
-                    _categoryStates = query.Select(x => x.FirstOrDefault()).AsEnumerable();
+                            x.Max(y => y.Id));
+
+                    _categoryStates = _db.MemberCategoryStates.Where(x => lst.Contains(x.Id)).ToList();
                 }
 
                 return _categoryStates;
@@ -110,29 +96,13 @@ namespace BioMad_backend.Services
 
         private async Task<List<MemberBiomarker>> GetLatestMemberBiomarkers(IEnumerable<int> biomarkerIds)
         {
-            var s = _db.MemberBiomarkers
+            var ids = _db.MemberBiomarkers
                 .Where(x => _userService.CurrentMember.AnalysisIds.Contains(x.AnalysisId) &&
                             biomarkerIds.Contains(x.BiomarkerId))
-                .Include(x => x.Biomarker)
-                .Include(x => x.Unit)
-                .Select(x =>
-                    new
-                    {
-                        Key = new
-                        {
-                            x.BiomarkerId
-                        },
-                        MemberBiomarker = x
-                    });
-            var query = s.Select(e => e.Key).Distinct()
-                .Select(key => s
-                    .Where(e => e.Key.BiomarkerId == key.BiomarkerId)
-                    .Select(x => x.MemberBiomarker)
-                    .OrderByDescending(x => x.Id)
-                    .Take(1)
-                );
+                .GroupBy(x => x.BiomarkerId)
+                .Select(x => x.Max(y => y.Id));
 
-            return await query.Select(x => x.FirstOrDefault()).ToListAsync();
+            return await _db.MemberBiomarkers.Where(x => ids.Contains(x.Id)).ToListAsync();
         }
     }
 }

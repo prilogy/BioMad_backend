@@ -84,6 +84,6 @@ namespace BioMad_backend.Areas.Api.V1.Helpers
 
         protected async Task<ActionResult<List<T>>> Paging(IQueryable<T> q, int page, int pageSize,
             string orderByDate = null)
-            => await PagingExtension.Paging(q, page, ProcessStrategy, pageSize, orderByDate);
+            => await PagingExtension.Paging(q, page, ProcessStrategy, pageSize, orderByDate ?? "desc");
     }
 }

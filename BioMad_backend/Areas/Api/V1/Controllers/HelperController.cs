@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using BioMad_backend.Areas.Api.V1.Models;
 using BioMad_backend.Data;
 using BioMad_backend.Entities;
 using BioMad_backend.Extensions;
@@ -50,60 +53,28 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         public async Task<ActionResult<List<Culture>>> Cultures() =>
             Ok(await _applicationContext.Cultures.ToListAsync());
 
-        [HttpGet("test")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Test()
-        {
-            var list = (await (_applicationContext.MemberCategoryStates
-                    .FromSqlRaw(
-                        "WITH summary AS (SELECT *, ROW_NUMBER() OVER(PARTITION BY p.\"CategoryId\" ORDER BY p.\"Id\" DESC) AS rk FROM \"MemberCategoryStates\" p WHERE \"MemberId\"={0}) SELECT s.* FROM summary s WHERE s.rk = 1",
-                        1)
-                ).ToListAsync());
-
-            return Ok(list);
-        }
-
-        [HttpGet("test2")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Test2()
-        {
-            // var lst = _applicationContext.MemberCategoryStates
-            //     .Where(x => x.MemberId == 1)
-            //     .GroupByAndSelect((m) => new
-            //         {
-            //             m.CategoryId
-            //         },
-            //         (m, x) => m.CategoryId == x.CategoryId,
-            //         q => q.FirstOrDefault());
-
-            var q = _applicationContext.MemberCategoryStates
-                .Where(x => x.MemberId == 1);
-            
-
-            var s = q
-                .Select(x =>
-                    new
-                    {
-                        Key = new
-                        {
-                            x.CategoryId
-                        },
-                        Entity = x
-                    });
-            
-            
-            var query = s.Select(e => e.Key)
-                .Distinct()
-                .Select(key => s
-                    .Where(e => e.Key.CategoryId == key.CategoryId)
-                    .Select(x => x.Entity)
-                    .OrderByDescending(x => x.Id)
-                    .Take(1)
-                );
-
-            var lst = query.Select(x => x.FirstOrDefault()).AsEnumerable();
-
-            return Ok(lst);
-        } // TODO: test and complete
+        /// <summary>
+        /// Searches resources by query
+        /// </summary>
+        /// <param name="query">Query to search(by name)</param>
+        /// <returns>Result of search</returns>
+        [HttpPost("search")]
+        public async Task<ActionResult<List<Biomarker>>> Search([FromBody, Required] string query)
+            => Ok(new SearchResultModel
+            {
+                Biomarkers =
+                    (await _applicationContext.Biomarkers.SearchWithQuery<Biomarker, BiomarkerTranslation>(query)
+                        .ToListAsync()).Localize(_userService.Culture),
+                Categories =
+                    (await _applicationContext.Categories.SearchWithQuery<Category, CategoryTranslation>(query)
+                        .ToListAsync()).Localize(_userService.Culture),
+                Cities = (await _applicationContext.Cities.SearchWithQuery<City, CityTranslation>(query)
+                    .ToListAsync()).Localize(_userService.Culture),
+                Labs = (await _applicationContext.Labs.SearchWithQuery<Lab, LabTranslation>(query).ToListAsync())
+                    .Localize(_userService.Culture),
+                Units =
+                    (await _applicationContext.Units.SearchWithQuery<Unit, UnitTranslation>(query).ToListAsync())
+                    .Localize(_userService.Culture)
+            });
     }
 }

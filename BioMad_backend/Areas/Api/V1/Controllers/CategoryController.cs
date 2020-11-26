@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using BioMad_backend.Areas.Api.V1.Helpers;
@@ -66,5 +67,19 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
             return await PagingExtension.Paging(list, page, (x) => x.Localize(_userService.Culture), pageSize,
                 orderByDate);
         }
+        
+        /// <summary>
+        /// Searches categories by query
+        /// </summary>
+        /// <param name="query">Query to search(by name)</param>
+        /// <param name="page">Number of page to get(starts from 1)</param>
+        /// <param name="pageSize">Number of objects on one page</param>
+        /// <param name="orderByDate">Order by date(asc|desc)</param>
+        /// <returns>Result of search</returns>
+        [HttpPost("search")]
+        public async Task<ActionResult<List<Category>>> Search([FromBody, Required]string query, [FromQuery] int page,
+            [FromQuery] int pageSize,
+            [FromQuery] string orderByDate = null)
+            => await Paging(_db.Categories.SearchWithQuery<Category, CategoryTranslation>(query), page, pageSize, orderByDate);
     }
 }
