@@ -49,7 +49,9 @@ namespace BioMad_backend.Entities
             if (r == null)
                 return null;
 
-            return Value >= r.ValueA && Value < r.ValueB || Value <= r.ValueA && Value > r.ValueB;
+            var res = Value >= r.ValueA && Value < r.ValueB || Value <= r.ValueA && Value > r.ValueB;
+            
+            return res;
         }
     }
 }

@@ -7,9 +7,11 @@ using BioMad_backend.Areas.Api.V1.Helpers;
 using BioMad_backend.Areas.Api.V1.Models;
 using BioMad_backend.Data;
 using BioMad_backend.Entities;
+using BioMad_backend.Entities.ManyToMany;
 using BioMad_backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace BioMad_backend.Areas.Api.V1.Controllers
 {
@@ -95,9 +97,9 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
             try
             {
                 await _db.SaveChangesAsync();
-                
+
                 await _monitoringService.UpdateCategoryStates(new List<MemberBiomarker> { m });
-                
+
                 return Ok(m.Localize(_userService.Culture));
             }
             catch (Exception)
@@ -120,15 +122,15 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
             if (m == null)
                 return BadRequest();
 
-            var changedBiomarkerIds = new List<int> {m.BiomarkerId};
-            
+            var changedBiomarkerIds = new List<int> { m.BiomarkerId };
+
             try
             {
                 _db.Remove(m);
                 await _db.SaveChangesAsync();
-                
+
                 await _monitoringService.UpdateCategoryStates(changedBiomarkerIds);
-                
+
                 return Ok();
             }
             catch (Exception)
@@ -138,6 +140,48 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         }
 
         #endregion
+
+        [HttpPost("reference")]
+        public async Task<IActionResult> AddReference([Required] MemberBiomarkerReferenceModel model)
+        {
+            var rf = await _db.MemberBiomarkerReferences.FirstOrDefaultAsync(x =>
+                x.BiomarkerReference.BiomarkerId == model.BiomarkerId &&
+                x.MemberId == _userService.CurrentMemberId);
+            if (rf != null)
+            {
+                _db.Remove(rf.BiomarkerReference);
+                _db.Remove(rf);
+                await _db.SaveChangesAsync();
+            }
+
+            var reference = new BiomarkerReference
+            {
+                BiomarkerId = model.BiomarkerId,
+                ValueA = model.ValueA,
+                ValueB = model.ValueB,
+                UnitId = model.UnitId
+            };
+
+            try
+            {
+                await _db.BiomarkerReferences.AddAsync(reference);
+                await _db.SaveChangesAsync();
+
+                await _db.MemberBiomarkerReferences.AddAsync(new MemberBiomarkerReference
+                {
+                    MemberId = _userService.CurrentMemberId,
+                    BiomarkerReferenceId = reference.Id
+                });
+
+                await _db.SaveChangesAsync();
+                await _monitoringService.UpdateCategoryStates(new[] { model.BiomarkerId });
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
 
         private async Task<MemberBiomarker> FindMemberBiomarker(int id)
         {

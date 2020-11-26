@@ -41,7 +41,7 @@ namespace BioMad_backend.Data
         public DbSet<BiomarkerReference> BiomarkerReferences { get; set; }
         public DbSet<BiomarkerReferenceConfig> BiomarkerReferenceConfigs { get; set; }
         public DbSet<BiomarkerReferenceConfigRange> BiomarkerReferenceConfigDependencyRanges { get; set; }
-        public DbSet<BiomarkerReferenceUser> BiomarkerReferenceUsers { get; set; }
+        public DbSet<MemberBiomarkerReference> MemberBiomarkerReferences { get; set; }
         
         public DbSet<City> Cities { get; set; }
         public DbSet<Lab> Labs { get; set; }
@@ -63,7 +63,7 @@ namespace BioMad_backend.Data
             builder.ApplyConfiguration(new BiomarkerArticleEntityConfiguration());
             builder.ApplyConfiguration(new BiomarkerUnitEntityConfiguration());
             builder.ApplyConfiguration(new BiomarkerArticleTypeEntityConfiguration());
-            builder.ApplyConfiguration(new BiomarkerReferenceUserEntityConfiguration());
+            builder.ApplyConfiguration(new MemberBiomarkerReferenceEntityConfiguration());
             
             builder.SeedData();
         }

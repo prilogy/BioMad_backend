@@ -57,7 +57,12 @@ namespace BioMad_backend.Entities
 
         public BiomarkerReference FindReference(Member member)
         {
-            var referencesByGender = References.Where(x => x.Config != null && x.Config.GenderId == member.GenderId).ToList();
+            var referencesByGender = References.Where(x => x.MemberReference != null && x.MemberReference.MemberId == member.Id || (x.Config != null && x.Config.GenderId == member.GenderId)).ToList();
+
+            var ownReference = referencesByGender.FirstOrDefault(x => x.IsOwnReference);
+            if (ownReference != null)
+                return ownReference;
+            
             if (referencesByGender.Count == 0)
                 referencesByGender = References;
             

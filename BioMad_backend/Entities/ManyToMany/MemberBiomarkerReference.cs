@@ -5,12 +5,12 @@ using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities.ManyToMany
 {
-    public class BiomarkerReferenceUser
+    public class MemberBiomarkerReference
     {
         public int BiomarkerReferenceId { get; set; }
         public virtual BiomarkerReference BiomarkerReference { get; set; }
 
-        public int UserId { get; set; }
-        public virtual User User { get; set; }
+        public int MemberId { get; set; }
+        public virtual Member Member { get; set; }
     }
 }

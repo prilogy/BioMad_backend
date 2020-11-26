@@ -73,8 +73,6 @@ namespace BioMad_backend.Services
                             newState - (CategoryStates.FirstOrDefault(x => x.CategoryId == category.Id)?.State ?? 0),
                         MemberId = _userService.CurrentMemberId,
                     });
-
-                    // TODO: add custom reference support
                 }
                 catch (Exception)
                 {

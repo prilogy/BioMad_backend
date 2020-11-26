@@ -21,14 +21,11 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
     {
         private readonly ApplicationContext _applicationContext;
         private readonly UserService _userService;
-        private readonly MonitoringService _monitoringService;
 
-        public HelperController(ApplicationContext applicationContext, UserService userService,
-            MonitoringService monitoringService)
+        public HelperController(ApplicationContext applicationContext, UserService userService)
         {
             _applicationContext = applicationContext;
             _userService = userService;
-            _monitoringService = monitoringService;
         }
 
         /// <summary>
@@ -59,22 +56,32 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         /// <param name="query">Query to search(by name)</param>
         /// <returns>Result of search</returns>
         [HttpPost("search")]
-        public async Task<ActionResult<List<Biomarker>>> Search([FromBody, Required] string query)
+        public async Task<ActionResult<SearchResultModel>> Search([FromBody, Required] string query)
             => Ok(new SearchResultModel
             {
                 Biomarkers =
-                    (await _applicationContext.Biomarkers.SearchWithQuery<Biomarker, BiomarkerTranslation>(query)
+                    (await _applicationContext
+                        .Biomarkers
+                        .SearchWithQuery<Biomarker, BiomarkerTranslation>(query)
                         .ToListAsync()).Localize(_userService.Culture),
                 Categories =
-                    (await _applicationContext.Categories.SearchWithQuery<Category, CategoryTranslation>(query)
+                    (await _applicationContext.Categories
+                        .SearchWithQuery<Category, CategoryTranslation>(query)
                         .ToListAsync()).Localize(_userService.Culture),
-                Cities = (await _applicationContext.Cities.SearchWithQuery<City, CityTranslation>(query)
-                    .ToListAsync()).Localize(_userService.Culture),
-                Labs = (await _applicationContext.Labs.SearchWithQuery<Lab, LabTranslation>(query).ToListAsync())
-                    .Localize(_userService.Culture),
+                Cities = 
+                    (await _applicationContext
+                        .Cities
+                        .SearchWithQuery<City, CityTranslation>(query)
+                        .ToListAsync()).Localize(_userService.Culture),
+                Labs = (await _applicationContext
+                        .Labs
+                        .SearchWithQuery<Lab, LabTranslation>(query)
+                        .ToListAsync()).Localize(_userService.Culture),
                 Units =
-                    (await _applicationContext.Units.SearchWithQuery<Unit, UnitTranslation>(query).ToListAsync())
-                    .Localize(_userService.Culture)
+                    (await _applicationContext
+                        .Units
+                        .SearchWithQuery<Unit, UnitTranslation>(query)
+                        .ToListAsync()).Localize(_userService.Culture)
             });
     }
 }

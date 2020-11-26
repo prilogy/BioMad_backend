@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
+using BioMad_backend.Entities.ManyToMany;
 using BioMad_backend.Helpers;
 using BioMad_backend.Infrastructure.Interfaces;
 using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities
 {
-    public class BiomarkerReference
+    public class BiomarkerReference : ILocalizable<BiomarkerReference>
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -20,8 +21,19 @@ namespace BioMad_backend.Entities
         public int BiomarkerId { get; set; }
         [JsonIgnore]
         public virtual Biomarker Biomarker { get; set; }
-        
+        [JsonIgnore]
+        public virtual MemberBiomarkerReference MemberReference { get; set; }
+
+        [NotMapped] public bool IsOwnReference => MemberReference != null;
+
         public virtual BiomarkerReferenceConfig Config { get; set; }
+
+        public BiomarkerReference Localize(Culture culture)
+        {
+            Unit = Unit.Localize(culture);
+            
+            return this;
+        }
 
         public BiomarkerReference InUnit(Unit unit)
         {

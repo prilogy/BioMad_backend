@@ -4,12 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using BioMad_backend.Areas.Api.V1.Helpers;
-using BioMad_backend.Areas.Api.V1.Models;
 using BioMad_backend.Data;
 using BioMad_backend.Entities;
 using BioMad_backend.Extensions;
 using BioMad_backend.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

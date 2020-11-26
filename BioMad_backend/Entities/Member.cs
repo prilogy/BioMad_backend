@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using BioMad_backend.Entities.ManyToMany;
 using BioMad_backend.Infrastructure.Interfaces;
 using Newtonsoft.Json;
 
@@ -38,6 +39,9 @@ namespace BioMad_backend.Entities
         [JsonIgnore] public virtual IEnumerable<MemberAnalysis> Analyzes { get; set; }
         public IEnumerable<int> AnalysisIds => Analyzes.Select(x => x.Id);
         [JsonIgnore] public virtual IEnumerable<MemberCategoryState> CategoryStates { get; set; }
+        
+        [JsonIgnore]
+        public virtual IEnumerable<MemberBiomarkerReference> BiomarkerReferences { get; set; }
 
         [JsonIgnore] public int UserId { get; set; }
         [JsonIgnore] public virtual User User { get; set; }
