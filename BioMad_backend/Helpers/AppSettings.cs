@@ -9,6 +9,8 @@ namespace BioMad_backend.Helpers
         public string Secret { get; set; }
         public string JwtIssuer { get; set; }
         
+        public string SharedBaseUrl { get; set; }
+        
         public string GoogleClientId { get; set; }
 
         public const string Key = "AppSettings";

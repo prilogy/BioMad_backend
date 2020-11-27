@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using BioMad_backend.Extensions;
 using BioMad_backend.Helpers;
 using BioMad_backend.Infrastructure.Interfaces;
 using Newtonsoft.Json;
@@ -49,9 +50,7 @@ namespace BioMad_backend.Entities
             if (r == null)
                 return null;
 
-            var res = Value >= r.ValueA && Value < r.ValueB || Value <= r.ValueA && Value > r.ValueB;
-            
-            return res;
+            return Value.IsBetween(r.ValueA, r.ValueB);
         }
     }
 }

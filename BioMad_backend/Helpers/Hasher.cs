@@ -12,6 +12,14 @@ namespace BioMad_backend.Helpers
 
         private const int Iterations = 10000;
 
+        public static string RandomToken()
+        {
+            var randomNumber = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
+        }
+
         public static string Hash(string value)
         {
             using var algorithm = new Rfc2898DeriveBytes(

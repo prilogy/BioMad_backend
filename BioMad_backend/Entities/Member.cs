@@ -35,6 +35,8 @@ namespace BioMad_backend.Entities
 
         public int GenderId { get; set; }
         [JsonIgnore] public virtual Gender Gender { get; set; }
+        
+        [JsonIgnore] public virtual IEnumerable<Shared> Shared { get; set; }
 
         [JsonIgnore] public virtual IEnumerable<MemberAnalysis> Analyzes { get; set; }
         public IEnumerable<int> AnalysisIds => Analyzes.Select(x => x.Id);

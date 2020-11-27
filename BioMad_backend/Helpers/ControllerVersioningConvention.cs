@@ -8,7 +8,7 @@ namespace BioMad_backend.Helpers
         public void Apply(ControllerModel controller)
         {
             var controllerNamespace = controller.ControllerType.Namespace;
-            var apiVersion = controllerNamespace.Split(".").Last().ToLower();
+            var apiVersion = controllerNamespace?.Split(".").Last().ToLower();
             if (!apiVersion.StartsWith("v"))
             {
                 apiVersion = "v1";

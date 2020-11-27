@@ -46,6 +46,9 @@ namespace BioMad_backend.Entities
         public virtual List<BiomarkerArticle> BiomarkerArticles { get; set; }
         [JsonIgnore] public virtual List<BiomarkerUnit> BiomarkerUnits { get; set; }
 
+        [NotMapped]
+        public bool IsNormal => Reference != null && CurrentValue != null && CurrentValue.Value.IsBetween(Reference.ValueA, Reference.ValueB);
+
         #endregion
 
         public Biomarker Localize(Culture culture)

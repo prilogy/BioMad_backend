@@ -28,8 +28,6 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
             _applicationContext = applicationContext;
         }
 
-        // TODO: add password reset action
-
         /// <summary>
         /// Gets user's account info
         /// </summary>

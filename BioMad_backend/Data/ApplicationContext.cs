@@ -49,6 +49,7 @@ namespace BioMad_backend.Data
         public DbSet<MemberAnalysis> MemberAnalyzes { get; set; }
         public DbSet<MemberBiomarker> MemberBiomarkers { get; set; }
         public DbSet<MemberCategoryState> MemberCategoryStates { get; set; }
+        public DbSet<Shared> Shared { get; set; }
         
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -64,6 +65,7 @@ namespace BioMad_backend.Data
             builder.ApplyConfiguration(new BiomarkerUnitEntityConfiguration());
             builder.ApplyConfiguration(new BiomarkerArticleTypeEntityConfiguration());
             builder.ApplyConfiguration(new MemberBiomarkerReferenceEntityConfiguration());
+            builder.ApplyConfiguration(new SharedEntityConfiguration());
             
             builder.SeedData();
         }
