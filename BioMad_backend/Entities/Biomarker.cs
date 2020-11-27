@@ -43,7 +43,7 @@ namespace BioMad_backend.Entities
         #region [ Many to many ]
 
         [JsonIgnore] public virtual List<CategoryBiomarker> CategoryBiomarkers { get; set; }
-        [JsonIgnore] public virtual List<BiomarkerArticle> BiomarkerArticles { get; set; }
+        public virtual List<BiomarkerArticle> BiomarkerArticles { get; set; }
         [JsonIgnore] public virtual List<BiomarkerUnit> BiomarkerUnits { get; set; }
 
         #endregion

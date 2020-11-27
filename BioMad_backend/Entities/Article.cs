@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities
 {
-    public class Article : ILocalizedEntity<ArticleTranslation>, ILocalizable<Article>
+    public class Article : ILocalizedEntity<ArticleTranslation>, ILocalizable<Article>, IWithId
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
