@@ -13,5 +13,6 @@ namespace BioMad_backend.Entities
         public virtual IEnumerable<UnitGroupUnit> UnitGroups { get; set; }
 
         [NotMapped] public IEnumerable<Unit> Units => UnitGroups.Select(x => x.Unit);
+        [NotMapped] public IEnumerable<int> UnitIds => UnitGroups.Select(x => x.UnitId);
     }
 }

@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities
 {
-    public class MemberBiomarker : IWithDateCreated, ILocalizable<MemberBiomarker>, IWithId
+    public class MemberBiomarker : IWithDateCreated, ILocalizable<MemberBiomarker>, IWithId, IUnitTransferable<MemberBiomarker>
     {
         public int Id { get; set; }
         
@@ -51,6 +51,33 @@ namespace BioMad_backend.Entities
                 return null;
 
             return Value.IsBetween(r.ValueA, r.ValueB);
+        }
+
+        public MemberBiomarker InUnit(Unit unit)
+        {
+            if (unit == null)
+                return null;
+            
+            if (unit.Id == UnitId)
+                return this;
+
+            var newValue = UnitHelper.Convert(Value, Unit, unit);
+
+            if (newValue == null)
+                return null;
+
+            return new MemberBiomarker
+            {
+                Analysis = Analysis,
+                Biomarker = Biomarker,
+                Unit = unit,
+                UnitId = unit.Id,
+                Id = Id,
+                Value = newValue.Value,
+                AnalysisId = AnalysisId,
+                BiomarkerId = BiomarkerId,
+                DateCreatedAt = DateCreatedAt
+            };
         }
     }
 }

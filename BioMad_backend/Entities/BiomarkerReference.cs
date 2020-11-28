@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities
 {
-    public class BiomarkerReference : ILocalizable<BiomarkerReference>
+    public class BiomarkerReference : ILocalizable<BiomarkerReference>, IUnitTransferable<BiomarkerReference>
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -37,6 +37,12 @@ namespace BioMad_backend.Entities
 
         public BiomarkerReference InUnit(Unit unit)
         {
+            if (unit == null)
+                return null;
+            
+            if (unit.Id == UnitId)
+                return this;
+            
             var valA = UnitHelper.Convert(ValueA, Unit, unit);
             var valB = UnitHelper.Convert(ValueB, Unit, unit);
 

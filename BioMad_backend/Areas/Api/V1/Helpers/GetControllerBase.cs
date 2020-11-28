@@ -72,7 +72,7 @@ namespace BioMad_backend.Areas.Api.V1.Helpers
         /// <response code="404">If no resource was found</response> 
         /// <returns>Resource of type</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<T>> GetById(int id)
+        public virtual async Task<ActionResult<T>> GetById(int id, int helperValue = default)
         {
             var entity = await Queryable.FirstOrDefaultAsync(x => x.Id == id);
 

@@ -11,7 +11,8 @@ using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities
 {
-    public class Biomarker : ILocalizedEntity<BiomarkerTranslation>, ILocalizable<Biomarker>, IWithId
+    public class Biomarker : ILocalizedEntity<BiomarkerTranslation>, ILocalizable<Biomarker>, IWithId,
+        IUnitTransferable<Biomarker>
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -44,14 +45,14 @@ namespace BioMad_backend.Entities
 
         [JsonIgnore] public virtual List<CategoryBiomarker> CategoryBiomarkers { get; set; }
         public virtual List<BiomarkerArticle> BiomarkerArticles { get; set; }
-        
+
         public int UnitGroupId { get; set; }
-        [JsonIgnore]
-        public virtual UnitGroup UnitGroup { get; set; }
-        
-        
+        [JsonIgnore] public virtual UnitGroup UnitGroup { get; set; }
+
+
         [NotMapped]
-        public bool IsNormal => Reference != null && CurrentValue != null && CurrentValue.Value.IsBetween(Reference.ValueA, Reference.ValueB);
+        public bool IsNormal => Reference != null && CurrentValue != null &&
+                                CurrentValue.Value.IsBetween(Reference.ValueA, Reference.ValueB);
 
         #endregion
 
@@ -64,24 +65,41 @@ namespace BioMad_backend.Entities
 
         public BiomarkerReference FindReference(Member member)
         {
-            var referencesByGender = References.Where(x => x.MemberReference != null && x.MemberReference.MemberId == member.Id || (x.Config != null && x.Config.GenderId == member.GenderId)).ToList();
+            var referencesByGender = References.Where(x =>
+                x.MemberReference != null && x.MemberReference.MemberId == member.Id ||
+                (x.Config != null && x.Config.GenderId == member.GenderId)).ToList();
 
             var ownReference = referencesByGender.FirstOrDefault(x => x.IsOwnReference);
             if (ownReference != null)
                 return ownReference;
-            
+
             if (referencesByGender.Count == 0)
                 referencesByGender = References;
-            
+
             var referencesByAge = referencesByGender
                 .OrderBy(x => x.Config.AgeRange).ToList();
 
-            return  referencesByAge.FirstOrDefault(x => x.Config.AgeRange?.Lower > member.Age)
-                ?? referencesByAge.LastOrDefault();
+            return referencesByAge.FirstOrDefault(x => x.Config.AgeRange?.Lower > member.Age)
+                   ?? referencesByAge.LastOrDefault();
         }
-        
+
+        public Biomarker InUnit(Unit unit)
+        {
+            if (unit == null)
+                return null;
+            
+            if (CurrentValue == null || (CurrentValue != null && unit.Id == CurrentValue.UnitId))
+                return this;
+
+            var newCurrentValue = CurrentValue.InUnit(unit);
+            if (newCurrentValue == null)
+                return null;
+
+            CurrentValue = newCurrentValue;
+            return this;
+        }
     }
-    
+
 
     public class BiomarkerTranslation : Translation<BiomarkerTranslation>, ITranslationEntity<Biomarker>,
         IWithNameDescription

@@ -31,26 +31,60 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
                 .FirstOrDefault()?.Localize(_userService.Culture);
             return m;
         }
+        
+        /// <summary>
+        /// Gets resource of type of given id
+        /// </summary>
+        /// <param name="id">Number of page to get(starts from 1)</param>
+        /// <param name="unitId">Id of unit to represent the values</param>
+        /// <response code="200">If everything went OK</response>
+        /// <response code="400">If resource can't be translated to Unit of given unitId</response>
+        /// <response code="404">If no resource was found</response> 
+        /// <returns>Resource of type</returns>
+        [HttpGet("{id}")]
+        public override async Task<ActionResult<Biomarker>> GetById(int id, int unitId = default)
+        {
+            var unit = await _db.Units.FirstOrDefaultAsync(x => x.Id == unitId);
+            if (unit == null)
+                return BadRequest();
+
+            var entity = await Queryable.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (entity != null)
+                return Ok(ProcessStrategy(entity).InUnit(unit));
+
+            return NotFound();
+        }
 
         /// <summary>
         /// Gets history of member's biomarker values for given Id of biomarker
         /// </summary>
         /// <param name="id">Id of biomarker history to get</param>
+        /// <param name="unitId">Id of unit to represent the values</param>
         /// <param name="page">Number of page to get(starts from 1)</param>
         /// <param name="pageSize">Number of objects on one page</param>
         /// <param name="orderByDate">Order by date(asc|desc)</param>
         /// <response code="200">If everything went OK</response>
+        /// <response code="400">If resource can't be translated to Unit of given unitId</response>
         /// <returns>List of biomarker's history values for current member</returns>
         [HttpGet("{id}/history")]
         public async Task<ActionResult<List<MemberBiomarker>>> GetHistory(int id, [FromQuery] int page,
             [FromQuery] int pageSize,
-            [FromQuery] string orderByDate = "desc")
+            [FromQuery] string orderByDate = "desc", [FromQuery] int unitId = default)
         {
+            var unit = await _db.Units.FirstOrDefaultAsync(x => x.Id == unitId);
+            var biomarker = await _db.Biomarkers.FirstOrDefaultAsync(x => x.Id == id);
+            if (unit == null)
+                return BadRequest();
+            if (!biomarker.UnitGroup.UnitIds.Contains(unit.Id))
+                return BadRequest();
+
             var list = _db.MemberBiomarkers.Where(x => x.BiomarkerId == id).AsQueryable();
-            return await PagingExtension.Paging(list, page, (x) => x.Localize(_userService.Culture), pageSize,
+            return await PagingExtension.Paging(list, page, (x) => x.Localize(_userService.Culture).InUnit(unit),
+                pageSize,
                 orderByDate);
         }
-        
+
         /// <summary>
         /// Gets types of biomarkers
         /// </summary>
@@ -68,7 +102,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
             return await PagingExtension.Paging(list, page, (x) => x.Localize(_userService.Culture), pageSize,
                 orderByDate);
         }
-        
+
         /// <summary>
         /// Gets type of biomarker of given id
         /// </summary>
@@ -95,10 +129,10 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         /// <param name="orderByDate">Order by date(asc|desc)</param>
         /// <returns>Result of search</returns>
         [HttpPost("search")]
-        public async Task<ActionResult<List<Biomarker>>> Search([FromBody, Required]string query, [FromQuery] int page,
+        public async Task<ActionResult<List<Biomarker>>> Search([FromBody, Required] string query, [FromQuery] int page,
             [FromQuery] int pageSize,
             [FromQuery] string orderByDate = null)
-        => await Paging(_db.Biomarkers.SearchWithQuery<Biomarker, BiomarkerTranslation>(query), page, pageSize, orderByDate);
-
+            => await Paging(_db.Biomarkers.SearchWithQuery<Biomarker, BiomarkerTranslation>(query), page, pageSize,
+                orderByDate);
     }
 }
