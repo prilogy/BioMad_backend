@@ -169,15 +169,15 @@ namespace BioMad_backend.Infrastructure.DataConfigurations
                 new UnitTransfer
                 {
                     Id = 1,
-                    UnitAId = 1,
-                    UnitBId = 2,
+                    UnitAId = 2,
+                    UnitBId = 1,
                     Coefficient = 1000
                 },
                 new UnitTransfer
                 {
                     Id = 2,
-                    UnitAId = 3,
-                    UnitBId = 4,
+                    UnitAId = 4,
+                    UnitBId = 3,
                     Coefficient = 1000
                 }
             });

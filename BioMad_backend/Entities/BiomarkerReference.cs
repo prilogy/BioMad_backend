@@ -14,7 +14,6 @@ namespace BioMad_backend.Entities
         public int Id { get; set; }
         public double ValueA { get; set; }
         public double ValueB { get; set; }
-        [JsonIgnore]
         public int UnitId { get; set; }
         [JsonIgnore]
         public virtual Unit Unit { get; set; }

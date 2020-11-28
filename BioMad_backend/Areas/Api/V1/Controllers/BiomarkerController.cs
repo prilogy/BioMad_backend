@@ -45,15 +45,15 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         public override async Task<ActionResult<Biomarker>> GetById(int id, int unitId = default)
         {
             var unit = await _db.Units.FirstOrDefaultAsync(x => x.Id == unitId);
-            if (unit == null)
+            if (unit == null && unitId != default)
                 return BadRequest();
 
             var entity = await Queryable.FirstOrDefaultAsync(x => x.Id == id);
 
-            if (entity != null)
-                return Ok(ProcessStrategy(entity).InUnit(unit));
-
-            return NotFound();
+            if (entity == null) return NotFound();
+            
+            entity = ProcessStrategy(entity);
+            return Ok(unit == null ? entity : entity.InUnit(unit));
         }
 
         /// <summary>

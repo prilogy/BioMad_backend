@@ -88,6 +88,9 @@ namespace BioMad_backend.Entities
             if (unit == null)
                 return null;
             
+            
+            Reference = Reference?.InUnit(unit);
+            
             if (CurrentValue == null || (CurrentValue != null && unit.Id == CurrentValue.UnitId))
                 return this;
 
