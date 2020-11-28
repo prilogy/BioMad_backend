@@ -32,8 +32,8 @@ namespace BioMad_backend.Entities
         [NotMapped] [JsonIgnore] public IEnumerable<Article> Articles { get; set; }
         [NotMapped] private IEnumerable<int> ArticleIds => BiomarkerArticles.Select(x => x.ArticleId);
 
-        [NotMapped] [JsonIgnore] public IEnumerable<Unit> Units => BiomarkerUnits.Select(x => x.Unit);
-        [NotMapped] public IEnumerable<int> UnitIds => BiomarkerUnits.Select(x => x.UnitId);
+        [NotMapped] [JsonIgnore] public IEnumerable<Unit> Units => UnitGroup.Units;
+        [NotMapped] public IEnumerable<int> UnitIds => Units.Select(x => x.Id);
 
         [NotMapped] public BiomarkerReference Reference;
         [NotMapped] public MemberBiomarker CurrentValue;
@@ -44,8 +44,12 @@ namespace BioMad_backend.Entities
 
         [JsonIgnore] public virtual List<CategoryBiomarker> CategoryBiomarkers { get; set; }
         public virtual List<BiomarkerArticle> BiomarkerArticles { get; set; }
-        [JsonIgnore] public virtual List<BiomarkerUnit> BiomarkerUnits { get; set; }
-
+        
+        public int UnitGroupId { get; set; }
+        [JsonIgnore]
+        public virtual UnitGroup UnitGroup { get; set; }
+        
+        
         [NotMapped]
         public bool IsNormal => Reference != null && CurrentValue != null && CurrentValue.Value.IsBetween(Reference.ValueA, Reference.ValueB);
 

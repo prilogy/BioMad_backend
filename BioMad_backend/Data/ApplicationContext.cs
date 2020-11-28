@@ -36,7 +36,9 @@ namespace BioMad_backend.Data
         public DbSet<BiomarkerType> BiomarkerTypes { get; set; }
         public DbSet<BiomarkerArticleType> BiomarkerArticleTypes { get; set; }
         public DbSet<BiomarkerArticle> BiomarkerArticles { get; set; }
-        public DbSet<BiomarkerUnit> BiomarkerUnits { get; set; }
+        
+        public DbSet<UnitGroup> UnitGroups { get; set; }
+        public DbSet<UnitGroupUnit> UnitGroupUnits { get; set; }
         
         public DbSet<BiomarkerReference> BiomarkerReferences { get; set; }
         public DbSet<BiomarkerReferenceConfig> BiomarkerReferenceConfigs { get; set; }
@@ -62,11 +64,12 @@ namespace BioMad_backend.Data
             
             builder.ApplyConfiguration(new CategoryBiomarkerEntityConfiguration());
             builder.ApplyConfiguration(new BiomarkerArticleEntityConfiguration());
-            builder.ApplyConfiguration(new BiomarkerUnitEntityConfiguration());
+            builder.ApplyConfiguration(new UnitGroupUnitEntityConfiguration());
             builder.ApplyConfiguration(new BiomarkerArticleTypeEntityConfiguration());
             builder.ApplyConfiguration(new MemberBiomarkerReferenceEntityConfiguration());
             builder.ApplyConfiguration(new SharedEntityConfiguration());
-            
+            builder.ApplyConfiguration(new UnitGroupUnitEntityConfiguration());
+                            
             builder.SeedData();
         }
     }

@@ -16,8 +16,6 @@ namespace BioMad_backend.Entities
         [JsonIgnore] public virtual TranslationCollection<UnitTranslation> Translations { get; set; }
         [NotMapped] public UnitTranslation Content { get; set; }
 
-        [NotMapped] [JsonIgnore] public IEnumerable<Biomarker> Biomarkers => BiomarkerUnits.Select(x => x.Biomarker);
-
         [NotMapped] public IEnumerable<int> TransfersToIds => TransfersTo.Select(x => x.UnitB.Id);
         [NotMapped] public IEnumerable<int> TransfersFromIds => TransfersFrom.Select(x => x.UnitA.Id);
         [JsonIgnore] public virtual IEnumerable<UnitTransfer> TransfersTo { get; set; }
@@ -25,7 +23,8 @@ namespace BioMad_backend.Entities
 
         #region [ Many to many ]
 
-        [JsonIgnore] public virtual IEnumerable<BiomarkerUnit> BiomarkerUnits { get; set; }
+        [JsonIgnore] public virtual IEnumerable<UnitGroupUnit> UnitGroupUnits { get; set; }
+        [NotMapped, JsonIgnore] public IEnumerable<UnitGroup> UnitGroups => UnitGroupUnits.Select(x => x.UnitGroup);
 
         #endregion
 

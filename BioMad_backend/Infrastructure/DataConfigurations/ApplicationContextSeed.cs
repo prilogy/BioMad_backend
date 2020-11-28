@@ -181,18 +181,56 @@ namespace BioMad_backend.Infrastructure.DataConfigurations
                     Coefficient = 1000
                 }
             });
+            
+            builder.Entity<UnitGroup>().HasData(new[]
+            {
+                new UnitGroup
+                {
+                    Id = 1
+                },
+                new UnitGroup
+                {
+                    Id = 2
+                }
+            });
+
+            builder.Entity<UnitGroupUnit>().HasData(new[]
+            {
+                new UnitGroupUnit
+                {
+                    UnitId = 1,
+                    UnitGroupId = 1
+                },
+                new UnitGroupUnit
+                {
+                    UnitId = 2,
+                    UnitGroupId = 1
+                }, 
+                new UnitGroupUnit
+                {
+                    UnitId = 3,
+                    UnitGroupId = 2
+                }, 
+                new UnitGroupUnit
+                {
+                    UnitId = 4,
+                    UnitGroupId = 2
+                },
+            });
 
             builder.Entity<Biomarker>().HasData(new[]
             {
                 new Biomarker
                 {
                     Id = 1,
-                    TypeId = 1
+                    TypeId = 1,
+                    UnitGroupId = 1
                 },
                 new Biomarker
                 {
                     Id = 2,
-                    TypeId = 2
+                    TypeId = 2,
+                    UnitGroupId = 2
                 }
             });
 
@@ -228,31 +266,6 @@ namespace BioMad_backend.Infrastructure.DataConfigurations
                 }
             });
 
-            builder.Entity<BiomarkerUnit>().HasData(new[]
-            {
-                new BiomarkerUnit
-                {
-                    BiomarkerId = 1,
-                    UnitId = 1
-                },
-                new BiomarkerUnit
-                {
-                    BiomarkerId = 1,
-                    UnitId = 2
-                },
-                new BiomarkerUnit
-                {
-                    BiomarkerId = 2,
-                    UnitId = 3
-                },
-                new BiomarkerUnit
-                {
-                    BiomarkerId = 2,
-                    UnitId = 4
-                },
-            });
-
-            // biomarker 1 - вес(юниты 1,2), 2 - выделения(юниты 3,4)
 
             builder.Entity<BiomarkerReference>().HasData(new[]
             {
