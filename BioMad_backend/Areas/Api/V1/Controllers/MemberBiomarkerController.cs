@@ -30,6 +30,30 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
             _userService.CurrentMember.Analyzes.Select(y => y.Id).Contains(x.AnalysisId));
 
         protected override MemberBiomarker ProcessStrategy(MemberBiomarker m) => m.Localize(_userService.Culture);
+        
+        /// <summary>
+        /// Gets resource of type of given id
+        /// </summary>
+        /// <param name="id">Number of page to get(starts from 1)</param>
+        /// <param name="unitId">Id of unit to represent the values</param>
+        /// <response code="200">If everything went OK</response>
+        /// <response code="400">If resource can't be translated to Unit of given unitId</response>
+        /// <response code="404">If no resource was found</response> 
+        /// <returns>Resource of type</returns>
+        [HttpGet("{id}")]
+        public override async Task<ActionResult<MemberBiomarker>> GetById(int id, int unitId = default)
+        {
+            var unit = await _db.Units.FirstOrDefaultAsync(x => x.Id == unitId);
+            if (unit == null && unitId != default)
+                return BadRequest();
+
+            var entity = await Queryable.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (entity == null) return NotFound();
+            
+            entity = ProcessStrategy(entity);
+            return Ok(unit == null ? entity : entity.InUnit(unit));
+        }
 
         #region [ MemberBiomarker CRUD ]
 
@@ -141,10 +165,18 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
 
         #endregion
 
+        /// <summary>
+        /// Adds new member custom reference for biomarker
+        /// </summary>
+        /// <param name="model">Model of member reference</param>
+        /// <returns>Action result</returns>
+        /// <response code="200">If everything went OK</response>
+        /// <response code="400">If anything went BAD</response> 
         [HttpPost("reference")]
         public async Task<IActionResult> AddReference([Required] MemberBiomarkerReferenceModel model)
         {
-            var rf = await _db.MemberBiomarkerReferences.FirstOrDefaultAsync(x =>
+            var rf = await _db.MemberBiomarkerReferences
+                .FirstOrDefaultAsync(x =>
                 x.BiomarkerReference.BiomarkerId == model.BiomarkerId &&
                 x.MemberId == _userService.CurrentMemberId);
             if (rf != null)
@@ -161,7 +193,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
                 ValueB = model.ValueB,
                 UnitId = model.UnitId
             };
-
+            
             try
             {
                 await _db.BiomarkerReferences.AddAsync(reference);

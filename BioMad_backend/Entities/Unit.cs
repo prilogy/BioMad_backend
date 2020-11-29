@@ -38,8 +38,8 @@ namespace BioMad_backend.Entities
     public class UnitTranslation : Translation<UnitTranslation>, ITranslationEntity<Unit>, IWithName
     {
         public string Name { get; set; }
-        [JsonIgnore] public int BaseEntityId { get; set; }
-        public Unit BaseEntity { get; set; }
+        public int BaseEntityId { get; set; }
+        [JsonIgnore] public Unit BaseEntity { get; set; }
         public string Shorthand { get; set; }
     }
 }

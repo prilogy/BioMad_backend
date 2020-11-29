@@ -44,8 +44,7 @@ namespace BioMad_backend.Entities
     public class GenderTranslation : Translation<GenderTranslation>, ITranslationEntity<Gender>, IWithName
     {
         public string Name { get; set; }
-        [JsonIgnore]
         public int BaseEntityId { get; set; }
-        public virtual Gender BaseEntity { get; set; }
+        [JsonIgnore]  public virtual Gender BaseEntity { get; set; }
     }
 }

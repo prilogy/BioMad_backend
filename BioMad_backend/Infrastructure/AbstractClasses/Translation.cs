@@ -6,6 +6,7 @@ namespace BioMad_backend.Infrastructure.AbstractClasses
 {
     public abstract class Translation<T> where T: Translation<T>, new()
     {
+        [JsonIgnore]
         public int Id { get; set; }
         
         public int CultureId { get; set; }

@@ -30,7 +30,7 @@ namespace BioMad_backend.Entities
     public class CityTranslation : Translation<CityTranslation>, ITranslationEntity<City>, IWithName
     {
         public string Name { get; set; }
-        [JsonIgnore] public int BaseEntityId { get; set; }
+        public int BaseEntityId { get; set; }
         public City BaseEntity { get; set; }
     }
 }

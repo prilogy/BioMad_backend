@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 namespace BioMad_backend.Entities
 {
     public class Biomarker : ILocalizedEntity<BiomarkerTranslation>, ILocalizable<Biomarker>, IWithId,
-        IUnitTransferable<Biomarker>
+        IUnitTransferable<Biomarker>, IUnitNormalizable<Biomarker>
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -101,6 +101,15 @@ namespace BioMad_backend.Entities
             CurrentValue = newCurrentValue;
             return this;
         }
+
+        public Biomarker NormalizeUnits()
+        {
+            if (CurrentValue == null || Reference == null || CurrentValue.UnitId == Reference.UnitId)
+                return this;
+
+            Reference = Reference.InUnit(CurrentValue.Unit);
+            return this;
+        }
     }
 
 
@@ -110,7 +119,7 @@ namespace BioMad_backend.Entities
         public string Name { get; set; }
         public string Description { get; set; }
 
-        [JsonIgnore] public int BaseEntityId { get; set; }
-        public Biomarker BaseEntity { get; set; }
+        public int BaseEntityId { get; set; }
+        [JsonIgnore] public Biomarker BaseEntity { get; set; }
     }
 }

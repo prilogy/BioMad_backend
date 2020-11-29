@@ -29,6 +29,8 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
                 .Where(x => x.BiomarkerId == m.Id && _userService.CurrentMember.AnalysisIds.Contains(x.AnalysisId))
                 .OrderByDescending(x => x.Id)
                 .FirstOrDefault()?.Localize(_userService.Culture);
+
+            m = m.NormalizeUnits();
             return m;
         }
         

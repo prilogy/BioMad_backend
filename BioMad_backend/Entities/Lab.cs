@@ -34,7 +34,7 @@ namespace BioMad_backend.Entities
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        [JsonIgnore] public int BaseEntityId { get; set; }
-        public Lab BaseEntity { get; set; }
+        public int BaseEntityId { get; set; }
+        [JsonIgnore] public Lab BaseEntity { get; set; }
     }
 }
