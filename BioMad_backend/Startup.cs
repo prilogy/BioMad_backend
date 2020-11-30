@@ -2,6 +2,7 @@ using BioMad_backend.Helpers;
 using BioMad_backend.Infrastructure.ServiceConfigurations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -29,13 +30,16 @@ namespace BioMad_backend
                 .AddHelperServices()
                 .AddSocialAuthenticationService(options => options.GoogleClientId = appSettings.GoogleClientId)
                 .ConfigureCustomAuthentication(Configuration)
+                .ConfigureLocalization()
+                .AddLocalization(opts => opts.ResourcesPath = "Resources")
                 .AddCors()
                 .AddControllersWithViews(options => options.Conventions.Add(new ControllerVersioningConvention()))
                 .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
-                });
+                })
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.SubFolder);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -53,6 +57,9 @@ namespace BioMad_backend
             app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseStaticFiles();
             app.UseSwaggerWithCustomConfiguration();
+
+
+            app.UseLocalization();
             
             app.UseAuthentication();
             app.UseRouting();
@@ -64,6 +71,9 @@ namespace BioMad_backend
 
                 endpoints.MapControllerRoute(
                     name: "Admin",
+                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                    name: "Share",
                     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
             });
         }

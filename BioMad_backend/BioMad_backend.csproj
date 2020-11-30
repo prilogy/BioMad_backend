@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MailKit" Version="2.10.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.9" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.9" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.1.1" />
@@ -32,7 +33,65 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin" />
-    <Folder Include="Areas\Share" />
+    <Folder Include="Resources\Areas" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Share\Views\Home.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Home.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Share\Views\Home.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Home.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Areas\Share\Views\Home.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Home.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Areas\Share\Views\Home.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Home.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Areas\Share\Views\Home\Index.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Index.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Areas\Share\Views\Home\Index.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Index.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Infrastructure.LocalizationResources.EmailResources.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Infrastructure.LocalizationResources.EmailResources.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Infrastructure.LocalizationResources.EmailResources.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Infrastructure.LocalizationResources.EmailResources.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\Areas\Share\Views\Home\Index.en.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Home.en.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Areas\Share\Views\Home\Index.ru.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Home.ru.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Infrastructure.LocalizationResources.EmailResources.en.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EmailResources.en.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Infrastructure.LocalizationResources.EmailResources.ru.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EmailResources.ru.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>

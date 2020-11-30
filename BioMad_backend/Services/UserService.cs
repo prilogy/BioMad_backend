@@ -11,6 +11,7 @@ using BioMad_backend.Helpers;
 using BioMad_backend.Infrastructure.Constants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace BioMad_backend.Services
 {
@@ -88,7 +89,7 @@ namespace BioMad_backend.Services
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
 
-                // TODO: #EMAIL send email confirmation
+                await _confirmationService.Send.EmailConfirmation(user);
 
                 return user;
             }
@@ -102,13 +103,19 @@ namespace BioMad_backend.Services
         public async Task<bool> Edit(UserEditModel model)
         {
             var user = User;
+            model.Email = model.Email.ToLower();
 
+            var userAlreadyHas = await _db.Users.FirstOrDefaultAsync(x => x.Email == model.Email);
+
+            if (userAlreadyHas != null && userAlreadyHas.Id != user.Id)
+                return false;
+            
             try
             {
-                if (model.Email != null)
+                if (model.Email != null && model.Email != user.Email)
                 {
                     user.Email = model.Email;
-                    await _confirmationService.Send.Email(user);
+                    await _confirmationService.Send.EmailConfirmation(user);
                 }
 
                 await _db.SaveChangesAsync();

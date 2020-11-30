@@ -9,15 +9,17 @@ namespace BioMad_backend.Services
 {
     public class ConfirmationService
     {
-        private ApplicationContext _applicationContext;
-
-        public ConfirmationService(ApplicationContext applicationContext)
+        private readonly ApplicationContext _applicationContext;
+        private readonly EmailService _emailService;
+        
+        public ConfirmationService(ApplicationContext applicationContext, EmailService emailService)
         {
             _applicationContext = applicationContext;
-            Send = new ConfirmationSender(_applicationContext);
+            _emailService = emailService;
+            Send = new ConfirmationSender(_applicationContext, _emailService);
         }
 
-        public ConfirmationSender Send;
+        public readonly ConfirmationSender Send;
 
         /// <summary>
         /// Returns ConfirmationCode that is valid and not confirmed yet
@@ -51,13 +53,15 @@ namespace BioMad_backend.Services
         public class ConfirmationSender
         {
             private readonly ApplicationContext _applicationContext;
+            private readonly EmailService _emailService;
 
-            public ConfirmationSender(ApplicationContext applicationContext)
+            public ConfirmationSender(ApplicationContext applicationContext, EmailService emailService)
             {
                 _applicationContext = applicationContext;
+                _emailService = emailService;
             }
 
-            public async Task<bool> Email(User user)
+            public async Task<bool> EmailConfirmation(User user)
             {
                 if (user.EmailIsVerified)
                     return false;
@@ -69,7 +73,7 @@ namespace BioMad_backend.Services
                     HelperValue = user.Email
                 };
 
-                // TODO: email
+                await _emailService.SendEmailAsync(user.Email, _emailService.Templates.EmailConfirmation(code.Code,  user.Culture));
                 return await AddInternal(code);
             }
 
@@ -81,7 +85,7 @@ namespace BioMad_backend.Services
                     Type = ConfirmationCode.Types.PasswordReset
                 };
 
-                // TODO: email
+                await _emailService.SendEmailAsync(user.Email, _emailService.Templates.PasswordReset(code.Code,  user.Culture));
                 return await AddInternal(code);
             }
 

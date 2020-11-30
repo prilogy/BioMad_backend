@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
+using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities
 {
@@ -11,8 +13,10 @@ namespace BioMad_backend.Entities
         public string Key { get; set; }
         public string Name { get; set; }
 
-        public static Culture En = new Culture { Id = 1, Key = Keys.En, Name = "English" };
-        public static Culture Ru = new Culture { Id = 2, Key = Keys.Ru, Name = "Русский" };
+        [NotMapped, JsonIgnore] public CultureInfo Info { get; set; }
+
+        public static Culture En = new Culture { Id = 1, Key = Keys.En, Name = "English", Info = new CultureInfo(Keys.En)};
+        public static Culture Ru = new Culture { Id = 2, Key = Keys.Ru, Name = "Русский", Info = new CultureInfo(Keys.Ru)};
 
         public static List<Culture> All = new List<Culture> { En, Ru };
 

@@ -7,10 +7,12 @@ using BioMad_backend.Areas.Api.V1.Models;
 using BioMad_backend.Data;
 using BioMad_backend.Entities;
 using BioMad_backend.Extensions;
+using BioMad_backend.Infrastructure.LocalizationResources;
 using BioMad_backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace BioMad_backend.Areas.Api.V1.Controllers
 {
@@ -47,8 +49,8 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         /// <response code="200">If everything went OK</response>
         [HttpPost("culture")]
         [AllowAnonymous]
-        public async Task<ActionResult<List<Culture>>> Cultures() =>
-            Ok(await _applicationContext.Cultures.ToListAsync());
+        public async Task<ActionResult<List<Culture>>> Cultures()
+        => Ok(await _applicationContext.Cultures.ToListAsync());
 
         /// <summary>
         /// Searches resources by query

@@ -23,8 +23,11 @@ namespace BioMad_backend.Entities
         public DateTime DateCreatedAt { get; set; }
         
         public int? CultureId { get; set; }
-        public virtual Culture Culture { get; set; }
+        [JsonIgnore]
+        public virtual Culture _culture { get; set; }
 
+        [NotMapped] public Culture Culture => Culture.All.FirstOrDefault(x => x.Id == CultureId) ?? Culture.Fallback;
+        
         public virtual List<Member> Members { get; set; }
         
         [JsonIgnore]

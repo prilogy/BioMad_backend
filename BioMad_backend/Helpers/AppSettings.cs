@@ -13,6 +13,11 @@ namespace BioMad_backend.Helpers
         
         public string GoogleClientId { get; set; }
 
+        public string EmailSenderSmtp { get; set; }
+        public string EmailSenderLogin { get; set; }
+        public string EmailSenderPassword { get; set; }
+        public string EmailSenderName { get; set; }
+        
         public const string Key = "AppSettings";
     } 
 

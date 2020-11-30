@@ -11,6 +11,7 @@ namespace BioMad_backend.Infrastructure.ServiceConfigurations
         {
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<TokenService>();
+            services.AddScoped<EmailService>();
             services.AddSingleton<PasswordService>();
             services.AddScoped<UserService>();
             services.AddScoped<AuthService>();

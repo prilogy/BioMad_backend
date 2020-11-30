@@ -61,7 +61,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         [HttpGet("email")]
         public async Task<IActionResult> EmailVerificationSend()
         {
-            if (await _confirmationService.Send.Email(_userService.User))
+            if (await _confirmationService.Send.EmailConfirmation(_userService.User))
                 return Ok();
 
             return BadRequest();
