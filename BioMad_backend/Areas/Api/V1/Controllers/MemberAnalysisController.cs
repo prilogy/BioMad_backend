@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using BioMad_backend.Data;
 using BioMad_backend.Entities;
 using BioMad_backend.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace BioMad_backend.Areas.Api.V1.Controllers
 {
@@ -65,8 +66,13 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
                 }).ToList();
 
                 await _db.AddRangeAsync(biomarkers);
-                
+
                 await _db.SaveChangesAsync();
+                
+                foreach (var biomarker in biomarkers)
+                {
+                    _db.Entry(biomarker).State = EntityState.Detached;
+                }
 
                 await _monitoringService.UpdateCategoryStates(biomarkers);
                 

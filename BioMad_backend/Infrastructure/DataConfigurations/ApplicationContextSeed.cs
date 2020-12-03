@@ -224,13 +224,15 @@ namespace BioMad_backend.Infrastructure.DataConfigurations
                 {
                     Id = 1,
                     TypeId = 1,
-                    UnitGroupId = 1
+                    UnitGroupId = 1,
+                    MainUnitId = 1
                 },
                 new Biomarker
                 {
                     Id = 2,
                     TypeId = 2,
-                    UnitGroupId = 2
+                    UnitGroupId = 2,
+                    MainUnitId = 4
                 }
             });
 

@@ -25,6 +25,8 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         {
             m = m.Localize(_userService.Culture);
             m.Reference = m.FindReference(_userService.CurrentMember);
+            if (m.MainUnit != null)
+                m.Reference = m.Reference.InUnit(m.MainUnit);
             m.CurrentValue = _db.MemberBiomarkers
                 .Where(x => x.BiomarkerId == m.Id && _userService.CurrentMember.AnalysisIds.Contains(x.AnalysisId))
                 .OrderByDescending(x => x.Id)
@@ -74,15 +76,18 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
             [FromQuery] int pageSize,
             [FromQuery] string orderByDate = "desc", [FromQuery] int unitId = default)
         {
-            var unit = await _db.Units.FirstOrDefaultAsync(x => x.Id == unitId);
             var biomarker = await _db.Biomarkers.FirstOrDefaultAsync(x => x.Id == id);
+            if (unitId == default && biomarker.MainUnitId != null)
+                unitId = biomarker.MainUnitId.Value;
+            
+            var unit = await _db.Units.FirstOrDefaultAsync(x => x.Id == unitId);
             if (unit == null)
                 return BadRequest();
             if (!biomarker.UnitGroup.UnitIds.Contains(unit.Id))
                 return BadRequest();
 
             var list = _db.MemberBiomarkers.Where(x => x.BiomarkerId == id).AsQueryable();
-            return await PagingExtension.Paging(list, page, (x) => x.Localize(_userService.Culture).InUnit(unit),
+            return await PagingExtension.Paging(list, page, (x) => x.InUnit(unit).Localize(_userService.Culture),
                 pageSize,
                 orderByDate);
         }
