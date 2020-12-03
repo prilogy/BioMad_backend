@@ -15,8 +15,8 @@ namespace BioMad_backend.Entities
 
         [EmailAddress] public string Email { get; set; }
         
-        public bool EmailIsVerified => ConfirmationCodes.Any(x =>
-            x.IsConfirmed && x.HelperValue == Email && x.Type == ConfirmationCode.Types.EmailConfirmation);
+        [NotMapped] public bool EmailIsVerified => ConfirmationCodes?.Any(x =>
+            x.IsConfirmed && x.HelperValue == Email && x.Type == ConfirmationCode.Types.EmailConfirmation) ?? false;
 
         [JsonIgnore] public string Password { get; set; }
 
@@ -28,16 +28,16 @@ namespace BioMad_backend.Entities
 
         [NotMapped] public Culture Culture => Culture.All.FirstOrDefault(x => x.Id == CultureId) ?? Culture.Fallback;
         
-        public virtual List<Member> Members { get; set; }
+        public virtual IEnumerable<Member> Members { get; set; }
         
         [JsonIgnore]
-        public virtual List<MemberAnalysis> Analyzes { get; set; } 
+        public virtual IEnumerable<MemberAnalysis> Analyzes { get; set; } 
 
         [NotMapped] public int CurrentMemberId { get; set; }
 
-        public virtual List<SocialAccount> SocialAccounts { get; set; }
+        public virtual IEnumerable<SocialAccount> SocialAccounts { get; set; }
         [JsonIgnore]
-        public virtual List<ConfirmationCode> ConfirmationCodes { get; set; }
+        public virtual IEnumerable<ConfirmationCode> ConfirmationCodes { get; set; }
 
         #region [ Role definition ]
 
@@ -46,7 +46,7 @@ namespace BioMad_backend.Entities
 
         #endregion
 
-        [JsonIgnore] public virtual List<RefreshToken> RefreshTokens { get; set; }
+        [JsonIgnore] public virtual IEnumerable<RefreshToken> RefreshTokens { get; set; }
 
         public User()
         {

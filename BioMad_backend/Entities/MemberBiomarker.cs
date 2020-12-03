@@ -22,7 +22,7 @@ namespace BioMad_backend.Entities
         [JsonIgnore]
         public virtual Biomarker Biomarker { get; set; }
 
-        [NotMapped] public BiomarkerTranslation BiomarkerContent => Biomarker.Content;
+        [NotMapped] public BiomarkerTranslation BiomarkerContent => Biomarker?.Content;
         
         public int AnalysisId { get; set; }
         [JsonIgnore]

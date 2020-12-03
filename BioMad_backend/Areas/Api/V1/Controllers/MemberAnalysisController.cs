@@ -65,8 +65,9 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
                 }).ToList();
 
                 await _db.AddRangeAsync(biomarkers);
-                await _db.SaveChangesAsync();
                 
+                await _db.SaveChangesAsync();
+
                 await _monitoringService.UpdateCategoryStates(biomarkers);
                 
                 await transaction.CommitAsync();

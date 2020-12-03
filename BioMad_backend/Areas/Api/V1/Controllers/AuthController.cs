@@ -203,8 +203,9 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
                     return Conflict();
                 return Ok();
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e);
                 return BadRequest();
             }
         }
