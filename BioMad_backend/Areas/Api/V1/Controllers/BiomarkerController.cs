@@ -21,21 +21,9 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
 
         protected override IQueryable<Biomarker> Queryable => _db.Biomarkers;
 
-        protected override Biomarker ProcessStrategy(Biomarker m)
-        {
-            m = m.Localize(_userService.Culture);
-            m.Reference = m.FindReference(_userService.CurrentMember);
-            if (m.MainUnit != null)
-                m.Reference = m.Reference.InUnit(m.MainUnit);
-            m.CurrentValue = _db.MemberBiomarkers
-                .Where(x => x.BiomarkerId == m.Id && _userService.CurrentMember.AnalysisIds.Contains(x.AnalysisId))
-                .OrderByDescending(x => x.Id)
-                .FirstOrDefault()?.Localize(_userService.Culture);
+        protected override Biomarker ProcessStrategy(Biomarker m) =>
+            m.Process(_userService.Culture, _userService.CurrentMember, _db);
 
-            m = m.NormalizeUnits();
-            return m;
-        }
-        
         /// <summary>
         /// Gets resource of type of given id
         /// </summary>

@@ -61,7 +61,7 @@ namespace BioMad_backend.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Title.
+        ///   Looks up a localized string similar to Shared analyzes.
         /// </summary>
         internal static string title {
             get {

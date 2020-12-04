@@ -1,0 +1,44 @@
+﻿:root {
+    --dark: #454852;
+    --accent: #1554F6;
+    --dark-faint: #45485277;
+    --dark-fainter: #45485244;
+}
+
+* {
+    font-family: 'Roboto', sans-serif;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+main {
+    max-width: 1280px;
+    height: 100%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 0.4fr 1fr;
+    grid-template-rows: 7% 86% 7%;
+    gap: 0 0;
+    grid-template-areas:
+    ". ."
+    ". ."
+    ". .";
+}
+
+.b-1, .b-2, .b-3, .b-4, .b-5, .b-6 {
+    padding: 12px;
+}
+
+.b-1, .b-3, .b-5 {
+    border-right: 1px solid var(--dark-fainter);
+    border-left: 1px solid var(--dark-fainter);
+}
+
+.b-1, .b-2, .b-3, .b-4 {
+    border-bottom: 1px solid var(--dark-fainter);
+}
+

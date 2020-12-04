@@ -49,7 +49,7 @@ namespace BioMad_backend.Infrastructure.DataConfigurations
                 new CategoryTranslation
                 {
                     Id = 4,
-                    CultureId = Culture.En.Id,
+                    CultureId = Culture.Ru.Id,
                     Name = "Нервы",
                     Description = "Нервы должны быть спокойны!...",
                     BaseEntityId = 2
@@ -110,7 +110,7 @@ namespace BioMad_backend.Infrastructure.DataConfigurations
                 {
                     Id = 2,
                     Name = "Килограм",
-                    CultureId = Culture.En.Id,
+                    CultureId = Culture.Ru.Id,
                     BaseEntityId = 1,
                     Shorthand = "кг"
                 },
@@ -450,6 +450,71 @@ namespace BioMad_backend.Infrastructure.DataConfigurations
                     Description = "Лаба где вебби готовит крэк",
                     BaseEntityId = 1
                 }
+            });
+
+            builder.Entity<Article>().HasData(new[]
+            {
+                new Article
+                {
+                    Id = 1
+                },
+                new Article
+                {
+                    Id = 2
+                }
+            });
+
+
+            builder.Entity<ArticleTranslation>().HasData(new[]
+            {
+                new ArticleTranslation
+                {
+                    Id = 1,
+                    BaseEntityId = 1,
+                    Name = "Weight loss",
+                    Text = "Lol Kek Lolk kekek WEigjt gagajsdjas",
+                    CultureId = Culture.En.Id
+                },
+                new ArticleTranslation
+                {
+                    Id = 2,
+                    BaseEntityId = 1,
+                    Name = "Понижение веса",
+                    Text = "Вес ы ыы ы ыы в вес",
+                    CultureId = Culture.Ru.Id
+                },
+                new ArticleTranslation
+                {
+                    Id = 3,
+                    BaseEntityId = 2,
+                    Name = "Someth gain",
+                    Text = "zxdzxczxczxc asdas dsa as",
+                    CultureId = Culture.En.Id
+                },
+                new ArticleTranslation
+                {
+                    Id = 4,
+                    BaseEntityId = 2,
+                    Name = "Повышение чего то",
+                    Text = "ыфвфычс ясячсяч яч",
+                    CultureId = Culture.Ru.Id
+                }
+            });
+
+            builder.Entity<BiomarkerArticle>().HasData(new[]
+            {
+                new BiomarkerArticle
+                {
+                    ArticleId = 1,
+                    BiomarkerId = 1,
+                    TypeId = BiomarkerArticleType.Decrease.Id
+                },
+                new BiomarkerArticle
+                {
+                    ArticleId = 2,
+                    BiomarkerId = 2,
+                    TypeId = BiomarkerArticleType.Increase.Id
+                },
             });
         }
     }

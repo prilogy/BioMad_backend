@@ -1,5 +1,40 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
+﻿@using System.Globalization
+@using BioMad_backend.Data
+@using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer;
+@inject ApplicationContext Db;
+@model BioMad_backend.Entities.Shared;
 
-
-<h1>@Localizer["title"]s</h1>
+<!doctype html>
+<html lang="@CultureInfo.CurrentCulture.Name">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>@Localizer["title"]</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/shared.css"/>
+</head>
+<body>
+<main>
+    <div class="b-1"></div>
+    <div class="b-2"></div>
+    <div class="b-3">
+        @foreach (var b in Model.Biomarkers)
+        {
+            <p>@b.Content.Name - @b.CurrentValue.Value @b.CurrentValue.Unit.Content.Shorthand</p>
+            <div style="margin-left: 20px">
+                @foreach (var v in Db.MemberBiomarkers.Where(x => x.BiomarkerId == b.Id).OrderByDescending(x => x.Id).Take(5).ToList())
+                {
+                    <p>@v.Value - @v.DateCreatedAt</p>
+                }
+            </div>
+        }
+    </div>
+    <div class="b-4"></div>
+    <div class="b-5"></div>
+    <div class="b-6"></div>
+</main>
+</body>
+</html>

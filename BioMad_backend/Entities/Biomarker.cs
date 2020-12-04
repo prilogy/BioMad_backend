@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using BioMad_backend.Data;
 using BioMad_backend.Entities.ManyToMany;
 using BioMad_backend.Extensions;
 using BioMad_backend.Infrastructure.AbstractClasses;
@@ -111,6 +112,21 @@ namespace BioMad_backend.Entities
                 return this;
 
             Reference = Reference.InUnit(CurrentValue.Unit);
+            return this;
+        }
+
+        public Biomarker Process(Culture culture, Member member, ApplicationContext db)
+        {
+            Localize(culture);
+            Reference = FindReference(member);
+            if (MainUnit != null)
+                Reference = Reference.InUnit(MainUnit);
+            CurrentValue = db.MemberBiomarkers
+                .Where(x => x.BiomarkerId == Id && member.AnalysisIds.Contains(x.AnalysisId))
+                .OrderByDescending(x => x.Id)
+                .FirstOrDefault()?.Localize(culture);
+
+            NormalizeUnits();
             return this;
         }
     }

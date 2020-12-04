@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using BioMad_backend.Extensions;
 using BioMad_backend.Infrastructure.Interfaces;
 using Newtonsoft.Json;
 
@@ -23,6 +24,8 @@ namespace BioMad_backend.Entities
         public virtual Member Member { get; set; }
 
         public List<int> BiomarkerIds { get; set; }
+
+        [NotMapped, JsonIgnore] public List<Biomarker> Biomarkers { get; set; }
 
         public Shared()
         {
