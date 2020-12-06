@@ -56,7 +56,6 @@ namespace BioMad_backend.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new RoleEntityConfiguration());
-            builder.ApplyConfiguration(new GenderEntityConfiguration());
             builder.ApplyConfiguration(new SocialAccountProviderEntityConfiguration());
             builder.ApplyConfiguration(new SocialAccountEntityConfiguration());
             builder.ApplyConfiguration(new CultureEntityConfiguration());
@@ -70,7 +69,9 @@ namespace BioMad_backend.Data
             builder.ApplyConfiguration(new SharedEntityConfiguration());
             builder.ApplyConfiguration(new UnitGroupUnitEntityConfiguration());
                             
+            #if DEBUG
             builder.SeedData();
+            #endif
         }
     }
 }

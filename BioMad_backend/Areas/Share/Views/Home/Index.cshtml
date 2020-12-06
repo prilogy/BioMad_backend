@@ -1,9 +1,18 @@
 ﻿@using System.Globalization
 @using BioMad_backend.Data
+@using BioMad_backend.Entities
+@using Microsoft.AspNetCore.Html
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer;
 @inject ApplicationContext Db;
-@model BioMad_backend.Entities.Shared;
+@model BioMad_backend.Areas.Share.Models.SharedModel;
+
+@{
+    IHtmlContent RenderStateMark(BiomarkerStateType s)
+    {
+        return Html.Raw($"<img src='{Url.Content($"~/svg/state_{s.ToString().ToLower()}.svg")}' alt='{s}'/>");
+    }
+}
 
 <!doctype html>
 <html lang="@CultureInfo.CurrentCulture.Name">
@@ -14,27 +23,147 @@
     <title>@Localizer["title"]</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/primer.css"/>
+    @* <link rel="stylesheet" href="~/css/reset.css"/> *@
     <link rel="stylesheet" href="~/css/shared.css"/>
 </head>
 <body>
 <main>
-    <div class="b-1"></div>
+    <div class="b-1 d-flex align-center">
+        <h3>@Localizer["pageTitle"]</h3>
+    </div>
     <div class="b-2"></div>
     <div class="b-3">
-        @foreach (var b in Model.Biomarkers)
+        <div class="b-3__list-title">
+            <div>
+                <p>@Localizer["patient"]</p>
+            </div>
+        </div>
+        <div class="b-3__info">
+            <div class="b-3__info__item">
+                <h3 class="b-3__info__item__name">@Localizer["gender"]</h3>
+                <h3 class="b-3__info__item__value">@(Model.Member.Gender?.Content?.Name ?? "-")</h3>
+            </div>
+            <div class="b-3__info__item">
+                <h3 class="b-3__info__item__name">@Localizer["age"]</h3>
+                <h3 class="b-3__info__item__value">@Model.Member.Age</h3>
+            </div>
+        </div>
+        <div class="b-3__list-title">
+            <div>
+                <p>@Localizer["biomarkers"]</p>
+            </div>
+        </div>
+        <div class="b-3__list">
+            @foreach (var b in Model.Shared.Biomarkers)
+            {
+                <div class="biomarker" small-biomarker-id="@b.Id" onclick="showBiomarkerById(@b.Id)">
+                    <h4 class="biomarker__name">@(b.Content?.Name ?? "-")</h4>
+                    <div class="biomarker__info">
+                        <p class="biomarker__info__value">
+                            @(b.CurrentValue?.Value.ToString("0.#######"))
+                            <span>
+                                @RenderStateMark(b.State)
+                            </span>
+                        </p>
+                        <p class="biomarker__info__unit">@(b.CurrentValue?.Unit?.Content?.Shorthand ?? "-")</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="b-4">
+        <div class="details-biomarker-blank">
+            <h5 class="details__stat__h5">
+                @Localizer["selectBiomarker"]
+            </h5>
+        </div>
+        @foreach (var b in Model.Shared.Biomarkers)
         {
-            <p>@b.Content.Name - @b.CurrentValue.Value @b.CurrentValue.Unit.Content.Shorthand</p>
-            <div style="margin-left: 20px">
-                @foreach (var v in Db.MemberBiomarkers.Where(x => x.BiomarkerId == b.Id).OrderByDescending(x => x.Id).Take(5).ToList())
-                {
-                    <p>@v.Value - @v.DateCreatedAt</p>
-                }
+            <div class="details" style="display: none" details-biomarker-id="@b.Id">
+                <div class="details__block">
+                    <h2 class="details__name">@(b.Content?.Name ?? "-")</h2>
+                    <div>
+                        <div class="details__stat">
+                            <h5>@Localizer["currentValue"]</h5>
+                            <h5>
+                                <span>
+                                    @RenderStateMark(b.State)
+                                </span>
+                                @(b.CurrentValue?.Value.ToString("0.#######"))
+                                <span>@(b.CurrentValue?.Unit?.Content?.Shorthand ?? "-")</span>
+                            </h5>
+                        </div>
+                        <div class="details__stat">
+                            <h5>@Localizer["biomarkerType"]</h5>
+                            <h5>
+                                @(b.Type?.Content?.Name ?? "")
+                            </h5>
+                        </div>
+                    </div>
+                    @if (b.Content?.Description != null)
+                    {
+                        <div style="margin-top: var(--indent-1)">
+                            <h5 class="details__stat__h5">@Localizer["aboutBiomarker"]</h5>
+                            <h6 class="details__desc">@b.Content.Description</h6>
+                        </div>
+                    }
+                </div>
+                <div class="details__block">
+                    <h3 class="details__header">@Localizer["references"]</h3>
+                    <h6 class="details__ref__desc">@Localizer[b.Reference.IsOwnReference ? "referenceDescOwn" : "referenceDescDefault"]</h6>
+                    <div class="details__ref__block">
+                        <h5 class="details__stat__h5">
+                            <span style="margin-right: var(--indent-1)">
+                                @RenderStateMark(BiomarkerStateType.Normal)
+                            </span>
+                            @Localizer["referenceNormal"]
+                        </h5>
+                        <h5 class="details__stat__h5" style="color: var(--dark)">@($"{b.Reference.ValueA:0.#######} - {b.Reference.ValueB:0.#######} {b.Reference.Unit.Content.Shorthand}")</h5>
+                    </div>
+                </div>
+                <div class="details__block">
+                    <h3 class="details__header">@Localizer["history"]</h3>
+                    <h6 class="details__ref__desc">@Localizer["historyDesc", new[] {Model.History[b.Id]?.Count.ToString()}]</h6>
+                    @foreach (var v in Model.History[b.Id])
+                    {
+                        <div class="details__ref__block">
+                            <h5 class="details__stat__h5">
+                                @v.DateCreatedAt.ToString("dd.MM.yyyy")
+                            </h5>
+                            <h5 class="details__stat__h5" style="color: var(--dark)">
+                                @($"{v.Value:0.#######} {b.CurrentValue?.Unit?.Content?.Shorthand}")
+
+                                <span style="margin-left: var(--indent-1)">
+                                    @RenderStateMark(v.GetState(b.Reference))
+                                </span>
+                            </h5>
+                        </div>
+                    }
+                </div>
             </div>
         }
     </div>
-    <div class="b-4"></div>
-    <div class="b-5"></div>
-    <div class="b-6"></div>
 </main>
 </body>
+<script>
+    function showBiomarkerById(id) {         
+      let bl = document.querySelector(`.details-biomarker-blank`)
+      bl.style.display = "none"
+      
+      let elems = document.querySelectorAll(`[details-biomarker-id]`)
+      elems.forEach((e) => {
+          if (e.attributes["details-biomarker-id"].value == id)
+              e.style.display = "block"
+          else e.style.display = "none" 
+      })
+      
+      elems = document.querySelectorAll(`[small-biomarker-id]`)
+      elems.forEach((e) => {
+                  if (e.attributes["small-biomarker-id"].value == id)
+                      e.classList.add("biomarker--selected")
+                  else e.classList.remove("biomarker--selected") 
+              })
+    }
+</script>
 </html>

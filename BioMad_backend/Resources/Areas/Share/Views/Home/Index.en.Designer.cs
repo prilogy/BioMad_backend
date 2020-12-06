@@ -61,6 +61,141 @@ namespace BioMad_backend.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to About biomarker.
+        /// </summary>
+        internal static string aboutBiomarker {
+            get {
+                return ResourceManager.GetString("aboutBiomarker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Age.
+        /// </summary>
+        internal static string age {
+            get {
+                return ResourceManager.GetString("age", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Biomarkers.
+        /// </summary>
+        internal static string biomarkers {
+            get {
+                return ResourceManager.GetString("biomarkers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        internal static string biomarkerType {
+            get {
+                return ResourceManager.GetString("biomarkerType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current value.
+        /// </summary>
+        internal static string currentValue {
+            get {
+                return ResourceManager.GetString("currentValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sex.
+        /// </summary>
+        internal static string gender {
+            get {
+                return ResourceManager.GetString("gender", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to History.
+        /// </summary>
+        internal static string history {
+            get {
+                return ResourceManager.GetString("history", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The last {0} values are presented .
+        /// </summary>
+        internal static string historyDesc {
+            get {
+                return ResourceManager.GetString("historyDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Biomarker history.
+        /// </summary>
+        internal static string pageTitle {
+            get {
+                return ResourceManager.GetString("pageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Patient.
+        /// </summary>
+        internal static string patient {
+            get {
+                return ResourceManager.GetString("patient", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to References matched by patient parameters.
+        /// </summary>
+        internal static string referenceDescDefault {
+            get {
+                return ResourceManager.GetString("referenceDescDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refernces set by patient.
+        /// </summary>
+        internal static string referenceDescOwn {
+            get {
+                return ResourceManager.GetString("referenceDescOwn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Normal.
+        /// </summary>
+        internal static string referenceNormal {
+            get {
+                return ResourceManager.GetString("referenceNormal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to References.
+        /// </summary>
+        internal static string references {
+            get {
+                return ResourceManager.GetString("references", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select biomarker from the menu to the left to see it&apos;s details.
+        /// </summary>
+        internal static string selectBiomarker {
+            get {
+                return ResourceManager.GetString("selectBiomarker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Shared analyzes.
         /// </summary>
         internal static string title {

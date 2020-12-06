@@ -18,10 +18,6 @@ namespace BioMad_backend.Entities
         [NotMapped]
         public GenderTranslation Content { get; set; }
 
-        public static readonly Gender Male = new Gender { Id = 1, Key = Keys.Male };
-        public static readonly Gender Female = new Gender { Id = 2, Key = Keys.Female };
-        public static readonly Gender Neutral = new Gender { Id = 3, Key = Keys.Neutral };
-
         public Gender Localize(Culture culture)
         {
             Content = Translations[culture];
@@ -31,13 +27,6 @@ namespace BioMad_backend.Entities
         public Gender()
         {
             Translations = new TranslationCollection<GenderTranslation>();
-        }
-
-        public static class Keys
-        {
-            public const string Male = "male";
-            public const string Female = "female";
-            public const string Neutral = "neutral";
         }
     }
 

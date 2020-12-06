@@ -21,4 +21,62 @@
     <data name="title" xml:space="preserve">
         <value>Shared analyzes</value>
     </data>
+    <data name="pageTitle" xml:space="preserve">
+        <value>Biomarker history</value>
+        <comment>pageTitle</comment>
+    </data>
+    <data name="biomarkers" xml:space="preserve">
+        <value>Biomarkers</value>
+        <comment>biomarkers</comment>
+    </data>
+    <data name="patient" xml:space="preserve">
+        <value>Patient</value>
+        <comment>patient</comment>
+    </data>
+    <data name="gender" xml:space="preserve">
+        <value>Sex</value>
+        <comment>gender</comment>
+    </data>
+    <data name="age" xml:space="preserve">
+        <value>Age</value>
+        <comment>age</comment>
+    </data>
+    <data name="references" xml:space="preserve">
+        <value>References</value>
+        <comment>references</comment>
+    </data>
+    <data name="biomarkerType" xml:space="preserve">
+        <value>Type</value>
+        <comment>biomarkerType</comment>
+    </data>
+    <data name="currentValue" xml:space="preserve">
+        <value>Current value</value>
+        <comment>currentValue</comment>
+    </data>
+    <data name="aboutBiomarker" xml:space="preserve">
+        <value>About biomarker</value>
+        <comment>aboutBiomarker</comment>
+    </data>
+    <data name="referenceNormal" xml:space="preserve">
+        <value>Normal</value>
+        <comment>referenceNormal</comment>
+    </data>
+    <data name="history" xml:space="preserve">
+        <value>History</value>
+        <comment>history</comment>
+    </data>
+    <data name="referenceDescOwn" xml:space="preserve">
+        <value>Refernces set by patient</value>
+    </data>
+    <data name="referenceDescDefault" xml:space="preserve">
+        <value>References matched by patient parameters</value>
+    </data>
+    <data name="historyDesc" xml:space="preserve">
+        <value>The last {0} values are presented </value>
+        <comment>historyDesc</comment>
+    </data>
+    <data name="selectBiomarker" xml:space="preserve">
+        <value>Select biomarker from the menu to the left to see it's details</value>
+        <comment>selectBiomarker</comment>
+    </data>
 </root>

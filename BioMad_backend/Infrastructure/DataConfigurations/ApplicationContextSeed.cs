@@ -8,6 +8,71 @@ namespace BioMad_backend.Infrastructure.DataConfigurations
     {
         public static void SeedData(this ModelBuilder builder)
         {
+            builder.Entity<Gender>().HasData(new[]
+            {
+                new Gender
+                {
+                    Id = 1,
+                    Key = "male"
+                },
+                new Gender
+                {
+                    Id = 2,
+                    Key = "female"
+                },
+                new Gender
+                {
+                    Id = 3,
+                    Key = "neutral"
+                }
+            });
+
+            builder.Entity<GenderTranslation>().HasData(new[]
+            {
+                new GenderTranslation
+                {
+                    Id = 1,
+                    BaseEntityId = 1,
+                    CultureId = Culture.En.Id,
+                    Name = "Male"
+                },
+                new GenderTranslation
+                {
+                    Id = 2,
+                    BaseEntityId = 1,
+                    CultureId = Culture.Ru.Id,
+                    Name = "Мужской"
+                },
+                new GenderTranslation
+                {
+                    Id = 3,
+                    BaseEntityId = 2,
+                    CultureId = Culture.En.Id,
+                    Name = "Female"
+                },
+                new GenderTranslation
+                {
+                    Id = 4,
+                    BaseEntityId = 2,
+                    CultureId = Culture.Ru.Id,
+                    Name = "Женский"
+                },
+                new GenderTranslation
+                {
+                    Id = 5,
+                    BaseEntityId = 3,
+                    CultureId = Culture.En.Id,
+                    Name = "Neutral"
+                },
+                new GenderTranslation
+                {
+                    Id = 6,
+                    BaseEntityId = 3,
+                    CultureId = Culture.Ru.Id,
+                    Name = "Нейтральный"
+                }
+            });
+            
             builder.Entity<Category>().HasData(new[]
             {
                 new Category

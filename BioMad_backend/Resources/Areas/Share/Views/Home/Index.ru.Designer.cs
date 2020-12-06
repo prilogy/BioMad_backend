@@ -61,6 +61,141 @@ namespace BioMad_backend.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to О биомаркере.
+        /// </summary>
+        internal static string aboutBiomarker {
+            get {
+                return ResourceManager.GetString("aboutBiomarker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Возраст.
+        /// </summary>
+        internal static string age {
+            get {
+                return ResourceManager.GetString("age", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Биомаркеры.
+        /// </summary>
+        internal static string biomarkers {
+            get {
+                return ResourceManager.GetString("biomarkers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Тип.
+        /// </summary>
+        internal static string biomarkerType {
+            get {
+                return ResourceManager.GetString("biomarkerType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Текущее значение.
+        /// </summary>
+        internal static string currentValue {
+            get {
+                return ResourceManager.GetString("currentValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Пол.
+        /// </summary>
+        internal static string gender {
+            get {
+                return ResourceManager.GetString("gender", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to История.
+        /// </summary>
+        internal static string history {
+            get {
+                return ResourceManager.GetString("history", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Представлены последние {0} показателей.
+        /// </summary>
+        internal static string historyDesc {
+            get {
+                return ResourceManager.GetString("historyDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to История биомаркеров.
+        /// </summary>
+        internal static string pageTitle {
+            get {
+                return ResourceManager.GetString("pageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Пациент.
+        /// </summary>
+        internal static string patient {
+            get {
+                return ResourceManager.GetString("patient", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Референсы подобраны по параметрам пациента.
+        /// </summary>
+        internal static string referenceDescDefault {
+            get {
+                return ResourceManager.GetString("referenceDescDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Референсы выставлены самим пациентом.
+        /// </summary>
+        internal static string referenceDescOwn {
+            get {
+                return ResourceManager.GetString("referenceDescOwn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Норма.
+        /// </summary>
+        internal static string referenceNormal {
+            get {
+                return ResourceManager.GetString("referenceNormal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Референсы.
+        /// </summary>
+        internal static string references {
+            get {
+                return ResourceManager.GetString("references", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Выберите биомаркер в меню слева чтобы увидеть подробности.
+        /// </summary>
+        internal static string selectBiomarker {
+            get {
+                return ResourceManager.GetString("selectBiomarker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to С вами поделились анализами.
         /// </summary>
         internal static string title {

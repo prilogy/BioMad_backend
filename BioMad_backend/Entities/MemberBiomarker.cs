@@ -40,6 +40,24 @@ namespace BioMad_backend.Entities
             return this;
         }
 
+        public BiomarkerStateType GetState(BiomarkerReference reference)
+        {
+            if (reference == null)
+                return BiomarkerStateType.NoInfo;
+
+            if (reference.UnitId != UnitId)
+                InUnit(reference.Unit);
+            
+            if (Value.IsBetween(reference.ValueA, reference.ValueB))
+                return BiomarkerStateType.Normal;
+            if (Value > reference.ValueB)
+                return BiomarkerStateType.Higher;
+            if (Value < reference.ValueA)
+                return BiomarkerStateType.Lower;
+
+            return BiomarkerStateType.NoInfo;
+        }
+        
         public bool? CalcIsNormal(Member member)
         {
             var reference = Biomarker.FindReference(member);

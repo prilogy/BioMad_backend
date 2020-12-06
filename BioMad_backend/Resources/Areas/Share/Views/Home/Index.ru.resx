@@ -21,4 +21,62 @@
     <data name="title" xml:space="preserve">
         <value>С вами поделились анализами</value>
     </data>
+    <data name="pageTitle" xml:space="preserve">
+        <value>История биомаркеров</value>
+        <comment>pageTitle</comment>
+    </data>
+    <data name="biomarkers" xml:space="preserve">
+        <value>Биомаркеры</value>
+        <comment>biomarkers</comment>
+    </data>
+    <data name="patient" xml:space="preserve">
+        <value>Пациент</value>
+        <comment>patient</comment>
+    </data>
+    <data name="gender" xml:space="preserve">
+        <value>Пол</value>
+        <comment>gender</comment>
+    </data>
+    <data name="age" xml:space="preserve">
+        <value>Возраст</value>
+        <comment>age</comment>
+    </data>
+    <data name="references" xml:space="preserve">
+        <value>Референсы</value>
+        <comment>references</comment>
+    </data>
+    <data name="biomarkerType" xml:space="preserve">
+        <value>Тип</value>
+        <comment>biomarkerType</comment>
+    </data>
+    <data name="currentValue" xml:space="preserve">
+        <value>Текущее значение</value>
+        <comment>currentValue</comment>
+    </data>
+    <data name="aboutBiomarker" xml:space="preserve">
+        <value>О биомаркере</value>
+        <comment>aboutBiomarker</comment>
+    </data>
+    <data name="referenceNormal" xml:space="preserve">
+        <value>Норма</value>
+        <comment>referenceNormal</comment>
+    </data>
+    <data name="history" xml:space="preserve">
+        <value>История</value>
+        <comment>history</comment>
+    </data>
+    <data name="referenceDescDefault" xml:space="preserve">
+        <value>Референсы подобраны по параметрам пациента</value>
+    </data>
+    <data name="referenceDescOwn" xml:space="preserve">
+        <value>Референсы выставлены самим пациентом</value>
+    </data>
+    <data name="historyDesc" xml:space="preserve">
+        <value>Представлены последние {0} показателей</value>
+        <comment>historyDesc</comment>
+    </data>
+    <data name="selectBiomarker" xml:space="preserve">
+        <value>Выберите биомаркер в меню слева чтобы увидеть подробности</value>
+        <comment>selectBiomarker</comment>
+    </data>
 </root>

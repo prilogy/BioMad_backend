@@ -1,12 +1,30 @@
 ﻿:root {
+    --light: #ffffff;
+    --light-faint: #ffffffba;
+    --light-fainter: #ffffff44;
     --dark: #454852;
     --accent: #1554F6;
-    --dark-faint: #45485277;
-    --dark-fainter: #45485244;
+    --accent-faint: #1554f6ba;
+    --accent-fainter: #1554f622;
+    --dark-faint: #454852ba;
+    --dark-fainter: #45485222;
+    --indent-1: 6px;
+    --indent-2: 12px;
+    --indent-3: 20px;
+    --fs-1: 16px;
+    --fs-2: 18px;
+    --fs-3: 20px;
+    --fs-4: 28px;
 }
 
 * {
     font-family: 'Roboto', sans-serif;
+    transition: all 0.3s;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    color: var(--dark);
+    margin: 0;
 }
 
 html, body {
@@ -16,21 +34,20 @@ html, body {
 }
 
 main {
-    max-width: 1280px;
+    max-width: 1080px;
     height: 100%;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 0.4fr 1fr;
-    grid-template-rows: 7% 86% 7%;
+    grid-template-columns: 0.5fr 1fr;
+    grid-template-rows: 70px 100%;
     gap: 0 0;
     grid-template-areas:
     ". ."
     ". ."
-    ". .";
 }
 
-.b-1, .b-2, .b-3, .b-4, .b-5, .b-6 {
-    padding: 12px;
+.b-1, .b-2, .b-3__info, .b-4, .b-5, .b-6 {
+    padding: var(--indent-3);
 }
 
 .b-1, .b-3, .b-5 {
@@ -38,7 +55,162 @@ main {
     border-left: 1px solid var(--dark-fainter);
 }
 
-.b-1, .b-2, .b-3, .b-4 {
+.b-2, .b-4, .b-6 {
+    border-right: 1px solid var(--dark-fainter);
+}
+
+.b-1, .b-2, .b-3, .b-4, .b-3__list-title {
     border-bottom: 1px solid var(--dark-fainter);
 }
 
+.b-3__list-title > div {
+    padding: var(--indent-1) var(--indent-3);
+}
+
+.b-3__list-title > div > p {
+    color: var(--dark-faint);
+    margin: 0;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.b-3__info__item {
+    display: flex;
+    justify-content: space-between;
+}
+
+.b-3__info__item__name, .b-3__info__item__value {
+    font-weight: 300;
+    color: var(--dark-faint);
+    font-size: var(--fs-2);
+}
+
+.b-3__info__item__value {
+    color: var(--dark);
+    font-size: var(--fs-2);
+}
+
+.biomarker {
+    padding: var(--indent-2) var(--indent-3);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: solid 1px var(--dark-fainter);
+    cursor: pointer;
+}
+
+.biomarker:hover {
+    background: var(--accent-fainter);
+}
+
+.biomarker__name {
+    font-weight: 300;
+    font-size: var(--fs-2);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 250px;
+}
+
+.biomarker__info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.biomarker__info__value {
+    font-size: var(--fs-2);
+}
+
+.biomarker__info__unit {
+    font-size: var(--fs-1);
+    color: var(--dark-faint);
+    font-weight: 300;
+    line-height: 1;
+}
+
+.details__block {
+    margin-bottom: var(--indent-3);
+}
+
+.details__stat {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    grid-gap: var(--indent-2);
+}
+
+.details__stat > h5, .details__stat__h5 {
+    font-weight: 300;
+    font-size: var(--fs-2);
+}
+
+.details__stat > h5:first-of-type, .details__stat__h5 {
+    color: var(--dark-faint)
+}
+
+.details__stat > h5:last-of-type {
+    color: var(--dark)
+}
+
+.details__name {
+    font-size: var(--fs-4);
+}
+
+.details__value {
+    font-weight: 300;
+    font-size: var(--fs-2);
+}
+
+.details__header {
+    font-size: var(--fs-3);
+}
+
+.details__desc {
+    color: var(--dark);
+    font-weight: 300;
+    font-size: var(--fs-1);
+    margin-left: var(--indent-2);
+}
+
+.details__ref__block {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 calc(-1*var(--indent-3));
+    padding: var(--indent-1) var(--indent-3);
+    cursor: default; 
+}
+
+.details__ref__block:hover {
+    background: var(--accent-fainter);
+}
+
+.details__ref__desc {
+    font-weight: 300;
+    font-size: var(--fs-1);
+    color: var(--dark-faint)
+}
+
+.biomarker--selected {
+    background-color: var(--accent);
+}
+
+.biomarker--selected:hover {
+    background: var(--accent-faint);
+}
+
+.biomarker--selected .biomarker__name, .biomarker--selected  .biomarker__info__value {
+    color: var(--light);
+}
+
+.biomarker--selected .biomarker__info__unit  {
+    color: var(--light);
+}
+
+.details-biomarker-blank {
+    height: 100%;
+    display: flex;
+    margin-top: calc(var(--indent-3)*(-1));
+    justify-content: center;
+    align-items: center;
+}

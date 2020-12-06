@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using BioMad_backend.Data;
@@ -7,7 +6,6 @@ using BioMad_backend.Entities.ManyToMany;
 using BioMad_backend.Extensions;
 using BioMad_backend.Infrastructure.AbstractClasses;
 using BioMad_backend.Infrastructure.Interfaces;
-using Microsoft.AspNetCore.DataProtection.XmlEncryption;
 using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities
@@ -54,9 +52,7 @@ namespace BioMad_backend.Entities
         [JsonIgnore] public virtual UnitGroup UnitGroup { get; set; }
 
 
-        [NotMapped]
-        public bool IsNormal => Reference != null && CurrentValue != null &&
-                                CurrentValue.Value.IsBetween(Reference.ValueA, Reference.ValueB);
+        [NotMapped] public BiomarkerStateType State => CurrentValue?.GetState(Reference) ?? BiomarkerStateType.NoInfo;
 
         #endregion
 
@@ -130,8 +126,7 @@ namespace BioMad_backend.Entities
             return this;
         }
     }
-
-
+    
     public class BiomarkerTranslation : Translation<BiomarkerTranslation>, ITranslationEntity<Biomarker>,
         IWithNameDescription
     {
@@ -140,5 +135,14 @@ namespace BioMad_backend.Entities
 
         public int BaseEntityId { get; set; }
         [JsonIgnore] public Biomarker BaseEntity { get; set; }
+    }
+    
+    
+    public enum BiomarkerStateType
+    {
+        Higher,
+        Lower,
+        Normal,
+        NoInfo
     }
 }
