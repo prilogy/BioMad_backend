@@ -71,6 +71,8 @@ namespace BioMad_backend.Infrastructure.ServiceConfigurations
                 config.IncludeXmlComments(xmlPath);
             });
 
+            services.AddSwaggerGenNewtonsoftSupport();
+
             return services;
         }
 
