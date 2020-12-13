@@ -17,7 +17,7 @@ jobs:
       # uploading repository to our path(~/app-build)
       - checkout
       # - run: cd BioMad_backend
-      - run: dotnet build --runtime linux-x64 --configuration Release --framework netcoreapp3.1
+      - run: dotnet build --configuration Release --framework netcoreapp3.1
       # persisting build files to workspace 
       - persist_to_workspace:
           root: . # specifying path from where we want to persist next paths
