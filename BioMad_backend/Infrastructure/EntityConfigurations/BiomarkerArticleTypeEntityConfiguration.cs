@@ -12,7 +12,9 @@ namespace BioMad_backend.Infrastructure.EntityConfigurations
             builder.HasData(new List<BiomarkerArticleType>
             {
                 BiomarkerArticleType.Decrease,
-                BiomarkerArticleType.Increase
+                BiomarkerArticleType.Increase,
+                BiomarkerArticleType.Decreased,
+                BiomarkerArticleType.Increased
             });
         }
     }

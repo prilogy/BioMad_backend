@@ -70,15 +70,16 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
                     (await _applicationContext.Categories
                         .SearchWithQuery<Category, CategoryTranslation>(query)
                         .ToListAsync()).Localize(_userService.Culture),
-                Cities = 
-                    (await _applicationContext
-                        .Cities
-                        .SearchWithQuery<City, CityTranslation>(query)
-                        .ToListAsync()).Localize(_userService.Culture),
-                Labs = (await _applicationContext
-                        .Labs
-                        .SearchWithQuery<Lab, LabTranslation>(query)
-                        .ToListAsync()).Localize(_userService.Culture),
+                Cities = null,
+                    // (await _applicationContext
+                    //     .Cities
+                    //     .SearchWithQuery<City, CityTranslation>(query)
+                    //     .ToListAsync()).Localize(_userService.Culture),
+                Labs = null,
+                    // (await _applicationContext
+                    //     .Labs
+                    //     .SearchWithQuery<Lab, LabTranslation>(query)
+                    //     .ToListAsync()).Localize(_userService.Culture),
                 Units =
                     (await _applicationContext
                         .Units

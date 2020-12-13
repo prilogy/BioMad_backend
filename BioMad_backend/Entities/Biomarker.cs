@@ -19,7 +19,12 @@ namespace BioMad_backend.Entities
         public int TypeId { get; set; }
         public virtual BiomarkerType Type { get; set; }
 
-        #region [ Localization ]
+        [JsonIgnore] public int? MainUnitId { get; set; }
+        [JsonIgnore] public virtual Unit MainUnit { get; set; }
+
+        public int? DefaultUnitId => MainUnitId ?? UnitGroup?.MainUnitId;
+
+            #region [ Localization ]
 
         [JsonIgnore] public virtual TranslationCollection<BiomarkerTranslation> Translations { get; set; }
         [NotMapped] public BiomarkerTranslation Content { get; set; }
@@ -34,9 +39,6 @@ namespace BioMad_backend.Entities
 
         [NotMapped] [JsonIgnore] public IEnumerable<Unit> Units => UnitGroup.Units;
         [NotMapped] public IEnumerable<int> UnitIds => Units.Select(x => x.Id);
-        
-        [JsonIgnore] public int? MainUnitId { get; set; }
-        [JsonIgnore] public virtual Unit MainUnit { get; set; }
 
         [NotMapped] public BiomarkerReference Reference;
         [NotMapped] public MemberBiomarker CurrentValue;

@@ -45,8 +45,8 @@ namespace BioMad_backend.Data
         public DbSet<BiomarkerReferenceConfigRange> BiomarkerReferenceConfigDependencyRanges { get; set; }
         public DbSet<MemberBiomarkerReference> MemberBiomarkerReferences { get; set; }
         
-        public DbSet<City> Cities { get; set; }
-        public DbSet<Lab> Labs { get; set; }
+        // public DbSet<City> Cities { get; set; }
+        // public DbSet<Lab> Labs { get; set; }
         public DbSet<Member> Members { get; set; }
         public DbSet<MemberAnalysis> MemberAnalyzes { get; set; }
         public DbSet<MemberBiomarker> MemberBiomarkers { get; set; }

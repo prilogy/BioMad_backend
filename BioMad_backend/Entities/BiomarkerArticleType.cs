@@ -8,13 +8,29 @@ namespace BioMad_backend.Entities
         public static readonly BiomarkerArticleType Increase = new BiomarkerArticleType
         {
             Id = 1,
-            Key = "increase"
+            Key = "increase",
+            Name = "Как повысить значение"
         };
         
         public static readonly BiomarkerArticleType Decrease = new BiomarkerArticleType
         {
             Id = 2,
-            Key = "decrease"
+            Key = "decrease",
+            Name = "Как понизить значение"
+        };
+
+        public static readonly BiomarkerArticleType Decreased = new BiomarkerArticleType
+        {
+            Id = 3,
+            Key = "decreased_desc",
+            Name = "О пониженном значении"
+        };
+
+        public static readonly BiomarkerArticleType Increased = new BiomarkerArticleType
+        {
+            Id = 4,
+            Key = "increased_desc",
+            Name = "О повышенном значении"
         };
     }
 }

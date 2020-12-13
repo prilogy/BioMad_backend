@@ -150,6 +150,22 @@ namespace BioMad_backend.Infrastructure.DataConfigurations
                     Name = "Гармоны",
                     Description = "гармон лалал ывфв",
                     BaseEntityId = 1
+                },
+                new BiomarkerTypeTranslation
+                {
+                    Id = 3,
+                    CultureId = Culture.En.Id,
+                    Name = "Microns",
+                    Description = "Microns - lalalalalala alal",
+                    BaseEntityId = 1
+                },
+                new BiomarkerTypeTranslation
+                {
+                    Id = 4,
+                    CultureId = Culture.Ru.Id,
+                    Name = "Микроны",
+                    Description = "Микроны лалалала лалалала ла",
+                    BaseEntityId = 1
                 }
             });
 
@@ -251,11 +267,13 @@ namespace BioMad_backend.Infrastructure.DataConfigurations
             {
                 new UnitGroup
                 {
-                    Id = 1
+                    Id = 1,
+                    MainUnitId = 1
                 },
                 new UnitGroup
                 {
-                    Id = 2
+                    Id = 2,
+                    MainUnitId = 4
                 }
             });
 
@@ -308,28 +326,148 @@ namespace BioMad_backend.Infrastructure.DataConfigurations
                     Id = 1,
                     CultureId = Culture.En.Id,
                     Name = "Weight",
-                    BaseEntityId = 1
+                    BaseEntityId = 1,
+                    Description = "Weight is weight!"
                 },
                 new BiomarkerTranslation
                 {
                     Id = 2,
                     CultureId = Culture.Ru.Id,
                     Name = "Вес",
-                    BaseEntityId = 1
+                    BaseEntityId = 1,
+                    Description = "Вес это вес!"
                 },
                 new BiomarkerTranslation
                 {
                     Id = 3,
                     CultureId = Culture.En.Id,
                     Name = "Discharge",
-                    BaseEntityId = 2
+                    BaseEntityId = 2,
+                    Description = "Discharge is discharge!!!"
                 },
                 new BiomarkerTranslation
                 {
                     Id = 4,
                     CultureId = Culture.Ru.Id,
                     Name = "Выделения",
-                    BaseEntityId = 2
+                    BaseEntityId = 2,
+                    Description = "Выделения это выделения!!!"
+                }
+            });
+
+            builder.Entity<Article>().HasData(new[]
+            {
+                new Article
+                {
+                    Id = 1
+                },
+                new Article
+                {
+                    Id = 2
+                },
+                new Article
+                {
+                    Id = 3
+                },
+                new Article
+                {
+                    Id = 4
+                },
+            });
+
+            builder.Entity<ArticleTranslation>().HasData(new[]
+            {
+                new ArticleTranslation
+                {
+                    Id = 1,
+                    Name = "Перевод статьи про повышенное значение веса ",
+                    Text = "### Перевод статьи про повышенное значение веса",
+                    BaseEntityId = 1,
+                    CultureId = Culture.Ru.Id
+                },
+                new ArticleTranslation
+                {
+                    Id = 2,
+                    Name = "Article translation about increased value of weight",
+                    Text = "### Article translation about increased value of weight",
+                    BaseEntityId = 1,
+                    CultureId = Culture.En.Id
+                },
+                new ArticleTranslation
+                {
+                    Id = 3,
+                    Name = "Перевод статьи про понижение веса",
+                    Text = "### Перевод статьи про понижение веса",
+                    BaseEntityId = 2,
+                    CultureId = Culture.Ru.Id
+                },
+                new ArticleTranslation
+                {
+                    Id = 4,
+                    Name = "Article translation about decreasing weight",
+                    Text = "### Article translation about decreasing weight",
+                    BaseEntityId = 2,
+                    CultureId = Culture.En.Id
+                },
+                new ArticleTranslation
+                {
+                    Id = 5,
+                    Name = "Перевод статьи пониженном значении выделений",
+                    Text = "### Перевод статьи пониженном значении выделений",
+                    BaseEntityId = 3,
+                    CultureId = Culture.Ru.Id
+                },
+                new ArticleTranslation
+                {
+                    Id = 6,
+                    Name = "Article translation about decreased discharge value",
+                    Text = "### Article translation about decreased discharge value",
+                    BaseEntityId = 3,
+                    CultureId = Culture.En.Id
+                },
+                new ArticleTranslation
+                {
+                    Id = 7,
+                    Name = "Перевод статьи о повышении значении выделений",
+                    Text = "### Перевод статьи о повышении значении выделений",
+                    BaseEntityId = 4,
+                    CultureId = Culture.Ru.Id
+                },
+                new ArticleTranslation
+                {
+                    Id = 8,
+                    Name = "Article translation about increasing discharge value",
+                    Text = "### Article translation about increasing discharge value",
+                    BaseEntityId = 4,
+                    CultureId = Culture.En.Id
+                },
+            });
+
+            builder.Entity<BiomarkerArticle>().HasData(new[]
+            {
+                new BiomarkerArticle
+                {
+                    ArticleId = 1,
+                    BiomarkerId = 1,
+                    TypeId = BiomarkerArticleType.Increased.Id
+                },
+                new BiomarkerArticle
+                {
+                    ArticleId = 2,
+                    BiomarkerId = 1,
+                    TypeId = BiomarkerArticleType.Decrease.Id
+                },
+                new BiomarkerArticle
+                {
+                    ArticleId = 3,
+                    BiomarkerId = 2,
+                    TypeId = BiomarkerArticleType.Decreased.Id
+                },
+                new BiomarkerArticle
+                {
+                    ArticleId = 4,
+                    BiomarkerId = 2,
+                    TypeId = BiomarkerArticleType.Increase.Id
                 }
             });
 
@@ -431,156 +569,91 @@ namespace BioMad_backend.Infrastructure.DataConfigurations
                 }
             });
 
-            builder.Entity<City>().HasData(new[]
-            {
-                new City
-                {
-                    Id = 1
-                },
-                new City
-                {
-                    Id = 2
-                }
-            });
+            // builder.Entity<City>().HasData(new[]
+            // {
+            //     new City
+            //     {
+            //         Id = 1
+            //     },
+            //     new City
+            //     {
+            //         Id = 2
+            //     }
+            // });
 
-            builder.Entity<CityTranslation>().HasData(new[]
-            {
-                new CityTranslation
-                {
-                    Id = 1,
-                    CultureId = Culture.En.Id,
-                    Name = "Penza",
-                    BaseEntityId = 1,
-                },
-                new CityTranslation
-                {
-                    Id = 2,
-                    CultureId = Culture.Ru.Id,
-                    Name = "Пенза",
-                    BaseEntityId = 1,
-                },
-                new CityTranslation
-                {
-                    Id = 3,
-                    CultureId = Culture.En.Id,
-                    Name = "Moscow",
-                    BaseEntityId = 2,
-                },
-                new CityTranslation
-                {
-                    Id = 4,
-                    CultureId = Culture.Ru.Id,
-                    Name = "Москва",
-                    BaseEntityId = 2,
-                }
-            });
-
-            builder.Entity<Lab>().HasData(new[]
-            {
-                new Lab
-                {
-                    Id = 1,
-                    CityId = 1,
-                    PhoneNumber = "+79877775522"
-                },
-                new Lab
-                {
-                    Id = 2,
-                    CityId = 2,
-                    PhoneNumber = "+798784541512"
-                },
-                new Lab
-                {
-                    Id = 3,
-                    CityId = 1,
-                    PhoneNumber = "+79995255522"
-                }
-            });
-
-            builder.Entity<LabTranslation>().HasData(new[]
-            {
-                new LabTranslation
-                {
-                    Id = 1,
-                    CultureId = Culture.En.Id,
-                    Name = "WEbbys lab",
-                    Description = "Lab where webby cookin crack",
-                    BaseEntityId = 1
-                },
-                new LabTranslation
-                {
-                    Id = 2,
-                    CultureId = Culture.Ru.Id,
-                    Name = "Лаба вебби",
-                    Description = "Лаба где вебби готовит крэк",
-                    BaseEntityId = 1
-                }
-            });
-
-            builder.Entity<Article>().HasData(new[]
-            {
-                new Article
-                {
-                    Id = 1
-                },
-                new Article
-                {
-                    Id = 2
-                }
-            });
-
-
-            builder.Entity<ArticleTranslation>().HasData(new[]
-            {
-                new ArticleTranslation
-                {
-                    Id = 1,
-                    BaseEntityId = 1,
-                    Name = "Weight loss",
-                    Text = "Lol Kek Lolk kekek WEigjt gagajsdjas",
-                    CultureId = Culture.En.Id
-                },
-                new ArticleTranslation
-                {
-                    Id = 2,
-                    BaseEntityId = 1,
-                    Name = "Понижение веса",
-                    Text = "Вес ы ыы ы ыы в вес",
-                    CultureId = Culture.Ru.Id
-                },
-                new ArticleTranslation
-                {
-                    Id = 3,
-                    BaseEntityId = 2,
-                    Name = "Someth gain",
-                    Text = "zxdzxczxczxc asdas dsa as",
-                    CultureId = Culture.En.Id
-                },
-                new ArticleTranslation
-                {
-                    Id = 4,
-                    BaseEntityId = 2,
-                    Name = "Повышение чего то",
-                    Text = "ыфвфычс ясячсяч яч",
-                    CultureId = Culture.Ru.Id
-                }
-            });
-
-            builder.Entity<BiomarkerArticle>().HasData(new[]
-            {
-                new BiomarkerArticle
-                {
-                    ArticleId = 1,
-                    BiomarkerId = 1,
-                    TypeId = BiomarkerArticleType.Decrease.Id
-                },
-                new BiomarkerArticle
-                {
-                    ArticleId = 2,
-                    BiomarkerId = 2,
-                    TypeId = BiomarkerArticleType.Increase.Id
-                },
-            });
+            // builder.Entity<CityTranslation>().HasData(new[]
+            // {
+            //     new CityTranslation
+            //     {
+            //         Id = 1,
+            //         CultureId = Culture.En.Id,
+            //         Name = "Penza",
+            //         BaseEntityId = 1,
+            //     },
+            //     new CityTranslation
+            //     {
+            //         Id = 2,
+            //         CultureId = Culture.Ru.Id,
+            //         Name = "Пенза",
+            //         BaseEntityId = 1,
+            //     },
+            //     new CityTranslation
+            //     {
+            //         Id = 3,
+            //         CultureId = Culture.En.Id,
+            //         Name = "Moscow",
+            //         BaseEntityId = 2,
+            //     },
+            //     new CityTranslation
+            //     {
+            //         Id = 4,
+            //         CultureId = Culture.Ru.Id,
+            //         Name = "Москва",
+            //         BaseEntityId = 2,
+            //     }
+            // });
+            //
+            // builder.Entity<Lab>().HasData(new[]
+            // {
+            //     new Lab
+            //     {
+            //         Id = 1,
+            //         CityId = 1,
+            //         PhoneNumber = "+79877775522"
+            //     },
+            //     new Lab
+            //     {
+            //         Id = 2,
+            //         CityId = 2,
+            //         PhoneNumber = "+798784541512"
+            //     },
+            //     new Lab
+            //     {
+            //         Id = 3,
+            //         CityId = 1,
+            //         PhoneNumber = "+79995255522"
+            //     }
+            // });
+            //
+            // builder.Entity<LabTranslation>().HasData(new[]
+            // {
+            //     new LabTranslation
+            //     {
+            //         Id = 1,
+            //         CultureId = Culture.En.Id,
+            //         Name = "WEbbys lab",
+            //         Description = "Lab where webby cookin crack",
+            //         BaseEntityId = 1
+            //     },
+            //     new LabTranslation
+            //     {
+            //         Id = 2,
+            //         CultureId = Culture.Ru.Id,
+            //         Name = "Лаба вебби",
+            //         Description = "Лаба где вебби готовит крэк",
+            //         BaseEntityId = 1
+            //     }
+            // });
         }
     }
 }
