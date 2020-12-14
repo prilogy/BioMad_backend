@@ -102,15 +102,17 @@ namespace BioMad_backend.Services
             return tokenDescriptor;
         }
 
-        private ClaimsIdentity GenerateClaimsIdentity(User user, Member currentMember, MetaHeaders metaHeaders)
+        public ClaimsIdentity GenerateClaimsIdentity(User user, Member currentMember = null, MetaHeaders metaHeaders = null)
         {
             var claims = new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.Name, user.Id.ToString()),
                 new Claim(ClaimTypes.Role, user.Role.Key),
-                new Claim(ClaimTypes.Locality, metaHeaders.Culture),
             }, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
 
+            if(metaHeaders?.Culture != null)
+                claims.AddClaim(new Claim(ClaimTypes.Locality, metaHeaders.Culture));
+            
             if (currentMember != null)
                 claims.AddClaim(new Claim(CustomClaimTypes.MemberId, currentMember.Id.ToString()));
 

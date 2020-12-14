@@ -1,0 +1,30 @@
+﻿@model LogInModel
+<h2 class="mb-3">Вход</h2>
+
+<form asp-area="Admin" asp-action="LogIn" asp-controller="Auth" asp-anti-forgery="true">
+    <div class="col-md-6 p-0">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Email</span>
+            </div>
+            <input asp-for="Email" type="text" class="form-control" placeholder="example@email.com" aria-label="Email">
+            <span asp-validation-for="Email"/>
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Пароль</span>
+            </div>
+            <input asp-for="Password" type="password" class="form-control" placeholder="*****" aria-label="Пароль">
+            <span asp-validation-for="Password"/>
+        </div>
+
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            <input type="submit" value="Войти" class="btn btn-primary"/>
+            <button class="btn btn-light ml-2">
+                <a asp-area="Admin" asp-controller="Auth" asp-action="SignUp">Регистрация</a>
+            </button>
+        </div>
+    </div>
+</form>

@@ -39,7 +39,7 @@ namespace BioMad_backend.Entities
         [JsonIgnore] public virtual IEnumerable<Shared> Shared { get; set; }
 
         [JsonIgnore] public virtual IEnumerable<MemberAnalysis> Analyzes { get; set; }
-        public IEnumerable<int> AnalysisIds => Analyzes.Select(x => x.Id);
+        [JsonIgnore] public IEnumerable<int> AnalysisIds => Analyzes.Select(x => x.Id);
         [JsonIgnore] public virtual IEnumerable<MemberCategoryState> CategoryStates { get; set; }
         
         [JsonIgnore]

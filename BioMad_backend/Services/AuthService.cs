@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using BioMad_backend.Areas.Api.V1.Models;
 using BioMad_backend.Data;
 using BioMad_backend.Entities;
 using BioMad_backend.Infrastructure.Constants;
 using BioMad_backend.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -35,16 +38,11 @@ namespace BioMad_backend.Services
         /// </summary>
         public async Task<AuthenticationResult> Authenticate(LogInWithCredentialsModel model)
         {
-            var user = await _applicationContext.Users.FirstOrDefaultAsync(x => x.Email == model.Email);
-            if (user == null ||
-                _passwordService.VerifyHashedPassword(user, user.Password, model.Password) ==
-                PasswordVerificationResult.Failed)
-                return null;
-
+            var user = await VerifyUser(model.Email, model.Password);
+            if (user == null) return null;
             return await Authenticate(user);
         }
-
-
+        
         /// <summary>
         /// Authenticates user with given userId, memberId and refreshToken
         /// </summary>
@@ -87,7 +85,7 @@ namespace BioMad_backend.Services
 
             try
             {
-                if (user.Culture != null)
+                if (user.CultureId != default)
                 {
                     var culture = Culture.All.FirstOrDefault(x => x.Key == metaHeaders.Culture);
                     if (culture != null)
@@ -132,6 +130,33 @@ namespace BioMad_backend.Services
 
         #endregion
 
+        #region [ Cookie authentication flow implementation]
+
+        public async Task<User> AuthenticateCookies(string email, string password)
+        {
+            var user = await VerifyUser(email, password);
+            if (user == null || user.Role.Id != Role.Admin.Id) return null;
+            
+            var claimsIdentity = _tokenService.GenerateClaimsIdentity(user);
+            var authProperties = new AuthenticationProperties
+            {
+                AllowRefresh = true,
+                ExpiresUtc = DateTimeOffset.Now.AddDays(7),
+            };
+
+            await _httpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity),
+                authProperties);
+
+            return user;
+        }
+
+        public async Task LogOutCookies()
+        =>  await _httpContext.SignOutAsync("Cookies");
+
+        #endregion
+
         #region [ Heplper functionality]
 
         private MetaHeaders GetMetaHeaders() => new MetaHeaders
@@ -140,6 +165,17 @@ namespace BioMad_backend.Services
                 ? _httpContext.Request.Headers[HeaderKeys.Culture]
                 : default
         };
+        
+        private async Task<User> VerifyUser(string email, string password)
+        {
+            var user = await _applicationContext.Users.FirstOrDefaultAsync(x => x.Email == email);
+            if (user == null ||
+                _passwordService.VerifyHashedPassword(user, user.Password, password) ==
+                PasswordVerificationResult.Failed)
+                return null;
+            
+            return user;
+        }
 
         #endregion
     }

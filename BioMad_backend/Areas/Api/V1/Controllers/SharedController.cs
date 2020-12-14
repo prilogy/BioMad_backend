@@ -69,7 +69,9 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
       {
         var shared = new Shared
         {
-          Token = Hasher.RandomToken().Substring(0, 30),
+          Token = Hasher.RandomToken().Substring(0, 40)
+            .Replace("/", "")
+            .Replace(".","").Replace("?", ""),
           MemberId = _userService.CurrentMemberId,
           BiomarkerIds = biomarkerIds
         };

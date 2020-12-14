@@ -1,0 +1,39 @@
+﻿@model SignUpModel
+
+<h2 class="mb-3 text-dark">Регистрация</h2>
+
+<p class="text text-dark">Заполните форму</p>
+
+<form asp-area="Admin" asp-action="SignUp" asp-controller="Auth" asp-anti-forgery="true">
+    <div class="col-md-6 p-0">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text"asp-for="Email">Email</span><br/>
+            </div> <input class="form-control" type="text" asp-for="Email"/>
+            <span asp-validation-for="Email"/>
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text"asp-for="Password">Пароль</span><br/>
+            </div>
+            <input class="form-control" asp-for="Password"/>
+            <span asp-validation-for="Password"/>
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text"asp-for="Secret">Секретный код</span><br/>
+            </div>
+            <input class="form-control" asp-for="Secret"/>
+            <span asp-validation-for="Secret"/>
+        </div>
+
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+        <div class="input-group">
+            <input class="btn btn-primary" type="submit" value="Регистрация"/>
+            <button class="btn btn-light ml-2">
+                <a asp-area="Admin" asp-controller="Auth" asp-action="LogIn">Назад к входу</a>
+            </button>
+        </div>
+    </div>
+</form>

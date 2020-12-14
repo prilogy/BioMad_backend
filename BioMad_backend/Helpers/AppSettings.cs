@@ -18,6 +18,8 @@ namespace BioMad_backend.Helpers
         public string EmailSenderPassword { get; set; }
         public string EmailSenderName { get; set; }
         
+        public string AdminSecret { get; set; }
+        
         public const string Key = "AppSettings";
     } 
 

@@ -14,7 +14,7 @@ namespace BioMad_backend.Infrastructure.ServiceConfigurations
         {
             var key = services.GetHashedKey(configuration);
 
-            
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(x =>
                 {
@@ -27,6 +27,11 @@ namespace BioMad_backend.Infrastructure.ServiceConfigurations
                         ValidateIssuer = false,
                         ValidateAudience = false
                     };
+                })
+                .AddCookie(opts =>
+                {
+                    opts.LoginPath = "/admin/auth/login";
+                    opts.LogoutPath = "/admin/auth/logout";
                 });
 
             services.AddScoped<SocialAuthenticationService, SocialAuthenticationServices.GoogleAuthenticationService>();

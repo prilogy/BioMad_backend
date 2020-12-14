@@ -70,7 +70,7 @@ namespace BioMad_backend.Services
             await using var transaction = await _db.Database.BeginTransactionAsync();
             try
             {
-                var user = new User { Email = model.Email };
+                var user = new User { Email = model.Email, RoleId = Role.User.Id };
                 user.Password = _passwordService.HashPassword(user, model.Password);
 
                 await _db.Users.AddAsync(user);
@@ -124,6 +124,34 @@ namespace BioMad_backend.Services
             catch (Exception)
             {
                 return false;
+            }
+        }
+
+        #endregion
+
+        #region [ Admin related implementation ]
+
+        public async Task<User> CreateAdmin(string email, string password)
+        {
+            if (await _db.Users.AnyAsync(x => x.Email == email))
+                return null;
+            
+            try
+            {
+                var user = new User
+                {
+                    Email = email, RoleId = Role.Admin.Id
+                };
+                user.Password = _passwordService.HashPassword(user, password);
+
+                await _db.Users.AddAsync(user);
+                await _db.SaveChangesAsync();
+
+                return user;
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
 
