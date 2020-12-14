@@ -20,8 +20,8 @@ namespace BioMad_backend.Entities
         [JsonIgnore]
         public virtual Member Member { get; set; }
         
-        public int? LabId { get; set; }
-        public virtual Lab Lab { get; set; }
+        // public int? LabId { get; set; }
+        // public virtual Lab Lab { get; set; }
         
         public virtual IEnumerable<MemberBiomarker> Biomarkers { get; set; }
         
@@ -34,7 +34,7 @@ namespace BioMad_backend.Entities
 
         public MemberAnalysis Localize(Culture culture)
         {
-            Lab = Lab.Localize(culture);
+            //Lab = Lab.Localize(culture);
             Biomarkers = Biomarkers.Localize(culture);
             return this;
         }

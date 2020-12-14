@@ -70,12 +70,12 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
                     (await _applicationContext.Categories
                         .SearchWithQuery<Category, CategoryTranslation>(query)
                         .ToListAsync()).Localize(_userService.Culture),
-                Cities = null,
+                //Cities = null,
                     // (await _applicationContext
                     //     .Cities
                     //     .SearchWithQuery<City, CityTranslation>(query)
                     //     .ToListAsync()).Localize(_userService.Culture),
-                Labs = null,
+                //Labs = null,
                     // (await _applicationContext
                     //     .Labs
                     //     .SearchWithQuery<Lab, LabTranslation>(query)

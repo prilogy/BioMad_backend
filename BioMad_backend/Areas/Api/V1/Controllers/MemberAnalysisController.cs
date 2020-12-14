@@ -48,7 +48,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
                 MemberId = _userService.CurrentMemberId,
                 Date = model.Date,
                 Description = model.Description,
-                LabId = model.LabId
+                //LabId = model.LabId
             };
 
             await using var transaction = await _db.Database.BeginTransactionAsync();
@@ -111,8 +111,8 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
                 m.Description = model.Description;
             if (model.Date != default)
                 m.Date = model.Date;
-            if (model.LabId != default)
-                m.LabId = model.LabId;
+            // if (model.LabId != default)
+            //     m.LabId = model.LabId;
 
             try
             {
@@ -145,7 +145,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
             {
                 _db.Remove(m);
                 await _db.SaveChangesAsync();
-
+                
                 await _monitoringService.UpdateCategoryStates(changedBiomarkerIds);
                 
                 return Ok();
