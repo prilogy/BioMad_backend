@@ -7,6 +7,7 @@ namespace BioMad_backend.Areas.Admin.Controllers
 {
   [Area("Admin")]
   [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles = Role.Keys.Admin)]
+  [ApiExplorerSettings(IgnoreApi = true)]
   public class BiomarkerController : Controller
   {
 
