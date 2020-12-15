@@ -87,10 +87,12 @@ namespace BioMad_backend.Areas.Admin.Helpers
 
         private static string ActionLink(IHtmlHelper helper, string linkText, string actionName, string controllerName,
             object routeValues)
+            => HtmlContentToString(helper.ActionLink(linkText, actionName, controllerName, routeValues));
+
+        private static string HtmlContentToString(IHtmlContent content)
         {
             using var writer = new StringWriter();
-            var h = helper.ActionLink(linkText, actionName, controllerName, routeValues);
-            h.WriteTo(writer, HtmlEncoder.Default);
+            content.WriteTo(writer, HtmlEncoder.Default);
             return writer.ToString();
         }
     }

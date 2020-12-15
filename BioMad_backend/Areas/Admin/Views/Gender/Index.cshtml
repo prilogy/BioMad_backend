@@ -1,19 +1,20 @@
+@using BioMad_backend.Entities
 @model IEnumerable<BioMad_backend.Entities.Gender>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Пол";
 }
 
-<h1>Index</h1>
+<h1>Пол</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Добавить</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Key)
+                Название
             </th>
             <th></th>
         </tr>
@@ -22,7 +23,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Key)
+                @item.Localize(Culture.Ru)?.Content?.Name
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
