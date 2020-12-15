@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+<!--    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>-->
   </PropertyGroup>
 
   <PropertyGroup>
@@ -34,8 +34,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Admin" />
     <Folder Include="Resources\Areas" />
+    <Folder Include="Views" />
   </ItemGroup>
 
   <ItemGroup>
@@ -94,6 +94,14 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>EmailResources.ru.resx</DependentUpon>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Areas\Admin\Views\Gender\Translation\Create.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Admin\Views\Gender\Translation\Delete.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Admin\Views\Gender\Translation\Details.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Admin\Views\Gender\Translation\Edit.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Admin\Views\Gender\Translation\Index.cshtml" />
   </ItemGroup>
 
 </Project>

@@ -2,9 +2,17 @@
     --color-dark: #454852;
     --color-primary: #1554F6;
     --color-accent: #FF1D53;
+    --indent-1: 6px;
+    --indent-2: 12px;
+    --indent-3: 20px;
+    --indent-4: 40px;
 }
 
-*:not(a):not(input) {
+* {
+    font-family: 'Inter', sans-serif !important;
+}
+
+*:not(a):not(input):not(button) {
     color: var(--color-dark) !important;
 }
 
@@ -98,4 +106,22 @@ body {
     width: 100%;
     white-space: nowrap;
     line-height: 60px; /* Vertically center the text there */
+}
+
+.my-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(25px, max-content));
+    grid-template-rows: repeat(auto-fit, minmax(25px, max-content));
+    grid-gap: var(--indent-2);
+}
+
+.my-grid-md {
+    grid-template-columns: repeat(auto-fit, minmax(70px, max-content));
+    grid-template-rows: repeat(auto-fit, minmax(70px, max-content));
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

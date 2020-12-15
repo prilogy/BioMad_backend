@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using BioMad_backend.Areas.Admin.Helpers;
 using BioMad_backend.Areas.Admin.Models;
 using BioMad_backend.Data;
 using BioMad_backend.Helpers;
 using BioMad_backend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -15,9 +17,8 @@ using Microsoft.Extensions.Options;
 
 namespace BioMad_backend.Areas.Admin.Controllers
 {
-    [Area("Admin")]
-    [ApiExplorerSettings(IgnoreApi = true)]
-    public class AuthController : Controller
+    [AllowAnonymous]
+    public class AuthController : AdminController
     {
         private readonly ApplicationContext _applicationContext;
         private readonly AuthService _authService;
@@ -36,6 +37,9 @@ namespace BioMad_backend.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult LogIn()
         {
+            if (_userService.User != null)
+                return RedirectToAction("Index", "Home", new { Area = "Admin" });
+            
             return View();
         }
 

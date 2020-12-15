@@ -73,5 +73,7 @@ namespace BioMad_backend.Data
             builder.SeedData();
             #endif
         }
+        
+        public DbSet<BioMad_backend.Entities.GenderTranslation> GenderTranslation { get; set; }
     }
 }

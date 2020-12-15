@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities
 {
-    public class Gender : ILocalizedEntity<GenderTranslation>, ILocalizable<Gender>
+    public class Gender : ILocalizedEntity<GenderTranslation>, ILocalizable<Gender>, IWithId
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
