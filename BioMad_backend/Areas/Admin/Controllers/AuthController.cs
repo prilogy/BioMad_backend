@@ -75,7 +75,7 @@ namespace BioMad_backend.Areas.Admin.Controllers
 
             var user = await _userService.CreateAdmin(model.Email, model.Password);
             if (user != null)
-                return LogIn();
+                return RedirectToAction("LogIn", "Auth", new { Area = "Admin"});
 
             ModelState.AddModelError("", "Этот Email уже используется");
             return View(model);

@@ -8,7 +8,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BioMad_backend.Data;
 using BioMad_backend.Entities;
+using BioMad_backend.Extensions;
 using Microsoft.AspNetCore.Authorization;
+using X.PagedList;
 
 namespace BioMad_backend.Areas.Admin.Controllers.GenderEntity
 {
@@ -22,9 +24,18 @@ namespace BioMad_backend.Areas.Admin.Controllers.GenderEntity
         }
 
         // GET: Gender
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, string searchString = default)
         {
-            return View(await _context.Genders.ToListAsync());
+            var q = _context.Genders.AsQueryable();
+            if (searchString != default)
+            {
+                q = q.SearchWithQuery<Gender, GenderTranslation>(searchString);
+                ViewData["searchString"] = searchString;
+            }
+
+            var result = await q.ToPagedListAsync(page, 10);
+            var lst = await q.ToListAsync();
+            return View(result);
         }
 
         // GET: Gender/Details/5

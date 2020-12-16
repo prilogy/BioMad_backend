@@ -1,36 +1,24 @@
-@using BioMad_backend.Entities
-@model IEnumerable<BioMad_backend.Entities.Gender>
+@using BioMad_backend.Areas.Admin.Helpers
+@model IPagedList<BioMad_backend.Entities.Gender>
 
 @{
     ViewData["Title"] = "Пол";
 }
 
-<h1>Пол</h1>
+@Html.EntityIndexHeader("Пол", ViewData["searchString"] as string)
 
-<p>
-    <a asp-action="Create">Добавить</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Название
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @item.Localize(Culture.Ru)?.Content?.Name
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+@Html.Table(Model, x =>
+{
+    x = x.Localize(Culture.Ru);
+    return new Dictionary<string, string>
+    {
+        { "Название", x.Content?.Name }
+    };
+})
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchString = ViewData["searchString"] }),
+    new PagedListRenderOptions
+    {
+        LiElementClasses = new string[] { "page-item" },
+        PageClasses = new string[] { "page-link" }
+    })

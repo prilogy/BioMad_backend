@@ -12,8 +12,8 @@
     font-family: 'Inter', sans-serif !important;
 }
 
-*:not(a):not(input):not(button) {
-    color: var(--color-dark) !important;
+*:not(a):not(input):not(button):not(.page-link) {
+    color: var(--color-dark);
 }
 
 button > a, button > a:hover {
@@ -124,4 +124,18 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.page-item.active .page-link {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.page-item .page-link {
+    color: var(--color-primary);
+}
+
+.btn-outline-primary {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
 }
