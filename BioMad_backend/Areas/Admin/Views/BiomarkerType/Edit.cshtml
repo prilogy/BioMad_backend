@@ -1,0 +1,32 @@
+@model BiomarkerType
+@inject ApplicationContext DbContext;
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>BiomarkerType</h4>
+<hr/>
+<div class="row">
+    <div class="col-md-6">
+        @Html.LocalizationSection(x => x.Content, DbContext, Model)
+    </div>
+    <div class="col-md-6">
+        <h4>Биомаркеры</h4>
+        @Html.Table(DbContext.Biomarkers.Where(x => x.TypeId == Model.Id).AsEnumerable(), x =>
+        {
+            x = x?.Localize(Culture.Ru) ?? x;
+            return new Dictionary<string, object>
+            {
+                {"Id", x.Id },
+                {"Название", x.Content?.Name}
+            };
+        }, null, new List<TableActionButtonType> { TableActionButtonType.Edit })
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

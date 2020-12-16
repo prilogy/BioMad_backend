@@ -29,7 +29,7 @@ namespace BioMad_backend.Entities
 
         public BiomarkerReference Localize(Culture culture)
         {
-            Unit = Unit.Localize(culture);
+            Unit = Unit?.Localize(culture);
             
             return this;
         }

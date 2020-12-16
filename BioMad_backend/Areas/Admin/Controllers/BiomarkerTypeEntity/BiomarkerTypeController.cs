@@ -1,31 +1,34 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BioMad_backend.Areas.Admin.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BioMad_backend.Data;
 using BioMad_backend.Entities;
 using BioMad_backend.Extensions;
 using X.PagedList;
 
-namespace BioMad_backend.Areas.Admin.Controllers.GenderEntity
+namespace BioMad_backend.Areas.Admin.Controllers.BiomarkerTypeEntity
 {
-    public class GenderController : AdminController
+    public class BiomarkerTypeController : AdminController
     {
         private readonly ApplicationContext _context;
 
-        public GenderController(ApplicationContext context)
+        public BiomarkerTypeController(ApplicationContext context)
         {
             _context = context;
         }
-
-        // GET: Gender
+        
+        // GET: BiomarkerType
         public async Task<IActionResult> Index(int page = 1, string searchString = default)
         {
-            var q = _context.Genders.AsQueryable();
+            var q = _context.BiomarkerTypes.AsQueryable();
             if (searchString != default)
             {
-                q = q.SearchWithQuery<Gender, GenderTranslation>(searchString);
+                q = q.SearchWithQuery<BiomarkerType, BiomarkerTypeTranslation>(searchString);
                 ViewData["searchString"] = searchString;
             }
 
@@ -34,7 +37,7 @@ namespace BioMad_backend.Areas.Admin.Controllers.GenderEntity
             return View(result);
         }
 
-        // GET: Gender/Details/5
+        // GET: BiomarkerType/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -42,39 +45,39 @@ namespace BioMad_backend.Areas.Admin.Controllers.GenderEntity
                 return NotFound();
             }
 
-            var gender = await _context.Genders
+            var biomarkerType = await _context.BiomarkerTypes
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (gender == null)
+            if (biomarkerType == null)
             {
                 return NotFound();
             }
 
-            return View(gender);
+            return View(biomarkerType);
         }
 
-        // GET: Gender/Create
+        // GET: BiomarkerType/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Gender/Create
+        // POST: BiomarkerType/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Key")] Gender gender)
+        public async Task<IActionResult> Create([Bind("Id")] BiomarkerType biomarkerType)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(gender);
+                _context.Add(biomarkerType);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(gender);
+            return View(biomarkerType);
         }
 
-        // GET: Gender/Edit/5
+        // GET: BiomarkerType/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -82,22 +85,22 @@ namespace BioMad_backend.Areas.Admin.Controllers.GenderEntity
                 return NotFound();
             }
 
-            var gender = await _context.Genders.FindAsync(id);
-            if (gender == null)
+            var biomarkerType = await _context.BiomarkerTypes.FindAsync(id);
+            if (biomarkerType == null)
             {
                 return NotFound();
             }
-            return View(gender);
+            return View(biomarkerType);
         }
 
-        // POST: Gender/Edit/5
+        // POST: BiomarkerType/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Key")] Gender gender)
+        public async Task<IActionResult> Edit(int id, [Bind("Id")] BiomarkerType biomarkerType)
         {
-            if (id != gender.Id)
+            if (id != biomarkerType.Id)
             {
                 return NotFound();
             }
@@ -106,12 +109,12 @@ namespace BioMad_backend.Areas.Admin.Controllers.GenderEntity
             {
                 try
                 {
-                    _context.Update(gender);
+                    _context.Update(biomarkerType);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!GenderExists(gender.Id))
+                    if (!BiomarkerTypeExists(biomarkerType.Id))
                     {
                         return NotFound();
                     }
@@ -122,10 +125,10 @@ namespace BioMad_backend.Areas.Admin.Controllers.GenderEntity
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(gender);
+            return View(biomarkerType);
         }
 
-        // GET: Gender/Delete/5
+        // GET: BiomarkerType/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -133,30 +136,30 @@ namespace BioMad_backend.Areas.Admin.Controllers.GenderEntity
                 return NotFound();
             }
 
-            var gender = await _context.Genders
+            var biomarkerType = await _context.BiomarkerTypes
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (gender == null)
+            if (biomarkerType == null)
             {
                 return NotFound();
             }
 
-            return View(gender);
+            return View(biomarkerType);
         }
 
-        // POST: Gender/Delete/5
+        // POST: BiomarkerType/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var gender = await _context.Genders.FindAsync(id);
-            _context.Genders.Remove(gender);
+            var biomarkerType = await _context.BiomarkerTypes.FindAsync(id);
+            _context.BiomarkerTypes.Remove(biomarkerType);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool GenderExists(int id)
+        private bool BiomarkerTypeExists(int id)
         {
-            return _context.Genders.Any(e => e.Id == id);
+            return _context.BiomarkerTypes.Any(e => e.Id == id);
         }
     }
 }

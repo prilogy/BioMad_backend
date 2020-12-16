@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Cryptography.Pkcs;
 using System.Text.Encodings.Web;
+using BioMad_backend.Areas.Admin.Models;
 using BioMad_backend.Data;
 using BioMad_backend.Infrastructure.AbstractClasses;
 using BioMad_backend.Infrastructure.Interfaces;
@@ -15,7 +17,6 @@ namespace BioMad_backend.Areas.Admin.Helpers
 {
     public static class HtmlHelpers
     {
-        
         #region [ Localization section helper ]
 
         public static IHtmlContent LocalizationSection<TModel, TResult>(
@@ -64,7 +65,7 @@ namespace BioMad_backend.Areas.Admin.Helpers
                 {
                     result += @$"<tr>
                               <td>
-                              item.Key +
+                              {item.Key}
                               </td>
                               <td>
                               {ActionLink(htmlHelper, "Добавить", "Create", controllerName,
@@ -85,7 +86,7 @@ namespace BioMad_backend.Areas.Admin.Helpers
 
             return new HtmlString(result);
         }
-        
+
         #endregion
 
         #region [ EntityIndexHeader ]
@@ -111,7 +112,7 @@ namespace BioMad_backend.Areas.Admin.Helpers
                              ? ""
                              : "<div class='input-group-append'>" +
                                ActionLink(htmlHelper, "✖", "Index", controllerName, null,
-                                   new { @class = "btn btn-primary" })
+                                   new { @class = "btn btn-delete" })
                                + "</div>"
                          ) +
                          @$"<div class='input-group-append'>
@@ -126,59 +127,75 @@ namespace BioMad_backend.Areas.Admin.Helpers
 
             return new HtmlString(result);
         }
-        
+
         #endregion
 
         #region [ TableRowActions ]
-        
+
         public static IHtmlContent TableRowActions<TModel>(
-            this IHtmlHelper htmlHelper, TModel model)
+            this IHtmlHelper htmlHelper, TModel model, Func<TModel, List<TableActionButton>> appendButtons = null,
+            List<TableActionButtonType> actionTypes = null)
         {
+            actionTypes ??= new List<TableActionButtonType>
+                { TableActionButtonType.Delete, TableActionButtonType.Edit };
+
             var id = model.GetType().GetProperty("Id")?.GetValue(model, null);
             var controllerName = model.GetType().Name.Replace("Proxy", "");
 
             var result = "<div class='btn-group btn-group-sm'>" +
-                         ActionLink(htmlHelper, "Изменить", "Edit", controllerName, new { id },
-                             new { @class = "btn btn-outline-primary" }) +
-                         ActionLink(htmlHelper, "Удалить", "Delete", controllerName, new { id },
-                             new { @class = "btn btn-outline-primary" })
+                         (actionTypes.Contains(TableActionButtonType.Edit)
+                             ? ActionLink(htmlHelper, "Изменить", "Edit", controllerName, new { id },
+                                 new { @class = "btn btn-outline-primary" })
+                             : "") +
+                         (actionTypes.Contains(TableActionButtonType.Delete)
+                             ? ActionLink(htmlHelper, "Удалить", "Delete", controllerName, new { id },
+                                 new { @class = "btn btn-outline-primary" })
+                             : "") +
+                         (appendButtons != null
+                             ? appendButtons(model).Aggregate("", (acc, x) => 
+                                 ActionLink(htmlHelper, x.Text,
+                                 x.Action, x.Controller, x.Arguments,
+                                 new { @class = "btn btn-outline-primary" }))
+                             : "")
                          + "</div>";
             return new HtmlString(result);
         }
-        
+
         #endregion
 
         #region [ Table ]
         
-        public static IHtmlContent Table<TModel, TModel2>(
-            this IHtmlHelper<TModel> htmlHelper, IEnumerable<TModel2> lst,
-            Func<TModel2, Dictionary<string, string>> func, bool showActionButtons = true)
-            where TModel : IEnumerable<TModel2>
-            where TModel2 : new()
+        public static IHtmlContent Table<TModel>(
+            this IHtmlHelper htmlHelper, IEnumerable<TModel> lst,
+            Func<TModel, Dictionary<string, object>> func, Func<TModel, List<TableActionButton>> appendButtons = null, List<TableActionButtonType> defaultActionTypes = null)
+            where TModel : new()
         {
+            defaultActionTypes ??= new List<TableActionButtonType>
+                { TableActionButtonType.Delete, TableActionButtonType.Edit };
+
             var list = lst.ToList();
 
             var result = @$"
             <table class='table'>
                 <thead>
                 <tr>
-                {func(list.FirstOrDefault() ?? new TModel2()).Aggregate("", (acc2, y) => acc2 + @$"
+                {func(list.FirstOrDefault() ?? new TModel()).Aggregate("", (acc2, y) => acc2 + @$"
                         <th class='font-weight-bold'>{y.Key}</th>
                         ")
                              }" +
-                         (showActionButtons ? "<th></th>" : "") +
+                         (defaultActionTypes.Count > 0 ? "<th></th>" : "") +
                          @$"</tr>
                 </thead>
                 <tbody>"
                          + list.Aggregate("", (acc, x) => acc + @$"
                 <tr>
                    {func(x).Aggregate("", (acc2, y) => acc2 + @$"
-                        <td>{y.Value}</td>
+                        <td>{y.Value?.ToString()}</td>
                         ")
                                                                   }"
-                                                              + (showActionButtons
+                                                              + (defaultActionTypes.Count > 0
                                                                   ? "<td>" + HtmlContentToString(
-                                                                      htmlHelper.TableRowActions(x)) + "</td>"
+                                                                      htmlHelper.TableRowActions(x, appendButtons, defaultActionTypes)) + "</td>"
                                                                   : "") +
                                                               "</tr>"
                          )
@@ -192,7 +209,7 @@ namespace BioMad_backend.Areas.Admin.Helpers
         #endregion
 
         #region [ Helper methods ]
-        
+
         private static string ActionLink(IHtmlHelper helper, string linkText, string actionName, string controllerName,
             object routeValues, object htmlAttributes = null)
             => HtmlContentToString(helper.ActionLink(linkText, actionName, controllerName, routeValues,
@@ -204,7 +221,7 @@ namespace BioMad_backend.Areas.Admin.Helpers
             content.WriteTo(writer, HtmlEncoder.Default);
             return writer.ToString();
         }
-        
+
         #endregion
     }
 }

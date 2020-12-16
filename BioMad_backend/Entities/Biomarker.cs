@@ -24,7 +24,7 @@ namespace BioMad_backend.Entities
 
         public int? DefaultUnitId => MainUnitId ?? UnitGroup?.MainUnitId;
 
-            #region [ Localization ]
+        #region [ Localization ]
 
         [JsonIgnore] public virtual TranslationCollection<BiomarkerTranslation> Translations { get; set; }
         [NotMapped] public BiomarkerTranslation Content { get; set; }
@@ -60,8 +60,8 @@ namespace BioMad_backend.Entities
 
         public Biomarker Localize(Culture culture)
         {
-            Content = Translations[culture];
-            Type = Type.Localize(culture);
+            Content = Translations?[culture];
+            Type = Type?.Localize(culture);
             return this;
         }
 

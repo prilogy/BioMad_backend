@@ -25,7 +25,7 @@ namespace BioMad_backend.Entities
 
         public MemberCategoryState Localize(Culture culture)
         {
-            Category = Category.Localize(culture);
+            Category = Category?.Localize(culture);
             return this;
         }
 

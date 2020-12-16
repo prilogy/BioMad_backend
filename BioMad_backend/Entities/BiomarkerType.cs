@@ -16,11 +16,11 @@ namespace BioMad_backend.Entities
         [NotMapped] public BiomarkerTypeTranslation Content { get; set; }
         [JsonIgnore] public virtual IEnumerable<Biomarker> Biomarkers { get; set; }
 
-        [NotMapped] public IEnumerable<int> BiomarkerIds => Biomarkers.Select(x => x.Id);
+        [NotMapped] public IEnumerable<int> BiomarkerIds => Biomarkers?.Select(x => x.Id);
 
         public BiomarkerType Localize(Culture culture)
         {
-            Content = Translations[culture];
+            Content = Translations?[culture];
             return this;
         }
     }

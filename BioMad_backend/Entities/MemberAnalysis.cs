@@ -35,7 +35,7 @@ namespace BioMad_backend.Entities
         public MemberAnalysis Localize(Culture culture)
         {
             //Lab = Lab.Localize(culture);
-            Biomarkers = Biomarkers.Localize(culture);
+            Biomarkers = Biomarkers?.Localize(culture);
             return this;
         }
     }

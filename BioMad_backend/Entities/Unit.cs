@@ -30,7 +30,7 @@ namespace BioMad_backend.Entities
 
         public Unit Localize(Culture culture)
         {
-            Content = Translations[culture];
+            Content = Translations?[culture];
             return this;
         }
     }

@@ -27,7 +27,7 @@ namespace BioMad_backend.Data
         public DbSet<ArticleType> ArticleTypes { get; set; }
         
         public DbSet<Category> Categories { get; set; }
-        
+
         public DbSet<Unit> Units { get; set; }
         public DbSet<UnitTransfer> UnitTransfers { get; set; }
         
@@ -75,5 +75,9 @@ namespace BioMad_backend.Data
         }
         
         public DbSet<BioMad_backend.Entities.GenderTranslation> GenderTranslation { get; set; }
+        
+        public DbSet<BioMad_backend.Entities.BiomarkerTypeTranslation> BiomarkerTypeTranslation { get; set; }
+        
+        public DbSet<BioMad_backend.Entities.CategoryTranslation> CategoryTranslation { get; set; }
     }
 }

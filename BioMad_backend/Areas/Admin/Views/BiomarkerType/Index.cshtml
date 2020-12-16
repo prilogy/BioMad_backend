@@ -1,10 +1,10 @@
-@model IPagedList<Gender>
+@model IPagedList<BiomarkerType>
 
 @{
-    ViewData["Title"] = "Пол";
+    ViewData["Title"] = "Тип биомаркера";
 }
 
-@Html.EntityIndexHeader("Пол", ViewData["searchString"] as string)
+@Html.EntityIndexHeader("Тип биомаркера", ViewData["searchString"] as string)
 
 @Html.Table(Model, x =>
 {

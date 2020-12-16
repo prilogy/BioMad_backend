@@ -157,7 +157,7 @@ namespace BioMad_backend.Infrastructure.DataConfigurations
                     CultureId = Culture.En.Id,
                     Name = "Microns",
                     Description = "Microns - lalalalalala alal",
-                    BaseEntityId = 1
+                    BaseEntityId = 2
                 },
                 new BiomarkerTypeTranslation
                 {
@@ -165,7 +165,7 @@ namespace BioMad_backend.Infrastructure.DataConfigurations
                     CultureId = Culture.Ru.Id,
                     Name = "Микроны",
                     Description = "Микроны лалалала лалалала ла",
-                    BaseEntityId = 1
+                    BaseEntityId = 2
                 }
             });
 

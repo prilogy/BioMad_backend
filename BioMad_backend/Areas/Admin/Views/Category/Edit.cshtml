@@ -1,0 +1,61 @@
+@model BioMad_backend.Entities.Category
+@inject ApplicationContext DbContext;
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Category</h4>
+<hr/>
+<div class="row">
+    <div class="col-md-6">
+        @Html.LocalizationSection(x => x.Content, DbContext, Model)
+    </div>
+    <div class="col-md-6">
+        <h4>Биомаркеры</h4>
+        @{
+            var items = await DbContext.Biomarkers.Where(x => !Model.BiomarkerIds.Contains(x.Id)).ToListAsync();
+            var selectList = SelectListHelpers.CreateSelectList(
+                items, 
+                x => new SelectListModel {Id = x.Id, Title = x.Id + " - " + x.Localize(Culture.Ru)?.Content?.Name });
+
+            <form class="d-flex mb-2" method="get" asp-action="AddBiomarker">
+                <div class="form-group m-0 w-100 mr-2">
+                    <select disabled="@(items.Count == 0)" name="biomarkerId" class="form-control" asp-items="selectList"></select>
+                </div>
+                <input hidden name="categoryId" value="@Model.Id">
+                <input disabled="@(items.Count == 0)" class="btn btn-primary" type="submit" value="Добавить">
+            </form>
+
+        }
+
+        @Html.Table(Model.Biomarkers, x =>
+        {
+            x = x?.Localize(Culture.Ru) ?? x;
+            return new Dictionary<string, object>
+            {
+                { "Id", x.Id },
+                { "Название", x.Content?.Name }
+            };
+        }, x => new List<TableActionButton>
+        {
+            new TableActionButton
+            {
+                Text = "Убрать",
+                Action = "RemoveBiomarker",
+                Controller = "Category",
+                Arguments = new
+                {
+                    categoryId = Model.Id,
+                    biomarkerId = x.Id
+                }
+            }
+        }, new List<TableActionButtonType> { TableActionButtonType.Edit })
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

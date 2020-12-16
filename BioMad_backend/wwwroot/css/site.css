@@ -139,3 +139,14 @@ body {
     color: var(--color-primary);
     border-color: var(--color-primary);
 }
+
+.btn-delete {
+    color: var(--color-primary); 
+    border-top: 1px solid #ced4da; 
+    border-bottom: 1px solid #ced4da
+}
+
+.btn-delete:hover {
+    color: var(--danger);
+    background: #DC354522;
+}
