@@ -11,7 +11,7 @@ using BioMad_backend.Entities;
 
 namespace BioMad_backend.Areas.Admin.Controllers.CategoryEntity
 {
-    public class CategoryTranslationController : TranslationController<Category, CategoryTranslation>
+    public class CategoryTranslationController : NoViewTranslationController<Category, CategoryTranslation>
     {
         public CategoryTranslationController(ApplicationContext context) : base(context)
         {

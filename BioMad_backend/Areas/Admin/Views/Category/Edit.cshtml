@@ -2,60 +2,85 @@
 @inject ApplicationContext DbContext;
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Подробнее";
 }
 
-<h1>Edit</h1>
-
-<h4>Category</h4>
+<div class="d-flex align-items-center mb-2 justify-content-between flex-wrap">
+    <div class="d-flex align-items-center">
+        <a class="btn text-primary" asp-action="Index" style="font-size: 20px">❮</a>
+        <h4 class="m-0 ml-2">Категория</h4>
+    </div>
+    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model.Id">Удалить</a>
+</div>
 <hr/>
 <div class="row">
+    
+    
     <div class="col-md-6">
-        @Html.LocalizationSection(x => x.Content, DbContext, Model)
-    </div>
-    <div class="col-md-6">
-        <h4>Биомаркеры</h4>
+        @Html.LocalizationSection(x => x.Content, DbContext, Model, selectedCultureId: (int) ViewBag.CultureId, selectedTranslationId: (int) ViewBag.TranslationId)
+
         @{
-            var items = await DbContext.Biomarkers.Where(x => !Model.BiomarkerIds.Contains(x.Id)).ToListAsync();
-            var selectList = SelectListHelpers.CreateSelectList(
-                items, 
-                x => new SelectListModel {Id = x.Id, Title = x.Id + " - " + x.Localize(Culture.Ru)?.Content?.Name });
-
-            <form class="d-flex mb-2" method="get" asp-action="AddBiomarker">
-                <div class="form-group m-0 w-100 mr-2">
-                    <select disabled="@(items.Count == 0)" name="biomarkerId" class="form-control" asp-items="selectList"></select>
-                </div>
-                <input hidden name="categoryId" value="@Model.Id">
-                <input disabled="@(items.Count == 0)" class="btn btn-primary" type="submit" value="Добавить">
-            </form>
-
-        }
-
-        @Html.Table(Model.Biomarkers, x =>
-        {
-            x = x?.Localize(Culture.Ru) ?? x;
-            return new Dictionary<string, object>
+            var translationAction = (string) ViewData["translationAction"];
+            if (translationAction != null)
             {
-                { "Id", x.Id },
-                { "Название", x.Content?.Name }
-            };
-        }, x => new List<TableActionButton>
-        {
-            new TableActionButton
-            {
-                Text = "Убрать",
-                Action = "RemoveBiomarker",
-                Controller = "Category",
-                Arguments = new
-                {
-                    categoryId = Model.Id,
-                    biomarkerId = x.Id
-                }
+                var translationEntity = translationAction == TranslationActionType.Edit
+                    ? Model.Translations.FirstOrDefault(x => x.Id == ViewBag.TranslationId)
+                    : new CategoryTranslation();
+                @await Html.PartialAsync("_TranslationForm", translationEntity)
             }
-        }, new List<TableActionButtonType> { TableActionButtonType.Edit })
+        }
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header font-weight-bold p-3">Биомаркеры</div>
+            @{
+                var items = await DbContext.Biomarkers.Where(x => !Model.BiomarkerIds.Contains(x.Id)).ToListAsync();
+                var selectList = SelectListHelpers.CreateSelectList(
+                    items,
+                    x => new SelectListModel { Id = x.Id, Title = x.Id + " - " + x.Localize(Culture.Ru)?.Content?.Name });
+                var isDisabled = items.Count == 0;
+                <div class="card-body p-2">
+                    <form class="d-flex" method="get" asp-action="AddBiomarker">
+                        <div class="form-group m-0 w-100 mr-2">
+                            <select disabled="@isDisabled" name="biomarkerId" class="form-control" asp-items="selectList">
+                                @if (isDisabled)
+                                {
+                                    <option>Нет доступных биомаркеров</option>
+                                }
+                            </select>
+                        </div>
+                        <input hidden name="categoryId" value="@Model.Id">
+                        <input disabled="@isDisabled" class="btn btn-primary" type="submit" value="Добавить">
+                    </form>
+                </div>
+            }
+
+            @Html.Table(Model.Biomarkers, x =>
+            {
+                x = x?.Localize(Culture.Ru) ?? x;
+                return new Dictionary<string, object>
+                {
+                    { "Id", x.Id },
+                    { "Название", x.Content?.Name }
+                };
+            }, x => new List<TableActionButton>
+            {
+                new TableActionButton
+                {
+                    Text = "Убрать",
+                    Action = "RemoveBiomarker",
+                    Controller = "Category",
+                    Arguments = new
+                    {
+                        categoryId = Model.Id,
+                        biomarkerId = x.Id
+                    }
+                }
+            }, deleteAction: false)
+        </div>
+    </div>
+    
+    
 </div>

@@ -2,31 +2,45 @@
 @inject ApplicationContext DbContext;
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Подробнее";
 }
 
-<h1>Edit</h1>
+<div class="d-flex align-items-center mb-2 justify-content-between flex-wrap">
+    <div class="d-flex align-items-center">
+        <a class="btn text-primary" asp-action="Index" style="font-size: 20px">❮</a>
+        <h4 class="m-0 ml-2">Тип биомаркера</h4>
+    </div>
+    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model.Id">Удалить</a>
+</div>
 
-<h4>BiomarkerType</h4>
 <hr/>
 <div class="row">
     <div class="col-md-6">
-        @Html.LocalizationSection(x => x.Content, DbContext, Model)
+        @Html.LocalizationSection(x => x.Content, DbContext, Model, selectedCultureId: (int) ViewBag.CultureId, selectedTranslationId: (int) ViewBag.TranslationId)
+
+        @{
+            var translationAction = (string) ViewData["translationAction"];
+            if (translationAction != null)
+            {
+                var translationEntity = translationAction == TranslationActionType.Edit
+                    ? Model.Translations.FirstOrDefault(x => x.Id == ViewBag.TranslationId)
+                    : new BiomarkerTypeTranslation();
+                @await Html.PartialAsync("_TranslationForm", translationEntity)
+            }
+        }
     </div>
     <div class="col-md-6">
-        <h4>Биомаркеры</h4>
-        @Html.Table(DbContext.Biomarkers.Where(x => x.TypeId == Model.Id).AsEnumerable(), x =>
-        {
-            x = x?.Localize(Culture.Ru) ?? x;
-            return new Dictionary<string, object>
-            {
-                {"Id", x.Id },
-                {"Название", x.Content?.Name}
-            };
-        }, null, new List<TableActionButtonType> { TableActionButtonType.Edit })
-    </div>
-</div>
+        <div class="card">
+            <div class="card-header font-weight-bold">Биомаркеры</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+            @Html.Table(DbContext.Biomarkers.Where(x => x.TypeId == Model.Id).AsEnumerable(), x =>
+            {
+                x = x?.Localize(Culture.Ru) ?? x;
+                return new Dictionary<string, object>
+                {
+                    { "Id", x.Id },
+                    { "Название", x.Content?.Name }
+                };
+            }, null, deleteAction: false)
+        </div></div>
 </div>

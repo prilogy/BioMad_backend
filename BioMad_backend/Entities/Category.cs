@@ -22,9 +22,9 @@ namespace BioMad_backend.Entities
 
         [JsonIgnore]
         [NotMapped]
-        public IEnumerable<Biomarker> Biomarkers => CategoryBiomarkers.Select(x => x.Biomarker);
+        public IEnumerable<Biomarker> Biomarkers => CategoryBiomarkers?.Select(x => x.Biomarker);
 
-        public IEnumerable<int> BiomarkerIds => CategoryBiomarkers.Select(x => x.BiomarkerId);
+        public IEnumerable<int> BiomarkerIds => CategoryBiomarkers?.Select(x => x.BiomarkerId);
 
         #region [ Many to many ]
 

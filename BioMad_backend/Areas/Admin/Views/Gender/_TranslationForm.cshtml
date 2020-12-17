@@ -1,0 +1,51 @@
+﻿@model GenderTranslation
+
+@{
+    const string controllerName = nameof(GenderTranslation);
+    var translationAction = (string) ViewData["translationAction"];
+    var submitInputValue = translationAction switch
+    {
+        TranslationActionType.Create => "Добавить",
+        TranslationActionType.Edit => "Изменить",
+        _ => ""
+        };
+    
+    var actionName = translationAction switch
+    {
+        TranslationActionType.Create => "Create",
+        TranslationActionType.Edit => "Edit",
+        _ => ""
+        };
+}
+
+<form id="MainForm" asp-action="@actionName" asp-controller="@controllerName" asp-route-id="@Model.Id" autocomplete="off">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    @if (translationAction == TranslationActionType.Edit)
+    {
+        <input name="id" type="hidden" value="@Model.Id" />
+    }
+
+    <div class="form-group">
+        <label asp-for="Name" class="control-label">Название</label>
+        <input asp-for="Name" class="form-control"/>
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <input hidden asp-for="CultureId" value="@(Model.CultureId == default ? ViewData["cultureId"] : Model.CultureId)">
+    <input hidden asp-for="BaseEntityId" value="@(Model.BaseEntityId == default ? ViewData["baseEntityId"] : Model.BaseEntityId)">
+
+
+</form>
+<div class="form-group d-flex justify-content-between align-items-center">
+    <input type="submit" value="@submitInputValue" class="btn btn-primary" form="MainForm"/>
+    <div class="d-flex">
+        @if (translationAction == TranslationActionType.Edit)
+        {
+            <form asp-area="Admin" asp-controller="@controllerName" asp-action="Delete">
+                <input hidden name="id" value="@Model.Id">
+                <input type="submit" class="btn btn-outline-danger" value="Удалить"/>
+            </form>
+        }
+        <a asp-area="Admin" asp-controller="@(controllerName.Replace("Translation", ""))" asp-action="Edit" type="button" class="btn btn-outline-primary ml-2">Отмена</a>
+    </div>
+</div>

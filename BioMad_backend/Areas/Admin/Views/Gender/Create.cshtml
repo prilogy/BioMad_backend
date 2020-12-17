@@ -1,30 +1,27 @@
 @model BioMad_backend.Entities.Gender
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Добавить";
 }
 
-<h1>Create</h1>
-
-<h4>Gender</h4>
-<hr />
+<h4>Новая запись</h4>
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Key" class="control-label"></label>
-                <input asp-for="Key" class="form-control" />
-                <span asp-validation-for="Key" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header">Пол</div>
+            <form class="card-body" asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group mb-0">
+                    <input type="submit" value="Создать" class="btn btn-primary"/>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
+<hr />
+
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-outline-info" asp-action="Index">Назад к списку</a>
 </div>
 

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Security.Cryptography.Pkcs;
 using System.Text.Encodings.Web;
 using BioMad_backend.Areas.Admin.Models;
 using BioMad_backend.Data;
@@ -21,19 +20,24 @@ namespace BioMad_backend.Areas.Admin.Helpers
 
         public static IHtmlContent LocalizationSection<TModel, TResult>(
             this IHtmlHelper<TModel> htmlHelper,
-            Expression<Func<TModel, TResult>> expression, ApplicationContext context, TModel model)
+            Expression<Func<TModel, TResult>> expression, ApplicationContext context, TModel model,
+            bool forPartial = true,
+            int selectedCultureId = default, int selectedTranslationId = default)
             where TModel : ILocalizedEntity<TResult>
             where TResult : Translation<TResult>, new()
         {
-            var result = @$"<h4>Локализация</h4>
+            var result = @$"<div class='card mb-2'>
+                        <div class='card-header font-weight-bold p-3'>                        
+                        Локализация
+                        </div>
                          <div>
                          <table class='table'>
                          <thead>
                          <tr>
-                        <th>
+                        <th class='pl-3 font-weight-bold'>
                          Культура
                          </th>
-                         <th>
+                         <th class='font-weight-bold'>
                          Название
                          </th>
                          <th></th>
@@ -41,46 +45,71 @@ namespace BioMad_backend.Areas.Admin.Helpers
                          </thead>
                          <tbody>";
 
-            var controllerName = typeof(TResult)?.Name?.Replace("Proxy", "");
+            var controllerName = typeof(TModel)?.Name?.Replace("Proxy", "");
+            var translationControllerName = typeof(TResult)?.Name?.Replace("Proxy", "");
 
             foreach (var item in context.Cultures.ToList())
             {
                 var matchedTranslation = model.Translations.FirstOrDefault(x => x.CultureId == item.Id);
                 if (matchedTranslation != null)
                 {
-                    result += @$"<tr>
-                                  <td>
+                    var isSelectedTranslation = selectedTranslationId == matchedTranslation.Id;
+                    result += @$"<tr style='background: {(isSelectedTranslation ? "#1554f622" : "none")}'>
+                                  <td class='pl-3'>
                                   {matchedTranslation.Culture?.Key}
                                   </td>
                                   <td>
                                   {(matchedTranslation as IWithName)?.Name}
                                   </td>
                                   <td>"
-                              + HtmlContentToString(
-                                  htmlHelper.TableRowActions(matchedTranslation))
+                              + (forPartial
+                                  ? HtmlContentToString(
+                                      htmlHelper.TableRowActions(matchedTranslation, x => !isSelectedTranslation
+                                          ? new List<TableActionButton>
+                                          {
+                                              new TableActionButton
+                                              {
+                                                  Text = "Подробнее",
+                                                  Action = "Edit",
+                                                  Controller = controllerName,
+                                                  Arguments = new
+                                                  {
+                                                      Area = "Admin",
+                                                      id = model.Id,
+                                                      translationAction = TranslationActionType.Edit,
+                                                      translationId = matchedTranslation.Id
+                                                  }
+                                              }
+                                          }
+                                          : new List<TableActionButton>(), false, false))
+                                  : HtmlContentToString(
+                                      htmlHelper.TableRowActions(matchedTranslation)))
                               + @"</td>
                                   </tr>";
                 }
                 else
                 {
-                    result += @$"<tr>
+                    result += @$"<tr style='background: {(selectedCultureId == item.Id ? "#1554f622" : "none")}'>
                               <td>
                               {item.Key}
                               </td>
                               <td>
-                              {ActionLink(htmlHelper, "Добавить", "Create", controllerName,
-                        new { Area = "Admin", baseEntityId = model.Id, cultureId = item.Id })}
+                              {(forPartial
+                        ? selectedCultureId == item.Id ? "" : ActionLink(htmlHelper, "Добавить", "Edit", controllerName,
+                            new { Area = "Admin", id = model.Id, translationAction = TranslationActionType.Create, cultureId = item.Id })
+                        : ActionLink(htmlHelper, "Добавить", "Create", translationControllerName,
+                            new { Area = "Admin", baseEntityId = model.Id, cultureId = item.Id }))}
                               </td>
                               <td>
                               </td>
-                              <td>
-                              </td>
+                             
                               </tr>";
                 }
             }
 
             result += @$"</tbody>
                       </table>
+                      </div>
                       </div>";
 
 
@@ -134,29 +163,24 @@ namespace BioMad_backend.Areas.Admin.Helpers
 
         public static IHtmlContent TableRowActions<TModel>(
             this IHtmlHelper htmlHelper, TModel model, Func<TModel, List<TableActionButton>> appendButtons = null,
-            List<TableActionButtonType> actionTypes = null)
+            bool editAction = true, bool deleteAction = true)
         {
-            actionTypes ??= new List<TableActionButtonType>
-                { TableActionButtonType.Delete, TableActionButtonType.Edit };
-
             var id = model.GetType().GetProperty("Id")?.GetValue(model, null);
             var controllerName = model.GetType().Name.Replace("Proxy", "");
 
             var result = "<div class='btn-group btn-group-sm'>" +
-                         (actionTypes.Contains(TableActionButtonType.Edit)
-                             ? ActionLink(htmlHelper, "Изменить", "Edit", controllerName, new { id },
+                         (editAction
+                             ? ActionLink(htmlHelper, "Подробнее", "Edit", controllerName, new { id },
                                  new { @class = "btn btn-outline-primary" })
                              : "") +
-                         (actionTypes.Contains(TableActionButtonType.Delete)
+                         (deleteAction
                              ? ActionLink(htmlHelper, "Удалить", "Delete", controllerName, new { id },
                                  new { @class = "btn btn-outline-primary" })
                              : "") +
-                         (appendButtons != null
-                             ? appendButtons(model).Aggregate("", (acc, x) => 
-                                 ActionLink(htmlHelper, x.Text,
+                         appendButtons?.Invoke(model).Aggregate("", (acc, x) =>
+                             ActionLink(htmlHelper, x.Text,
                                  x.Action, x.Controller, x.Arguments,
                                  new { @class = "btn btn-outline-primary" }))
-                             : "")
                          + "</div>";
             return new HtmlString(result);
         }
@@ -164,38 +188,39 @@ namespace BioMad_backend.Areas.Admin.Helpers
         #endregion
 
         #region [ Table ]
-        
+
         public static IHtmlContent Table<TModel>(
             this IHtmlHelper htmlHelper, IEnumerable<TModel> lst,
-            Func<TModel, Dictionary<string, object>> func, Func<TModel, List<TableActionButton>> appendButtons = null, List<TableActionButtonType> defaultActionTypes = null)
+            Func<TModel, Dictionary<string, object>> func, Func<TModel, List<TableActionButton>> appendButtons = null,
+            bool editAction = true, bool deleteAction = true)
             where TModel : new()
         {
-            defaultActionTypes ??= new List<TableActionButtonType>
-                { TableActionButtonType.Delete, TableActionButtonType.Edit };
-
             var list = lst.ToList();
+            var showButtons = appendButtons?.Invoke(new TModel())?.Count > 0 || editAction || deleteAction;
 
+            var headerDict = func(list.FirstOrDefault() ?? new TModel());
             var result = @$"
             <table class='table'>
                 <thead>
                 <tr>
-                {func(list.FirstOrDefault() ?? new TModel()).Aggregate("", (acc2, y) => acc2 + @$"
-                        <th class='font-weight-bold'>{y.Key}</th>
+                {headerDict.Aggregate("", (acc2, y) => acc2 + @$"
+                        <th class='font-weight-bold {(y.Key == headerDict.FirstOrDefault().Key ? "pl-3" : "")}'>{y.Key}</th>
                         ")
                              }" +
-                         (defaultActionTypes.Count > 0 ? "<th></th>" : "") +
+                         (showButtons ? "<th></th>" : "") +
                          @$"</tr>
                 </thead>
                 <tbody>"
                          + list.Aggregate("", (acc, x) => acc + @$"
                 <tr>
                    {func(x).Aggregate("", (acc2, y) => acc2 + @$"
-                        <td>{y.Value?.ToString()}</td>
+                        <td class='{(y.Key == headerDict.FirstOrDefault().Key ? "pl-3" : "")}'>{y.Value?.ToString()}</td>
                         ")
                                                                   }"
-                                                              + (defaultActionTypes.Count > 0
+                                                              + (showButtons
                                                                   ? "<td>" + HtmlContentToString(
-                                                                      htmlHelper.TableRowActions(x, appendButtons, defaultActionTypes)) + "</td>"
+                                                                      htmlHelper.TableRowActions(x, appendButtons,
+                                                                          editAction, deleteAction)) + "</td>"
                                                                   : "") +
                                                               "</tr>"
                          )

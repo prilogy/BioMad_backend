@@ -1,11 +1,5 @@
 ﻿namespace BioMad_backend.Areas.Admin.Models
 {
-    public enum TableActionButtonType
-    {
-        Edit,
-        Delete
-    }
-
     public class TableActionButton
     {
         public string Text { get; set; }

@@ -1,39 +1,32 @@
-@using BioMad_backend.Data
-@using BioMad_backend.Areas.Admin.Helpers
-@using BioMad_backend.Entities
-@using BioMad_backend.Infrastructure.AbstractClasses
-@model BioMad_backend.Entities.Gender
+@model Gender
 @inject ApplicationContext DbContext;
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Подробнее";
 }
 
-<h1>Edit</h1>
-
-<h4>Gender</h4>
-<hr/>
-<div class="row">
-    <div class="col-md-5">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id"/>
-            <div class="form-group">
-                <label asp-for="Key" class="control-label"></label>
-                <input asp-for="Key" class="form-control"/>
-                <span asp-validation-for="Key" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary"/>
-            </div>
-        </form>
+<div class="d-flex align-items-center mb-2 justify-content-between flex-wrap">
+    <div class="d-flex align-items-center">
+        <a class="btn text-primary" asp-action="Index" style="font-size: 20px">❮</a>
+        <h4 class="m-0 ml-2">Пол</h4>
     </div>
-
-    <div class="col-md-7">
-        @Html.LocalizationSection(x => x.Content, DbContext, Model)
-    </div>
+    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model.Id">Удалить</a>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<hr/>
+<div class="row">
+    <div class="col-md-6">
+        @Html.LocalizationSection(x => x.Content, DbContext, Model, selectedCultureId: (int) ViewBag.CultureId, selectedTranslationId: (int) ViewBag.TranslationId)
+
+        @{
+            var translationAction = (string) ViewData["translationAction"];
+            if (translationAction != null)
+            {
+                var translationEntity = translationAction == TranslationActionType.Edit
+                    ? Model.Translations.FirstOrDefault(x => x.Id == ViewBag.TranslationId)
+                    : new GenderTranslation();
+                @await Html.PartialAsync("_TranslationForm", translationEntity)
+            }
+        }
+    </div>
 </div>
