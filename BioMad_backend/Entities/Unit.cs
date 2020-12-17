@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities
 {
-    public class Unit : ILocalizedEntity<UnitTranslation>, ILocalizable<Unit>, IWithId
+    public class Unit : ILocalizedEntity<UnitTranslation>, ILocalizable<Unit>
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -16,15 +16,16 @@ namespace BioMad_backend.Entities
         [JsonIgnore] public virtual TranslationCollection<UnitTranslation> Translations { get; set; }
         [NotMapped] public UnitTranslation Content { get; set; }
 
-        [NotMapped] public IEnumerable<int> TransfersToIds => TransfersTo.Select(x => x.UnitB.Id);
-        [NotMapped] public IEnumerable<int> TransfersFromIds => TransfersFrom.Select(x => x.UnitA.Id);
+        [NotMapped] public IEnumerable<int> TransfersToIds => TransfersTo?.Select(x => x.UnitB.Id);
+        [NotMapped] public IEnumerable<int> TransfersFromIds => TransfersFrom?.Select(x => x.UnitA.Id);
         [JsonIgnore] public virtual IEnumerable<UnitTransfer> TransfersTo { get; set; }
         [JsonIgnore] public virtual IEnumerable<UnitTransfer> TransfersFrom { get; set; }
 
         #region [ Many to many ]
 
         [JsonIgnore] public virtual IEnumerable<UnitGroupUnit> UnitGroupUnits { get; set; }
-        [NotMapped, JsonIgnore] public IEnumerable<UnitGroup> UnitGroups => UnitGroupUnits.Select(x => x.UnitGroup);
+        [NotMapped, JsonIgnore] public IEnumerable<UnitGroup> UnitGroups => UnitGroupUnits?.Select(x => x.UnitGroup);
+        [NotMapped, JsonIgnore] public IEnumerable<int> UnitGroupIds => UnitGroupUnits?.Select(x => x.UnitGroupId);
 
         #endregion
 

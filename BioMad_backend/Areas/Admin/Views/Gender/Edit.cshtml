@@ -22,7 +22,7 @@
             var translationAction = (string) ViewData["translationAction"];
             if (translationAction != null)
             {
-                var translationEntity = translationAction == TranslationActionType.Edit
+                var translationEntity = translationAction == FormActionType.Edit
                     ? Model.Translations.FirstOrDefault(x => x.Id == ViewBag.TranslationId)
                     : new GenderTranslation();
                 @await Html.PartialAsync("_TranslationForm", translationEntity)

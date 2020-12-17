@@ -26,7 +26,7 @@ namespace BioMad_backend.Areas.Admin.Helpers
             where TModel : ILocalizedEntity<TResult>
             where TResult : Translation<TResult>, new()
         {
-            var result = @$"<div class='card mb-2'>
+            var result = @$"<div class='card'>
                         <div class='card-header font-weight-bold p-3'>                        
                         Локализация
                         </div>
@@ -76,7 +76,7 @@ namespace BioMad_backend.Areas.Admin.Helpers
                                                   {
                                                       Area = "Admin",
                                                       id = model.Id,
-                                                      translationAction = TranslationActionType.Edit,
+                                                      translationAction = FormActionType.Edit,
                                                       translationId = matchedTranslation.Id
                                                   }
                                               }
@@ -90,13 +90,13 @@ namespace BioMad_backend.Areas.Admin.Helpers
                 else
                 {
                     result += @$"<tr style='background: {(selectedCultureId == item.Id ? "#1554f622" : "none")}'>
-                              <td>
+                              <td class='pl-3'>
                               {item.Key}
                               </td>
                               <td>
                               {(forPartial
                         ? selectedCultureId == item.Id ? "" : ActionLink(htmlHelper, "Добавить", "Edit", controllerName,
-                            new { Area = "Admin", id = model.Id, translationAction = TranslationActionType.Create, cultureId = item.Id })
+                            new { Area = "Admin", id = model.Id, translationAction = FormActionType.Create, cultureId = item.Id })
                         : ActionLink(htmlHelper, "Добавить", "Create", translationControllerName,
                             new { Area = "Admin", baseEntityId = model.Id, cultureId = item.Id }))}
                               </td>
@@ -131,9 +131,9 @@ namespace BioMad_backend.Areas.Admin.Helpers
 
             var result = @$"
                 <div class='row d-flex justify-content-between align-items-center mb-3'>
-                 <h1 class='m-0 col-12 col-md-4 mb-2 mb-md-0'>{header}</h1> 
-                 <div class='d-flex col-12 col-md-6 justify-content-end'>
-                         <form method='get'>
+                 <h1 class='m-0 col-md-6 mb-2 mb-md-0'>{header}</h1> 
+                 <div class='d-flex col-md-6 justify-content-md-end'>
+                         <form method='get' class='w-100'>
                 <div class='input-group'>
                 <input type='text' class='form-control' placeholder='Поиск' aria-label='Поиск' value='{searchString}' name='searchString'>"
                          +
@@ -168,6 +168,11 @@ namespace BioMad_backend.Areas.Admin.Helpers
             var id = model.GetType().GetProperty("Id")?.GetValue(model, null);
             var controllerName = model.GetType().Name.Replace("Proxy", "");
 
+            var appended = appendButtons?.Invoke(model).Aggregate("", (acc, x) => acc +
+                ActionLink(htmlHelper, x.Text,
+                    x.Action, x.Controller, x.Arguments,
+                    new { @class = "btn btn-outline-primary" })) ?? "";
+
             var result = "<div class='btn-group btn-group-sm'>" +
                          (editAction
                              ? ActionLink(htmlHelper, "Подробнее", "Edit", controllerName, new { id },
@@ -177,10 +182,7 @@ namespace BioMad_backend.Areas.Admin.Helpers
                              ? ActionLink(htmlHelper, "Удалить", "Delete", controllerName, new { id },
                                  new { @class = "btn btn-outline-primary" })
                              : "") +
-                         appendButtons?.Invoke(model).Aggregate("", (acc, x) =>
-                             ActionLink(htmlHelper, x.Text,
-                                 x.Action, x.Controller, x.Arguments,
-                                 new { @class = "btn btn-outline-primary" }))
+                         appended
                          + "</div>";
             return new HtmlString(result);
         }
@@ -196,7 +198,7 @@ namespace BioMad_backend.Areas.Admin.Helpers
             where TModel : new()
         {
             var list = lst.ToList();
-            var showButtons = appendButtons?.Invoke(new TModel())?.Count > 0 || editAction || deleteAction;
+            var showButtons = appendButtons != null || editAction || deleteAction;
 
             var headerDict = func(list.FirstOrDefault() ?? new TModel());
             var result = @$"

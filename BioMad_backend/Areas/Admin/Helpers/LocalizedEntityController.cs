@@ -12,26 +12,27 @@ using X.PagedList;
 
 namespace BioMad_backend.Areas.Admin.Helpers
 {
-    public abstract class EntityController<T> : AdminController
-        where T : class, IWithId, new()
+    public abstract class LocalizedEntityController<T, T2> : AdminController
+        where T : class, ILocalizedEntity<T2>, ILocalizable<T>, IWithId, new()
+        where T2 : Translation<T2>, ITranslationEntity<T>, IWithName, new()
     {
         protected readonly ApplicationContext _context;
         protected virtual int PageSize => 10;
         protected abstract IQueryable<T> Queryable { get; }
 
-        public EntityController(ApplicationContext context)
+        public LocalizedEntityController(ApplicationContext context)
         {
             _context = context;
         }
 
         protected IActionResult RedirectToEditById(int id) => RedirectToAction($"Edit", new { id });
 
-        public async Task<IActionResult> Index(int page = 1, int searchString = default)
+        public async Task<IActionResult> Index(int page = 1, string searchString = default)
         {
             var q = Queryable;
             if (searchString != default)
             {
-                q = q.Where(x => x.Id == searchString);
+                q = q.SearchWithQuery<T, T2>(searchString);
                 ViewData["searchString"] = searchString;
             }
 
@@ -56,7 +57,7 @@ namespace BioMad_backend.Areas.Admin.Helpers
             return View(entity);
         }
         
-        public async Task<IActionResult> Edit(int? id)
+        public virtual async Task<IActionResult> Edit(int? id, string translationAction, int translationId, int cultureId)
         {
             if (id == null)
                 return NotFound();
@@ -65,7 +66,13 @@ namespace BioMad_backend.Areas.Admin.Helpers
             var entity = await Queryable.FirstOrDefaultAsync(x => x.Id == id);
             if (entity == null)
                 return NotFound();
-
+            
+            
+            ViewData["translationAction"] = translationAction;
+            ViewData["translationId"] = translationId;
+            ViewData["cultureId"] = cultureId;
+            ViewData["baseEntityId"] = entity.Id;
+            
             return View(entity);
         }
         

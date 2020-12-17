@@ -74,10 +74,10 @@ namespace BioMad_backend.Data
             #endif
         }
         
-        public DbSet<BioMad_backend.Entities.GenderTranslation> GenderTranslation { get; set; }
+        public DbSet<GenderTranslation> GenderTranslation { get; set; }
         
-        public DbSet<BioMad_backend.Entities.BiomarkerTypeTranslation> BiomarkerTypeTranslation { get; set; }
+        public DbSet<BiomarkerTypeTranslation> BiomarkerTypeTranslation { get; set; }
         
-        public DbSet<BioMad_backend.Entities.CategoryTranslation> CategoryTranslation { get; set; }
+        public DbSet<CategoryTranslation> CategoryTranslation { get; set; }
     }
 }

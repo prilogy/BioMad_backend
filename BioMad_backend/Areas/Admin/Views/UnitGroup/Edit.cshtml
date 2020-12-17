@@ -1,4 +1,4 @@
-@model BioMad_backend.Entities.Category
+@model UnitGroup
 @inject ApplicationContext DbContext;
 
 @{
@@ -8,14 +8,13 @@
 <div class="d-flex align-items-center mb-2 justify-content-between flex-wrap">
     <div class="d-flex align-items-center">
         <a class="btn text-primary" asp-action="Index" style="font-size: 20px">❮</a>
-        <h4 class="m-0 ml-2">Категория</h4>
+        <h4 class="m-0 ml-2">Группа ЕИ</h4>
     </div>
     <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model.Id">Удалить</a>
 </div>
+
 <hr/>
 <div class="row">
-    
-    
     <div class="col-md-6">
         @Html.LocalizationSection(x => x.Content, DbContext, Model, selectedCultureId: (int) ViewBag.CultureId, selectedTranslationId: (int) ViewBag.TranslationId)
 
@@ -25,30 +24,30 @@
             {
                 var translationEntity = translationAction == FormActionType.Edit
                     ? Model.Translations.FirstOrDefault(x => x.Id == ViewBag.TranslationId)
-                    : new CategoryTranslation();
+                    : new UnitGroupTranslation();
                 @await Html.PartialAsync("_TranslationForm", translationEntity)
             }
         }
     </div>
 
-
     <div class="col-md-6">
         <div class="card">
-            <div class="card-header font-weight-bold p-3">Биомаркеры</div>
+            <div class="card-header font-weight-bold">Единицы измерения</div>
             @{
-                var items = (await DbContext.Biomarkers.Where(x => !Model.BiomarkerIds.Contains(x.Id)).ToListAsync())
-                    .OrderBy(x => x.CategoryIds.Count()).ThenByDescending(x => x.Id).ToList();
+                var items = (await DbContext.Units.Where(x => !Model.UnitIds.Contains(x.Id)).ToListAsync())
+                    .OrderBy(x => x.UnitGroupIds.Count()).ThenByDescending(x => x.Id).ToList();
                 var selectList = SelectListHelpers.CreateSelectList(
                     items,
                     x => new SelectListModel { Id = x.Id, Title = x.Id + " - " + x.Localize(Culture.Ru)?.Content?.Name });
                 var isDisabled = items.Count == 0;
+                
                 <div class="card-body p-2">
-                    <form class="d-flex" method="get" asp-action="AddBiomarker">
+                    <form class="d-flex" method="get" asp-action="AddUnit">
                         <div class="form-group m-0 w-100 mr-2">
                             <select disabled="@isDisabled" name="entityId" class="form-control" asp-items="selectList">
                                 @if (isDisabled)
                                 {
-                                    <option>Нет доступных биомаркеров</option>
+                                    <option>Нет доступных ЕИ</option>
                                 }
                             </select>
                         </div>
@@ -57,8 +56,7 @@
                     </form>
                 </div>
             }
-
-            @Html.Table(Model.Biomarkers, x =>
+            @Html.Table(Model.Units, x =>
             {
                 x = x?.Localize(Culture.Ru) ?? x;
                 return new Dictionary<string, object>
@@ -71,8 +69,8 @@
                 new TableActionButton
                 {
                     Text = "Убрать",
-                    Action = "Remove"+nameof(Biomarker),
-                    Controller = nameof(Category),
+                    Action = "Remove"+nameof(Unit),
+                    Controller = nameof(UnitGroup),
                     Arguments = new
                     {
                         containerId = Model.Id,
@@ -82,6 +80,4 @@
             }, deleteAction: false)
         </div>
     </div>
-    
-    
 </div>

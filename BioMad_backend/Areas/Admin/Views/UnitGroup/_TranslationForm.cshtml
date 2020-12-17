@@ -1,7 +1,7 @@
-﻿@model BiomarkerTypeTranslation
+﻿@model UnitGroupTranslation
 
 @{
-    const string controllerName = nameof(BiomarkerTypeTranslation);
+    const string controllerName = nameof(UnitGroupTranslation);
     var translationAction = (string) ViewData["translationAction"];
     var submitInputValue = translationAction switch
     {
@@ -33,9 +33,10 @@
     </div>
     <div class="form-group">
         <label asp-for="Description" class="control-label">Описание</label>
-        <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+        <input asp-for="Description" class="form-control"/>
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
+    
     <input hidden asp-for="CultureId" value="@(Model.CultureId == default ? ViewData["cultureId"] : Model.CultureId)">
     <input hidden asp-for="BaseEntityId" value="@(Model.BaseEntityId == default ? ViewData["baseEntityId"] : Model.BaseEntityId)">
 

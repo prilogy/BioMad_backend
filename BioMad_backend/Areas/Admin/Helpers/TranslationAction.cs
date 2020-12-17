@@ -1,6 +1,6 @@
 ﻿namespace BioMad_backend.Areas.Admin.Helpers
 {
-    public static class TranslationActionType
+    public static class FormActionType
     {
         public const string Create = "create";
         public const string Edit = "edit";

@@ -1,0 +1,164 @@
+@model Unit
+@inject ApplicationContext DbContext;
+
+@{
+    ViewData["Title"] = "Подробнее";
+}
+
+<div class="d-flex align-items-center mb-2 justify-content-between flex-wrap">
+    <div class="d-flex align-items-center">
+        <a class="btn text-primary" asp-action="Index" style="font-size: 20px">❮</a>
+        <h4 class="m-0 ml-2">Единица измерения</h4>
+    </div>
+    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model.Id">Удалить</a>
+</div>
+
+<hr/>
+<div class="row">
+    <div class="col-md-6 mb-3">
+        @Html.LocalizationSection(x => x.Content, DbContext, Model, selectedCultureId: (int) ViewBag.CultureId, selectedTranslationId: (int) ViewBag.TranslationId)
+
+        @{
+            var translationAction = (string) ViewData["translationAction"];
+            if (translationAction != null)
+            {
+                var translationEntity = translationAction == FormActionType.Edit
+                    ? Model.Translations.FirstOrDefault(x => x.Id == ViewBag.TranslationId)
+                    : new UnitTranslation();
+                @await Html.PartialAsync("_TranslationForm", translationEntity)
+            }
+        }
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-header font-weight-bold p-3">Находится в группах</div>
+            @{
+                var items = await DbContext.UnitGroups.Where(x => !Model.UnitGroupIds.Contains(x.Id)).ToListAsync();
+                var selectList = SelectListHelpers.CreateSelectList(
+                    items,
+                    x => new SelectListModel { Id = x.Id, Title = x.Id + " - " + x.Localize(Culture.Ru)?.Content?.Name });
+                var isDisabled = items.Count == 0;
+
+                <div class="card-body p-2">
+                    <form class="d-flex" method="get" asp-action="AddUnit" asp-controller="UnitGroup" asp-area="Admin">
+                        <div class="form-group m-0 w-100 mr-2">
+                            <select disabled="@isDisabled" name="containerId" class="form-control" asp-items="selectList">
+                                @if (isDisabled)
+                                {
+                                    <option>Нет доступных ЕИ</option>
+                                }
+                            </select>
+                        </div>
+                        <input hidden name="entityId" value="@Model.Id">
+                        <input hidden name="returnToEntity" value="true">
+                        <input disabled="@isDisabled" class="btn btn-primary" type="submit" value="Добавить">
+                    </form>
+                </div>
+            }
+            @Html.Table(Model.UnitGroups, x =>
+            {
+                x = x?.Localize(Culture.Ru) ?? x;
+                return new Dictionary<string, object>
+                {
+                    { "Id", x.Id },
+                    { "Название", x.Content?.Name }
+                };
+            }, x => new List<TableActionButton>
+            {
+                new TableActionButton
+                {
+                    Text = "Убрать",
+                    Action = "Remove" + nameof(Unit),
+                    Controller = nameof(UnitGroup),
+                    Arguments = new
+                    {
+                        entityId = Model.Id,
+                        containerId = x.Id,
+                        returnToEntity = true
+                    }
+                }
+            }, deleteAction: false)
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 mb-3">
+        <div class="card">
+            <div class="card-header font-weight-bold p-3">Конвертация в другие ЕИ</div>
+            @{
+                var allUnitIds = Model.UnitGroups.SelectMany(x => x.UnitIds).Distinct().Where(x => x != Model.Id);
+                var units = await DbContext.Units
+                    .Where(x => allUnitIds.Contains(x.Id) 
+                                && !x.TransfersTo.Any(y => y.UnitBId == Model.Id) 
+                                    && !x.TransfersFrom.Any(y => y.UnitAId == Model.Id)).ToListAsync();
+                
+                var selectList2 = SelectListHelpers.CreateSelectList(
+                    units,
+                    x => new SelectListModel { Id = x.Id, Title = x.Id + " - " + x.Localize(Culture.Ru)?.Content?.Name });
+                var isDisabled2 = units.Count == 0;
+
+                <div class="card-body p-2">
+                    <form class="d-flex" method="get" asp-action="AddUnit" asp-controller="UnitGroup" asp-area="Admin">
+                        <div class="form-group m-0 w-100 mr-2">
+                            <select disabled="@isDisabled2" name="containerId" class="form-control" asp-items="selectList2">
+                                @if (isDisabled)
+                                {
+                                    <option>Нет доступных ЕИ</option>
+                                }
+                            </select>
+                        </div>
+                        <input hidden name="entityId" value="@Model.Id">
+                        <input hidden name="returnToEntity" value="true">
+                        <input disabled="@isDisabled2" class="btn btn-primary" type="submit" value="Добавить">
+                    </form>
+                </div>
+            }
+            @{ var transfers = Model.TransfersTo.ToList(); transfers.AddRange(Model.TransfersFrom);}
+            @Html.Table(transfers, x =>
+            {
+                var to = x.UnitAId == Model.Id;
+                x.UnitA = x.UnitA?.Localize(Culture.Ru) ?? x.UnitA;
+                x.UnitB = x.UnitB?.Localize(Culture.Ru) ?? x.UnitB;
+                
+                return new Dictionary<string, object>
+                {
+                    { "Id", x.Id },
+                    { "Преобразование", to 
+                        ? $"1 {x.UnitA?.Content?.Shorthand ?? "-"} = {x.Coefficient} {x.UnitB?.Content?.Shorthand ?? "-"}" 
+                        : $"1 {x.UnitB?.Content?.Shorthand ?? "-"} = {1/x.Coefficient} {x.UnitA?.Content?.Shorthand ?? "-"} (обр. от {x.UnitA?.Content?.Shorthand})" }
+                };
+            }, x =>
+            {
+                var to = x.UnitAId == Model.Id;
+                var actions = new List<TableActionButton>
+                {
+                    new TableActionButton
+                    {
+                        Text = $"Перейти к {(to ? x.UnitB?.Content?.Name : x.UnitA?.Content?.Name)}",
+                        Action = "Edit",
+                        Controller = nameof(Unit),
+                        Arguments = new
+                        {
+                            id = to ? x.UnitBId : x.UnitAId
+                        }
+                    }
+                };
+
+                if (to)
+                    actions = actions.Prepend(new TableActionButton
+                    {
+                        Text = $"Подробнее",
+                        Action = "Edit",
+                        Controller = nameof(Unit),
+                        Arguments = new
+                        {
+                            // TODO: добавить круд для Transfer
+                        }
+                    }).ToList();
+                return actions;
+            }, deleteAction: false, editAction: false)
+        </div>
+    </div>
+</div>

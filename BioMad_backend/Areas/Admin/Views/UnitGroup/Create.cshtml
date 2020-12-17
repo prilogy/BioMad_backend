@@ -1,0 +1,27 @@
+@model BioMad_backend.Entities.UnitGroup
+
+@{
+    ViewData["Title"] = "Добавить";
+}
+
+<h4>Новая запись</h4>
+<div class="row">
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header">Группа ЕИ</div>
+            <form class="card-body" asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group mb-0">
+                    <input type="submit" value="Создать" class="btn btn-primary"/>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+<div>
+    <a class="btn btn-outline-info" asp-action="Index">Назад к списку</a>
+</div>
+
