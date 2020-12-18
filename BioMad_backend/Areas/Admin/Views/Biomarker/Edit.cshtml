@@ -1,8 +1,15 @@
+@using BioMad_backend.Extensions
 @model BioMad_backend.Entities.Biomarker
 @inject ApplicationContext DbContext;
 
 @{
     ViewData["Title"] = "Подробнее";
+    
+    if (Model.MainUnitId == null || !Model.UnitGroup.UnitGroups.Any(x => x.UnitId == Model.MainUnitId))
+    {
+        Model.MainUnitId = Model.UnitGroup.MainUnitId;
+        await DbContext.SaveChangesAsync();
+    }
 }
 
 <div class="d-flex align-items-center mb-2 justify-content-between flex-wrap">
@@ -13,10 +20,53 @@
     <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model.Id">Удалить</a>
 </div>
 <hr/>
-<div class="row">
-    
-    
-    <div class="col-md-6">
+<div class="my-grid my-grid-entity-card">
+    <div class="card">
+        <div class="card-header p-3">Редактировать</div>
+        <div class="card-body">
+            <form asp-action="Edit">
+                <input hidden asp-for="Id">
+                @{
+                    var typeSelectList = SelectListHelpers.CreateSelectList((await DbContext.BiomarkerTypes.ToListAsync()).Localize(Culture.Ru),
+                        x => new SelectListModel { Id = x.Id, Title = $"{x.Id} - {x.Content?.Name}" }, Model.TypeId);
+                    var unitGroupSelectList = SelectListHelpers.CreateSelectList((await DbContext.UnitGroups.ToListAsync()).Localize(Culture.Ru),
+                        x => new SelectListModel { Id = x.Id, Title = $"{x.Id} - {x.Content?.Name}" }, Model.TypeId);
+
+                    var mainUnitSelectList = SelectListHelpers.CreateSelectList(Model.UnitGroup.Units.Localize(Culture.Ru),
+                        x => new SelectListModel { Id = x.Id, Title = $"{x.Id} - {x.Content?.Name}" }, Model.MainUnitId ?? 0);
+                    
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <a asp-controller="BiomarkerType" asp-action="Edit" asp-route-id="@Model.TypeId" class="input-group-text text-primary">Тип</a>
+                        </div>
+                        <select required asp-for="TypeId" type="text" class="custom-select" asp-items="typeSelectList"></select>
+                        <span asp-validation-for="TypeId"></span>
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <a asp-controller="UnitGroup" asp-action="Edit" asp-route-id="@Model.UnitGroupId" class="input-group-text text-primary">Группа ЕИ</a>
+                        </div>
+                        <select required asp-for="UnitGroupId" type="text" class="custom-select" asp-items="unitGroupSelectList"></select>
+                        <span asp-validation-for="UnitGroupId"></span>
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <a asp-controller="Unit" asp-action="Edit" asp-route-id="@Model.MainUnitId" class="input-group-text text-primary">Основная ЕИ</a>
+                        </div>
+                        <select required asp-for="MainUnitId" type="text" class="custom-select" asp-items="mainUnitSelectList"></select>
+                        <span asp-validation-for="MainUnitId"></span>
+                        <p class="text m-0 mt-2" style="font-size: 14px">* в качестве основной ЕИ можно выбрать только ЕИ, входящую в указанную группу</p>
+                    </div>
+                }
+
+                <input class="btn btn-primary" value="Сохранить" type="submit">
+            </form>
+        </div>
+    </div>
+
+    <div>
         @Html.LocalizationSection(x => x.Content, DbContext, Model, selectedCultureId: (int) ViewBag.CultureId, selectedTranslationId: (int) ViewBag.TranslationId)
 
         @{
@@ -31,59 +81,54 @@
         }
     </div>
 
+    <div class="card">
+        <div class="card-header font-weight-bold p-3">Находится в категориях</div>
+        @{
+            var items = (await DbContext.Categories.Where(x => !Model.CategoryIds.Contains(x.Id)).ToListAsync())
+                .OrderBy(x => x.BiomarkerIds.Count()).ThenByDescending(x => x.Id).ToList();
+            var selectList = SelectListHelpers.CreateSelectList(
+                items,
+                x => new SelectListModel { Id = x.Id, Title = x.Id + " - " + x.Localize(Culture.Ru)?.Content?.Name });
+            var isDisabled = items.Count == 0;
+            <div class="card-body p-2">
+                <form class="d-flex" method="get" asp-area="Admin" asp-controller="Category" asp-action="AddBiomarker">
+                    <div class="form-group m-0 w-100 mr-2">
+                        <select disabled="@isDisabled" name="containerId" class="custom-select" asp-items="selectList">
+                            @if (isDisabled)
+                            {
+                                <option>Нет доступных категорий</option>
+                            }
+                        </select>
+                    </div>
+                    <input hidden name="entityId" value="@Model.Id">
+                    <input hidden name="returnToEntity" value="true">
+                    <input disabled="@isDisabled" class="btn btn-primary" type="submit" value="Добавить">
+                </form>
+            </div>
+        }
 
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header font-weight-bold p-3">Находится в категориях</div>
-            @{
-                var items = (await DbContext.Categories.Where(x => !Model.CategoryIds.Contains(x.Id)).ToListAsync())
-                    .OrderBy(x => x.BiomarkerIds.Count()).ThenByDescending(x => x.Id).ToList();
-                var selectList = SelectListHelpers.CreateSelectList(
-                    items,
-                    x => new SelectListModel { Id = x.Id, Title = x.Id + " - " + x.Localize(Culture.Ru)?.Content?.Name });
-                var isDisabled = items.Count == 0;
-                <div class="card-body p-2">
-                    <form class="d-flex" method="get" asp-area="Admin" asp-controller="Category" asp-action="AddBiomarker">
-                        <div class="form-group m-0 w-100 mr-2">
-                            <select disabled="@isDisabled" name="containerId" class="form-control" asp-items="selectList">
-                                @if (isDisabled)
-                                {
-                                    <option>Нет доступных категорий</option>
-                                }
-                            </select>
-                        </div>
-                        <input hidden name="entityId" value="@Model.Id">
-                        <input hidden name="returnToEntity" value="true">
-                        <input disabled="@isDisabled" class="btn btn-primary" type="submit" value="Добавить">
-                    </form>
-                </div>
-            }
-
-            @Html.Table(Model.Categories, x =>
+        @Html.Table(Model.Categories, x =>
+        {
+            x = x?.Localize(Culture.Ru) ?? x;
+            return new Dictionary<string, object>
             {
-                x = x?.Localize(Culture.Ru) ?? x;
-                return new Dictionary<string, object>
-                {
-                    { "Id", x.Id },
-                    { "Название", x.Content?.Name }
-                };
-            }, x => new List<TableActionButton>
+                { "Id", x.Id },
+                { "Название", x.Content?.Name }
+            };
+        }, x => new List<TableActionButton>
+        {
+            new TableActionButton
             {
-                new TableActionButton
+                Text = "Убрать",
+                Action = "Remove" + nameof(Biomarker),
+                Controller = nameof(Category),
+                Arguments = new
                 {
-                    Text = "Убрать",
-                    Action = "Remove"+nameof(Biomarker),
-                    Controller = nameof(Category),
-                    Arguments = new
-                    {
-                        entityId = Model.Id,
-                        containerId = x.Id,
-                        returnToEntity = true
-                    }
+                    entityId = Model.Id,
+                    containerId = x.Id,
+                    returnToEntity = true
                 }
-            }, deleteAction: false)
-        </div>
+            }
+        }, deleteAction: false)
     </div>
-    
-    
 </div>

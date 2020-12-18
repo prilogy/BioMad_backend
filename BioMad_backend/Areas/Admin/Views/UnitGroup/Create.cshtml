@@ -1,3 +1,4 @@
+@using BioMad_backend.Extensions
 @model BioMad_backend.Entities.UnitGroup
 
 @{
@@ -11,6 +12,7 @@
             <div class="card-header">Группа ЕИ</div>
             <form class="card-body" asp-action="Create">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
                 <div class="form-group mb-0">
                     <input type="submit" value="Создать" class="btn btn-primary"/>
                 </div>
@@ -19,9 +21,8 @@
     </div>
 </div>
 
-<hr />
+<hr/>
 
 <div>
     <a class="btn btn-outline-info" asp-action="Index">Назад к списку</a>
 </div>
-

@@ -18,11 +18,14 @@ namespace BioMad_backend.Entities
 
         public int TypeId { get; set; }
         public virtual BiomarkerType Type { get; set; }
+        
+        public int UnitGroupId { get; set; }
+        [JsonIgnore] public virtual UnitGroup UnitGroup { get; set; }
 
         [JsonIgnore] public int? MainUnitId { get; set; }
         [JsonIgnore] public virtual Unit MainUnit { get; set; }
 
-        public int? DefaultUnitId => MainUnitId ?? UnitGroup?.MainUnitId;
+        [NotMapped] public int? DefaultUnitId => MainUnitId ?? UnitGroup?.MainUnitId;
 
         #region [ Localization ]
 
@@ -31,14 +34,14 @@ namespace BioMad_backend.Entities
 
         #endregion
 
-        [NotMapped] [JsonIgnore] public IEnumerable<Category> Categories => CategoryBiomarkers.Select(x => x.Category);
-        [NotMapped] public IEnumerable<int> CategoryIds => CategoryBiomarkers.Select(x => x.CategoryId);
+        [NotMapped] [JsonIgnore] public IEnumerable<Category> Categories => CategoryBiomarkers?.Select(x => x.Category);
+        [NotMapped] public IEnumerable<int> CategoryIds => CategoryBiomarkers?.Select(x => x.CategoryId);
 
         [NotMapped] [JsonIgnore] public IEnumerable<Article> Articles { get; set; }
-        [NotMapped] private IEnumerable<int> ArticleIds => BiomarkerArticles.Select(x => x.ArticleId);
+        [NotMapped] private IEnumerable<int> ArticleIds => BiomarkerArticles?.Select(x => x.ArticleId);
 
-        [NotMapped] [JsonIgnore] public IEnumerable<Unit> Units => UnitGroup.Units;
-        [NotMapped] public IEnumerable<int> UnitIds => Units.Select(x => x.Id);
+        [NotMapped] [JsonIgnore] public IEnumerable<Unit> Units => UnitGroup?.Units;
+        [NotMapped] public IEnumerable<int> UnitIds => Units?.Select(x => x.Id);
 
         [NotMapped] public BiomarkerReference Reference;
         [NotMapped] public MemberBiomarker CurrentValue;
@@ -49,10 +52,6 @@ namespace BioMad_backend.Entities
 
         [JsonIgnore] public virtual List<CategoryBiomarker> CategoryBiomarkers { get; set; }
         public virtual List<BiomarkerArticle> BiomarkerArticles { get; set; }
-
-        public int UnitGroupId { get; set; }
-        [JsonIgnore] public virtual UnitGroup UnitGroup { get; set; }
-
 
         [NotMapped] public BiomarkerStateType State => CurrentValue?.GetState(Reference) ?? BiomarkerStateType.NoInfo;
 

@@ -13,10 +13,10 @@
     <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model.Id">Удалить</a>
 </div>
 <hr/>
-<div class="row">
+<div class="my-grid my-grid-entity-card">
     
     
-    <div class="col-md-6">
+    <div>
         @Html.LocalizationSection(x => x.Content, DbContext, Model, selectedCultureId: (int) ViewBag.CultureId, selectedTranslationId: (int) ViewBag.TranslationId)
 
         @{
@@ -32,7 +32,7 @@
     </div>
 
 
-    <div class="col-md-6">
+    <div>
         <div class="card">
             <div class="card-header font-weight-bold p-3">Биомаркеры</div>
             @{
@@ -45,7 +45,7 @@
                 <div class="card-body p-2">
                     <form class="d-flex" method="get" asp-action="AddBiomarker">
                         <div class="form-group m-0 w-100 mr-2">
-                            <select disabled="@isDisabled" name="entityId" class="form-control" asp-items="selectList">
+                            <select disabled="@isDisabled" name="entityId" class="custom-select" asp-items="selectList">
                                 @if (isDisabled)
                                 {
                                     <option>Нет доступных биомаркеров</option>

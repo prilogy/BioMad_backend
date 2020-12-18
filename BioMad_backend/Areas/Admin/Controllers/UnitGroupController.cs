@@ -32,7 +32,7 @@ namespace BioMad_backend.Areas.Admin.Controllers
         public async Task<IActionResult> AddUnit(int entityId, int containerId, bool returnToEntity = false)
         {
             if (await NavigationPropertyHelpers.AddAsync<UnitGroup>(_context, entityId, containerId,
-                async x => x.Units.Any(y => y.Id != entityId)
+                async x => !x.Units.Any(y => y.Id == entityId)
                            && await _context.Units.AnyAsync(y => y.Id == entityId),
                 x => x.UnitGroups.Add(new UnitGroupUnit
                 {

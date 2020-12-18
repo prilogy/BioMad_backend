@@ -14,8 +14,8 @@
 </div>
 
 <hr/>
-<div class="row">
-    <div class="col-md-6">
+<div class="my-grid my-grid-entity-card">
+    <div>
         @Html.LocalizationSection(x => x.Content, DbContext, Model, selectedCultureId: (int) ViewBag.CultureId, selectedTranslationId: (int) ViewBag.TranslationId)
 
         @{
@@ -29,7 +29,7 @@
             }
         }
     </div>
-    <div class="col-md-6">
+    <div>
         <div class="card">
             <div class="card-header font-weight-bold">Биомаркеры</div>
 

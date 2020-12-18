@@ -1,8 +1,20 @@
+@using BioMad_backend.Extensions
 @model UnitGroup
 @inject ApplicationContext DbContext;
 
 @{
     ViewData["Title"] = "Подробнее";
+    
+    if ((Model.MainUnitId == null || !Model.Units.Any(x => x.Id == Model.MainUnitId)) && Model.Units.Any())
+    {
+        Model.MainUnitId = Model.Units.FirstOrDefault()?.Id;
+        await DbContext.SaveChangesAsync();
+    }
+    else if (Model.MainUnitId != null)
+    {
+        Model.MainUnitId = null;
+        await DbContext.SaveChangesAsync();
+    }
 }
 
 <div class="d-flex align-items-center mb-2 justify-content-between flex-wrap">
@@ -14,8 +26,40 @@
 </div>
 
 <hr/>
-<div class="row">
-    <div class="col-md-6">
+<div class="my-grid my-grid-entity-card">
+    <div class="card">
+            <div class="card-header p-3">Редактировать</div>
+            <div class="card-body">
+                <form asp-action="Edit">
+                    <input hidden asp-for="Id">
+                    @{
+                        var mainUnitSelectList = SelectListHelpers.CreateSelectList(Model.Units.Localize(Culture.Ru),
+                                x => new SelectListModel { Id = x.Id, Title = $"{x.Id} - {x.Content?.Name}" }, Model.MainUnitId ?? 0);
+                    
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    @if (Model.MainUnitId != null)
+                                    {
+                                        <a asp-controller="Unit" asp-action="Edit" asp-route-id="@Model.MainUnitId" class="input-group-text text-primary">Основная ЕИ</a>
+                                    }
+                                    else
+                                    {
+                                        <p class="input-group-text">Основная ЕИ</p>
+                                    }
+                                </div>
+                                <select required asp-for="MainUnitId" type="text" class="custom-select" asp-items="mainUnitSelectList"></select>
+                                <span asp-validation-for="MainUnitId"></span>
+                            </div>
+                    }
+    
+                    <input class="btn btn-primary" value="Сохранить" type="submit">
+                </form>
+            </div>
+        </div>
+    
+    
+    
+    <div>
         @Html.LocalizationSection(x => x.Content, DbContext, Model, selectedCultureId: (int) ViewBag.CultureId, selectedTranslationId: (int) ViewBag.TranslationId)
 
         @{
@@ -30,7 +74,7 @@
         }
     </div>
 
-    <div class="col-md-6">
+    <div>
         <div class="card">
             <div class="card-header font-weight-bold">Единицы измерения</div>
             @{
@@ -40,11 +84,11 @@
                     items,
                     x => new SelectListModel { Id = x.Id, Title = x.Id + " - " + x.Localize(Culture.Ru)?.Content?.Name });
                 var isDisabled = items.Count == 0;
-                
+
                 <div class="card-body p-2">
                     <form class="d-flex" method="get" asp-action="AddUnit">
                         <div class="form-group m-0 w-100 mr-2">
-                            <select disabled="@isDisabled" name="entityId" class="form-control" asp-items="selectList">
+                            <select disabled="@isDisabled" name="entityId" class="custom-select" asp-items="selectList">
                                 @if (isDisabled)
                                 {
                                     <option>Нет доступных ЕИ</option>
@@ -69,7 +113,7 @@
                 new TableActionButton
                 {
                     Text = "Убрать",
-                    Action = "Remove"+nameof(Unit),
+                    Action = "Remove" + nameof(Unit),
                     Controller = nameof(UnitGroup),
                     Arguments = new
                     {

@@ -36,6 +36,8 @@ namespace BioMad_backend.Areas.Admin.Helpers
                 ViewData["searchString"] = searchString;
             }
 
+            q = q.OrderByDescending(x => x.Id);
+            
             return View(await q.ToPagedListAsync(page, PageSize));
         }
 
@@ -99,7 +101,7 @@ namespace BioMad_backend.Areas.Admin.Helpers
                     else
                         throw;
                 }
-                return RedirectToAction($"Index");
+                return RedirectToEditById(id);
             }
             return View(entity);
         }

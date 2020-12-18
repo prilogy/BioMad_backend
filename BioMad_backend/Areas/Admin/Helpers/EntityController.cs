@@ -34,6 +34,8 @@ namespace BioMad_backend.Areas.Admin.Helpers
                 q = q.Where(x => x.Id == searchString);
                 ViewData["searchString"] = searchString;
             }
+            
+            q = q.OrderByDescending(x => x.Id);
 
             return View(await q.ToPagedListAsync(page, PageSize));
         }

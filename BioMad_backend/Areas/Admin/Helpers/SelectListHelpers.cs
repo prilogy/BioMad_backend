@@ -11,10 +11,10 @@ namespace BioMad_backend.Areas.Admin.Helpers
 {
     public static class SelectListHelpers
     {
-        public static SelectList CreateSelectList<T>(IEnumerable<T> list, Func<T,SelectListModel> process)
+        public static SelectList CreateSelectList<T>(IEnumerable<T> list, Func<T,SelectListModel> process, int selectId = default)
         {
             var items = list.Select(process).ToList();
-            return new SelectList(items, "Id", "Title");
+            return new SelectList(items, "Id", "Title", selectId);
         }
     }
 }

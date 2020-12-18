@@ -18,7 +18,7 @@
         };
 }
 
-<form id="MainForm" asp-action="@actionName" asp-controller="@controllerName" autocomplete="off">
+<form class="mt-2" id="MainForm" asp-action="@actionName" asp-controller="@controllerName" autocomplete="off">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     @if (translationAction == FormActionType.Edit)

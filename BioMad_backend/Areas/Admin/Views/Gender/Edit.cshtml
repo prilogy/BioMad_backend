@@ -14,8 +14,26 @@
 </div>
 
 <hr/>
-<div class="row">
-    <div class="col-md-6">
+<div class="my-grid my-grid-entity-card">
+    <div class="card">
+        <div class="card-header p-3">Редактировать</div>
+        <div class="card-body">
+            <form asp-action="Edit">
+                <input hidden asp-for="Id">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Ключ</span>
+                    </div>
+                    <input required asp-for="Key" type="text" class="form-control" placeholder="Например male для мужского пола" aria-label="Ключ">
+                    <span asp-validation-for="Key"></span>
+                    <p class="text m-0 mt-2" style="font-size: 14px">* слово маленькими буквами на английском языке однозначно описывающее пол</p>
+                </div>
+
+                <input class="btn btn-primary" value="Сохранить" type="submit">
+            </form>
+        </div>
+    </div>
+    <div>
         @Html.LocalizationSection(x => x.Content, DbContext, Model, selectedCultureId: (int) ViewBag.CultureId, selectedTranslationId: (int) ViewBag.TranslationId)
 
         @{

@@ -1,4 +1,6 @@
+@using BioMad_backend.Extensions
 @model BioMad_backend.Entities.Biomarker
+@inject ApplicationContext DbContext;
 
 @{
     ViewData["Title"] = "Добавить";
@@ -9,19 +11,41 @@
     <div class="col-md-7">
         <div class="card">
             <div class="card-header">Биомаркер</div>
-            <form class="card-body" asp-action="Create">
+            <form class="card-body" asp-action="Create" asp-controller="Biomarker">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @{
+                    var typeSelectList = SelectListHelpers.CreateSelectList((await DbContext.BiomarkerTypes.ToListAsync()).Localize(Culture.Ru),
+                        x => new SelectListModel { Id = x.Id, Title = $"{x.Id} - {x.Content?.Name}" });
+                    var unitSelectList = SelectListHelpers.CreateSelectList((await DbContext.UnitGroups.ToListAsync()).Localize(Culture.Ru),
+                        x => new SelectListModel { Id = x.Id, Title = $"{x.Id} - {x.Content?.Name}" });
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Тип</span>
+                        </div>
+                        <select required asp-for="TypeId" type="text" class="custom-select" asp-items="typeSelectList"></select>
+                        <span asp-validation-for="TypeId"></span>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Группа ЕИ</span>
+                        </div>
+                        <select required asp-for="UnitGroupId" type="text" class="custom-select" asp-items="unitSelectList"></select>
+                        <span asp-validation-for="UnitGroupId"></span>
+                    </div>
+                }
+
                 <div class="form-group mb-0">
-                    <input type="submit" value="Создать" class="btn btn-primary"/>
+                    <input type="submit" value="Добавить" class="btn btn-primary"/>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<hr />
+<hr/>
 
 <div>
     <a class="btn btn-outline-info" asp-action="Index">Назад к списку</a>
 </div>
-

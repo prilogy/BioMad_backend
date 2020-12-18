@@ -11,6 +11,16 @@
             <div class="card-header">Пол</div>
             <form class="card-body" asp-action="Create">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Ключ</span>
+                    </div>
+                    <input required asp-for="Key" type="text" class="form-control" placeholder="Например male для мужского пола" aria-label="Ключ">
+                    <span asp-validation-for="Key"></span>
+                    <p class="text m-0 mt-2" style="font-size: 14px">* слово маленькими буквами на английском языке однозначно описывающее пол</p>
+                </div>
+                
                 <div class="form-group mb-0">
                     <input type="submit" value="Создать" class="btn btn-primary"/>
                 </div>
