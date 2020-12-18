@@ -1,0 +1,24 @@
+@model IPagedList<Biomarker>
+
+@{
+    ViewData["Title"] = "Биомаркер";
+}
+
+@Html.EntityIndexHeader("Биомаркер", ViewData["searchString"] as string)
+
+@Html.Table(Model, x =>
+{
+    x = x.Localize(Culture.Ru) ?? x;
+    return new Dictionary<string, object>
+    {
+        { "Id", x.Id },
+        { "Название", x.Content?.Name }
+    };
+})
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchString = ViewData["searchString"] }),
+    new PagedListRenderOptions
+    {
+        LiElementClasses = new string[] { "page-item" },
+        PageClasses = new string[] { "page-link" }
+    })

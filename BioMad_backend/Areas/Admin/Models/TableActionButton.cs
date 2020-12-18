@@ -6,5 +6,6 @@
         public string Action { get; set; }
         public string Controller { get; set; }
         public object Arguments { get; set; }
+        public string Class { get; set; }
     }
 }

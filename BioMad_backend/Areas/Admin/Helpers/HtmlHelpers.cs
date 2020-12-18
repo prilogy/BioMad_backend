@@ -171,7 +171,7 @@ namespace BioMad_backend.Areas.Admin.Helpers
             var appended = appendButtons?.Invoke(model).Aggregate("", (acc, x) => acc +
                 ActionLink(htmlHelper, x.Text,
                     x.Action, x.Controller, x.Arguments,
-                    new { @class = "btn btn-outline-primary" })) ?? "";
+                    new { @class = "btn " + (x.Class ?? "btn-outline-primary") })) ?? "";
 
             var result = "<div class='btn-group btn-group-sm'>" +
                          (editAction
@@ -194,7 +194,7 @@ namespace BioMad_backend.Areas.Admin.Helpers
         public static IHtmlContent Table<TModel>(
             this IHtmlHelper htmlHelper, IEnumerable<TModel> lst,
             Func<TModel, Dictionary<string, object>> func, Func<TModel, List<TableActionButton>> appendButtons = null,
-            bool editAction = true, bool deleteAction = true)
+            bool editAction = true, bool deleteAction = true, bool header = true)
             where TModel : new()
         {
             var list = lst.ToList();
@@ -203,15 +203,15 @@ namespace BioMad_backend.Areas.Admin.Helpers
             var headerDict = func(list.FirstOrDefault() ?? new TModel());
             var result = @$"
             <table class='table'>
-                <thead>
-                <tr>
+                <thead>" 
+                + (header ? @$"<tr>
                 {headerDict.Aggregate("", (acc2, y) => acc2 + @$"
                         <th class='font-weight-bold {(y.Key == headerDict.FirstOrDefault().Key ? "pl-3" : "")}'>{y.Key}</th>
                         ")
                              }" +
                          (showButtons ? "<th></th>" : "") +
-                         @$"</tr>
-                </thead>
+                         "</tr>" : "") +
+                @"</thead>
                 <tbody>"
                          + list.Aggregate("", (acc, x) => acc + @$"
                 <tr>

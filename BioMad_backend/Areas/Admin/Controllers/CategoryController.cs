@@ -22,16 +22,16 @@ namespace BioMad_backend.Areas.Admin.Controllers
         {
         }
 
-        public async Task<IActionResult> RemoveBiomarker(int entityId, int containerId)
+        public async Task<IActionResult> RemoveBiomarker(int entityId, int containerId, bool returnToEntity)
         {
             if (await NavigationPropertyHelpers.RemoveAsync<Category, CategoryBiomarker>(_context, entityId,
                 containerId,
                 x => x.CategoryBiomarkers.FirstOrDefault(y => y.BiomarkerId == entityId)))
-                return RedirectToEditById(containerId);
+                return returnToEntity ? RedirectToAction("Edit", nameof(Biomarker), new {id = entityId}) : RedirectToEditById(containerId);
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> AddBiomarker(int entityId, int containerId)
+        public async Task<IActionResult> AddBiomarker(int entityId, int containerId, bool returnToEntity)
         {
             if (await NavigationPropertyHelpers.AddAsync<Category>(_context, entityId, containerId,
                 async x => !x.Biomarkers.Any(y => y.Id == entityId)
@@ -40,7 +40,7 @@ namespace BioMad_backend.Areas.Admin.Controllers
                 {
                     BiomarkerId = entityId
                 })))
-                return RedirectToAction("Edit", new { id = containerId });
+                return returnToEntity ? RedirectToAction("Edit", nameof(Biomarker), new {id = entityId}) : RedirectToEditById(containerId);
             return RedirectToAction("Index");
         }
     }

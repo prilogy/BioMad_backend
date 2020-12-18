@@ -150,3 +150,16 @@ body {
     color: var(--danger);
     background: #DC354522;
 }
+
+.unit-input-coeff {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: 2px solid var(--dark);
+    color: var(--dark);
+}
+
+.unit-input-coeff:active, .unit-input-coeff:focus {
+    outline: none;
+    border-bottom-color: var(--color-primary);
+}
