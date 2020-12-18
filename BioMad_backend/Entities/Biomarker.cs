@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace BioMad_backend.Entities
 {
-    public class Biomarker : ILocalizedEntity<BiomarkerTranslation>, ILocalizable<Biomarker>, IWithId,
+    public class Biomarker : ILocalizedEntity<BiomarkerTranslation>, ILocalizable<Biomarker>,
         IUnitTransferable<Biomarker>, IUnitNormalizable<Biomarker>
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

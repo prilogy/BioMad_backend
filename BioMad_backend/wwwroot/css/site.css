@@ -180,3 +180,22 @@ and (orientation: portrait) {
     outline: none;
     border-bottom-color: var(--color-primary);
 }
+
+.card-body {
+    flex: 0 1 auto;
+}
+
+.table-reference-row {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.table-reference-row td {
+    padding: 0;
+}
+
+.table-reference-row input, .table-reference-row select {
+    border: none;
+    width: 100%;
+    padding: var(--indent-2);
+}

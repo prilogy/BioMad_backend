@@ -26,7 +26,7 @@ namespace BioMad_backend.Areas.Admin.Helpers
             where TModel : ILocalizedEntity<TResult>
             where TResult : Translation<TResult>, new()
         {
-            var result = @$"<div class='card'>
+            var result = @$"
                         <div class='card-header font-weight-bold p-3'>                        
                         Локализация
                         </div>
@@ -109,7 +109,6 @@ namespace BioMad_backend.Areas.Admin.Helpers
 
             result += @$"</tbody>
                       </table>
-                      </div>
                       </div>";
 
 

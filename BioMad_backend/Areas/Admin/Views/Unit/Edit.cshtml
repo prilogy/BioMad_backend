@@ -17,7 +17,7 @@
 
 <hr/>
 <div class="my-grid my-grid-entity-card">
-    <div>
+    <div class="card">
         @Html.LocalizationSection(x => x.Content, DbContext, Model, selectedCultureId: (int) ViewBag.CultureId, selectedTranslationId: (int) ViewBag.TranslationId)
 
         @{
@@ -32,58 +32,57 @@
         }
     </div>
 
-    <div>
-        <div class="card">
-            <div class="card-header font-weight-bold p-3">Находится в группах</div>
-            @{
-                var items = await DbContext.UnitGroups.Where(x => !Model.UnitGroupIds.Contains(x.Id)).ToListAsync();
-                var selectList = SelectListHelpers.CreateSelectList(
-                    items,
-                    x => new SelectListModel { Id = x.Id, Title = x.Id + " - " + x.Localize(Culture.Ru)?.Content?.Name });
-                var isDisabled = items.Count == 0;
+    <div class="card">
+        <div class="card-header font-weight-bold p-3">Находится в группах</div>
+        @{
+            var items = await DbContext.UnitGroups.Where(x => !Model.UnitGroupIds.Contains(x.Id)).ToListAsync();
+            var selectList = SelectListHelpers.CreateSelectList(
+                items,
+                x => new SelectListModel { Id = x.Id, Title = x.Id + " - " + x.Localize(Culture.Ru)?.Content?.Name });
+            var isDisabled = items.Count == 0;
 
-                <div class="card-body p-2">
-                    <form class="d-flex" method="get" asp-action="AddUnit" asp-controller="UnitGroup" asp-area="Admin">
-                        <div class="form-group m-0 w-100 mr-2">
-                            <select disabled="@isDisabled" name="containerId" class="custom-select" asp-items="selectList">
-                                @if (isDisabled)
-                                {
-                                    <option>Нет доступных ЕИ</option>
-                                }
-                            </select>
-                        </div>
-                        <input hidden name="entityId" value="@Model.Id">
-                        <input hidden name="returnToEntity" value="true">
-                        <input disabled="@isDisabled" class="btn btn-primary" type="submit" value="Добавить">
-                    </form>
-                </div>
-            }
-            @Html.Table(Model.UnitGroups, x =>
+            <div class="card-body p-2">
+                <form class="d-flex" method="get" asp-action="AddUnit" asp-controller="UnitGroup" asp-area="Admin">
+                    <div class="form-group m-0 w-100 mr-2">
+                        <select disabled="@isDisabled" name="containerId" class="custom-select" asp-items="selectList">
+                            @if (isDisabled)
+                            {
+                                <option>Нет доступных ЕИ</option>
+                            }
+                        </select>
+                    </div>
+                    <input hidden name="entityId" value="@Model.Id">
+                    <input hidden name="returnToEntity" value="true">
+                    <input disabled="@isDisabled" class="btn btn-primary" type="submit" value="Добавить">
+                </form>
+            </div>
+        }
+        @Html.Table(Model.UnitGroups, x =>
+        {
+            x = x?.Localize(Culture.Ru) ?? x;
+            return new Dictionary<string, object>
             {
-                x = x?.Localize(Culture.Ru) ?? x;
-                return new Dictionary<string, object>
-                {
-                    { "Id", x.Id },
-                    { "Название", x.Content?.Name }
-                };
-            }, x => new List<TableActionButton>
+                { "Id", x.Id },
+                { "Название", x.Content?.Name }
+            };
+        }, x => new List<TableActionButton>
+        {
+            new TableActionButton
             {
-                new TableActionButton
+                Text = "Убрать",
+                Action = "Remove" + nameof(Unit),
+                Controller = nameof(UnitGroup),
+                Arguments = new
                 {
-                    Text = "Убрать",
-                    Action = "Remove" + nameof(Unit),
-                    Controller = nameof(UnitGroup),
-                    Arguments = new
-                    {
-                        entityId = Model.Id,
-                        containerId = x.Id,
-                        returnToEntity = true
-                    }
+                    entityId = Model.Id,
+                    containerId = x.Id,
+                    returnToEntity = true
                 }
-            }, deleteAction: false)
-        </div>
+            }
+        }, deleteAction: false)
     </div>
 </div>
+
 <div class="card mt-3">
     <div class="card-header font-weight-bold p-3">Конвертация в другие ЕИ</div>
     @{

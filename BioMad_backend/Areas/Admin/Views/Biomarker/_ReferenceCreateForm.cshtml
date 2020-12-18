@@ -1,0 +1,48 @@
+﻿@using BioMad_backend.Extensions
+@model BiomarkerReferenceModel
+@inject ApplicationContext DbContext;
+
+@{
+    var genderSelectList = SelectListHelpers.CreateSelectList((await DbContext.Genders.ToListAsync()).Localize(Culture.Ru), x => new SelectListModel
+    {
+        Id = x.Id,
+        Title = x.Content?.Name
+    }, Model?.GenderId ?? 0);
+
+    var unitGroupId = (int) ViewData["unitGroupId"];
+    var mainUnitId = (int) ViewData["mainUnitId"];
+
+    var unitSelectList = SelectListHelpers.CreateSelectList((await DbContext.UnitGroups.FindAsync(unitGroupId))?.Units.Localize(Culture.Ru), x => new SelectListModel
+    {
+        Id = x.Id,
+        Title = x.Content?.Shorthand
+    }, mainUnitId);
+}
+
+<tr class="table-reference-row">
+    <form asp-area="Admin" asp-controller="Biomarker" asp-action="CreateReference">
+        <input hidden asp-for="BiomarkerId" value="@ViewData["biomarkerId"]">
+        <td class="p-3 text-primary" style="font-size: 20px; line-height: 1">+</td>
+        <td>
+            <select asp-for="GenderId" asp-items="genderSelectList"></select>
+        </td>
+        <td>
+            <input type="number" step="0.1" asp-for="AgeLower" value="">
+        </td>
+        <td>
+            <input type="number" step="0.1" asp-for="AgeUpper" value="">
+        </td>
+        <td>
+            <select asp-for="UnitId" asp-items="unitSelectList"></select>
+        </td>
+        <td>
+            <input type="number" step="0.00001" asp-for="ValueA" value="">
+        </td>
+        <td>
+            <input type="number" step="0.00001" asp-for="ValueB" value="">
+        </td>
+        <td>
+            <input class="btn btn-sm btn-outline-primary" value="Добавить" type="submit">
+        </td>
+    </form>
+</tr>

@@ -42,7 +42,7 @@ namespace BioMad_backend.Data
         
         public DbSet<BiomarkerReference> BiomarkerReferences { get; set; }
         public DbSet<BiomarkerReferenceConfig> BiomarkerReferenceConfigs { get; set; }
-        public DbSet<BiomarkerReferenceConfigRange> BiomarkerReferenceConfigDependencyRanges { get; set; }
+        public DbSet<BiomarkerReferenceConfigRange> BiomarkerReferenceConfigRanges { get; set; }
         public DbSet<MemberBiomarkerReference> MemberBiomarkerReferences { get; set; }
         
         // public DbSet<City> Cities { get; set; }
