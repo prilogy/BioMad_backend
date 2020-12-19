@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BioMad_backend.Areas.Api.V1.Models;
 using BioMad_backend.Data;
 using BioMad_backend.Entities;
+using BioMad_backend.Helpers;
 using BioMad_backend.Infrastructure.Constants;
 using BioMad_backend.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -81,7 +82,7 @@ namespace BioMad_backend.Services
         /// </summary>
         public async Task<AuthenticationResult> Authenticate(User user, Member member)
         {
-            var metaHeaders = GetMetaHeaders();
+            var metaHeaders = MetaHeadersHelpers.Get(_httpContext);
 
             try
             {
@@ -159,7 +160,7 @@ namespace BioMad_backend.Services
 
         #region [ Heplper functionality]
 
-        private MetaHeaders GetMetaHeaders() => new MetaHeaders
+        public MetaHeaders GetMetaHeaders() => new MetaHeaders
         {
             Culture = _httpContext.Request.Headers.ContainsKey(HeaderKeys.Culture)
                 ? _httpContext.Request.Headers[HeaderKeys.Culture]

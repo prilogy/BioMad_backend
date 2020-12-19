@@ -48,14 +48,16 @@ namespace BioMad_backend.Services
             : default;
 
         private Member _currentMember;
-        
-        public Member CurrentMember => _currentMember ??=  _httpContext.User.Identity.IsAuthenticated
+
+        public Member CurrentMember => _currentMember ??= _httpContext.User.Identity.IsAuthenticated
             ? _db.Members.FirstOrDefault(u => u.Id == CurrentMemberId)
             : null;
 
         public Culture Culture => Culture.All
                                       .FirstOrDefault(x => x.Key == _httpContext.User.Claims
                                           .FirstOrDefault(y => y.Type == ClaimTypes.Locality)?.Value)
+                                  ?? Culture.All.FirstOrDefault(x =>
+                                      x.Key == MetaHeadersHelpers.Get(_httpContext).Culture)
                                   ?? Culture.Fallback;
 
         #endregion
@@ -109,7 +111,7 @@ namespace BioMad_backend.Services
 
             if (userAlreadyHas != null && userAlreadyHas.Id != user.Id)
                 return false;
-            
+
             try
             {
                 if (model.Email != null && model.Email != user.Email)
@@ -135,7 +137,7 @@ namespace BioMad_backend.Services
         {
             if (await _db.Users.AnyAsync(x => x.Email == email))
                 return null;
-            
+
             try
             {
                 var user = new User
