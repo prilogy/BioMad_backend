@@ -1,0 +1,69 @@
+﻿@model ArticleTranslation
+
+@{
+    const string controllerName = nameof(ArticleTranslation);
+    var translationAction = (string) ViewData["translationAction"];
+    var submitInputValue = translationAction switch
+    {
+        FormActionType.Create => "Добавить",
+        FormActionType.Edit => "Изменить",
+        _ => ""
+        };
+
+    var actionName = translationAction switch
+    {
+        FormActionType.Create => "Create",
+        FormActionType.Edit => "Edit",
+        _ => ""
+        };
+}
+
+<form class="mt-2 px-2" id="MainForm" asp-action="@actionName" asp-controller="@controllerName" asp-route-id="@Model.Id" autocomplete="off">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    @if (translationAction == FormActionType.Edit)
+    {
+        <input name="id" type="hidden" value="@Model.Id"/>
+    }
+
+    <div class="form-group">
+        <label asp-for="Name" class="control-label">Название</label>
+        <input asp-for="Name" class="form-control"/>
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <textarea id="MdeEditor"></textarea>
+
+    <textarea hidden asp-for="Text" id="TextInput" class="form-control"></textarea>
+
+
+    <input hidden asp-for="CultureId" value="@(Model.CultureId == default ? ViewData["cultureId"] : Model.CultureId)">
+    <input hidden asp-for="BaseEntityId" value="@(Model.BaseEntityId == default ? ViewData["baseEntityId"] : Model.BaseEntityId)">
+
+
+</form>
+
+<div class="form-group d-flex justify-content-between align-items-center px-2 mb-2">
+    <input onclick="updateTextInput()" type="submit" value="@submitInputValue" class="btn btn-primary" form="MainForm"/>
+    <div class="d-flex">
+        @if (translationAction == FormActionType.Edit)
+        {
+            <form asp-area="Admin" asp-controller="@controllerName" asp-action="Delete">
+                <input hidden name="id" value="@Model.Id">
+                <input type="submit" class="btn btn-outline-danger" value="Удалить"/>
+            </form>
+        }
+        <a asp-area="Admin" asp-controller="@(controllerName.Replace("Translation", ""))" asp-action="Edit" type="button" class="btn btn-outline-primary ml-2">Отмена</a>
+    </div>
+</div>
+
+    <script rel="prefetch" type="text/javascript">
+        const easyMDE = new EasyMDE({ element: document.getElementById("MdeEditor"), autoDownloadFontAwesome: true});
+
+        const text = @(Model.Text == null ? Html.Raw("''") : JsStringHelpers.EncodeJavaScriptString(Model.Text));
+        easyMDE.value(text);
+
+        function updateTextInput() {
+            document.getElementById('TextInput').value = easyMDE.value();
+        }
+    </script>

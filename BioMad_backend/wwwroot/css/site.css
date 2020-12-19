@@ -8,7 +8,7 @@
     --indent-4: 40px;
 }
 
-* {
+*:not(.fa) {
     font-family: 'Inter', sans-serif !important;
 }
 
@@ -198,4 +198,9 @@ and (orientation: portrait) {
     border: none;
     width: 100%;
     padding: var(--indent-2);
+}
+
+.editor-toolbar i.separator {
+    border-left: none !important;
+    text-indent: 0 !important;
 }

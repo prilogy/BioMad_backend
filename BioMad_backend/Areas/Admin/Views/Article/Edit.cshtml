@@ -1,0 +1,44 @@
+@using BioMad_backend.Extensions
+@model Article
+@inject ApplicationContext DbContext;
+
+@section head {
+    <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+    <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+}
+
+
+@{
+    ViewData["Title"] = "Подробнее";
+    Model.Localize(Culture.Ru);
+}
+
+<div class="d-flex align-items-center mb-2 justify-content-between flex-wrap">
+    <div class="d-flex align-items-center">
+        <a class="btn text-primary" asp-action="Index" style="font-size: 20px">❮</a>
+        <h4 class="m-0 ml-2">Статья</h4>
+    </div>
+    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model.Id">Удалить</a>
+</div>
+
+<hr/>
+<div class="my-grid my-grid-entity-card">
+    <div class="card">
+        @Html.LocalizationSection(x => x.Content, DbContext, Model, selectedCultureId: (int) ViewBag.CultureId, selectedTranslationId: (int) ViewBag.TranslationId)
+
+        @{
+            var translationAction = (string) ViewData["translationAction"];
+            if (translationAction != null)
+            {
+                var translationEntity = translationAction == FormActionType.Edit
+                    ? Model.Translations.FirstOrDefault(x => x.Id == ViewBag.TranslationId)
+                    : new ArticleTranslation();
+                @await Html.PartialAsync("_TranslationForm", translationEntity)
+            }
+        }
+    </div>
+</div>
+
+@section Scripts {
+
+}
