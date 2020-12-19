@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BioMad_backend.Entities
 {
@@ -31,6 +32,14 @@ namespace BioMad_backend.Entities
             Id = 4,
             Key = "increased_desc",
             Name = "О повышенном значении"
+        };
+        
+        public static readonly List<BiomarkerArticleType> All = new List<BiomarkerArticleType>
+        {
+            Increase,
+            Decrease,
+            Increased,
+            Decreased
         };
     }
 }

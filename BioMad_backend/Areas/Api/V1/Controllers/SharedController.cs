@@ -34,7 +34,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
 
     protected override Shared ProcessStrategy(Shared m)
     {
-      m.Url = _appSettings.SharedBaseUrl + m.Token;
+      m.Url = _appSettings.BaseUrl + "share/" + m.Token;
       return m;
     }
 
@@ -79,7 +79,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         await _db.AddAsync(shared);
         await _db.SaveChangesAsync();
 
-        shared.Url = _appSettings.SharedBaseUrl + shared.Token +
+        shared.Url = _appSettings.BaseUrl + "share/" + shared.Token +
                      $"?culture={_userService?.Culture?.Key ?? Culture.Fallback.Key}";
 
         return Ok(shared);

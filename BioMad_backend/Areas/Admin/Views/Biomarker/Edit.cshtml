@@ -85,56 +85,111 @@
         }
     </div>
 
-        <div class="card">
-            <div class="card-header font-weight-bold p-3">Находится в категориях</div>
-            @{
-                var items = (await DbContext.Categories.Where(x => !Model.CategoryIds.Contains(x.Id)).ToListAsync())
-                    .OrderBy(x => x.BiomarkerIds.Count()).ThenByDescending(x => x.Id).ToList();
-                var selectList = SelectListHelpers.CreateSelectList(
-                    items,
-                    x => new SelectListModel { Id = x.Id, Title = x.Id + " - " + x.Localize(Culture.Ru)?.Content?.Name });
-                var isDisabled = items.Count == 0;
-                <div class="card-body p-2">
-                    <form class="d-flex" method="get" asp-area="Admin" asp-controller="Category" asp-action="AddBiomarker">
-                        <div class="form-group m-0 w-100 mr-2">
-                            <select disabled="@isDisabled" name="containerId" class="custom-select" asp-items="selectList">
-                                @if (isDisabled)
-                                {
-                                    <option>Нет доступных категорий</option>
-                                }
-                            </select>
-                        </div>
-                        <input hidden name="entityId" value="@Model.Id">
-                        <input hidden name="returnToEntity" value="true">
-                        <input disabled="@isDisabled" class="btn btn-primary" type="submit" value="Добавить">
-                    </form>
-                </div>
-            }
-    
-            @Html.Table(Model.Categories, x =>
+    <div class="card">
+        <div class="card-header font-weight-bold p-3">Находится в категориях</div>
+        @{
+            var items = (await DbContext.Categories.Where(x => !Model.CategoryIds.Contains(x.Id)).ToListAsync())
+                .OrderBy(x => x.BiomarkerIds.Count()).ThenByDescending(x => x.Id).ToList();
+            var selectList = SelectListHelpers.CreateSelectList(
+                items,
+                x => new SelectListModel { Id = x.Id, Title = x.Id + " - " + x.Localize(Culture.Ru)?.Content?.Name });
+            var isDisabled = items.Count == 0;
+            <div class="card-body p-2">
+                <form class="d-flex" method="get" asp-area="Admin" asp-controller="Category" asp-action="AddBiomarker">
+                    <div class="form-group m-0 w-100 mr-2">
+                        <select disabled="@isDisabled" name="containerId" class="custom-select" asp-items="selectList">
+                            @if (isDisabled)
+                            {
+                                <option>Нет доступных категорий</option>
+                            }
+                        </select>
+                    </div>
+                    <input hidden name="entityId" value="@Model.Id">
+                    <input hidden name="returnToEntity" value="true">
+                    <input disabled="@isDisabled" class="btn btn-primary" type="submit" value="Добавить">
+                </form>
+            </div>
+        }
+
+        @Html.Table(Model.Categories, x =>
+        {
+            x = x?.Localize(Culture.Ru) ?? x;
+            return new Dictionary<string, object>
             {
-                x = x?.Localize(Culture.Ru) ?? x;
-                return new Dictionary<string, object>
-                {
-                    { "Id", x.Id },
-                    { "Название", x.Content?.Name }
-                };
-            }, x => new List<TableActionButton>
+                { "Id", x.Id },
+                { "Название", x.Content?.Name }
+            };
+        }, x => new List<TableActionButton>
+        {
+            new TableActionButton
             {
-                new TableActionButton
+                Text = "Убрать",
+                Action = "Remove" + nameof(Biomarker),
+                Controller = nameof(Category),
+                Arguments = new
                 {
-                    Text = "Убрать",
-                    Action = "Remove" + nameof(Biomarker),
-                    Controller = nameof(Category),
-                    Arguments = new
-                    {
-                        entityId = Model.Id,
-                        containerId = x.Id,
-                        returnToEntity = true
-                    }
+                    entityId = Model.Id,
+                    containerId = x.Id,
+                    returnToEntity = true
                 }
-            }, deleteAction: false)
-        </div>
+            }
+        }, deleteAction: false)
+    </div>
+
+    <div class="card">
+        <div class="card-header p-3">Статьи</div>
+
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th class="pl-3">Тип</th>
+                <th>Статья</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in BiomarkerArticleType.All)
+            {
+                var matchedNav = Model.BiomarkerArticles.FirstOrDefault(x => x.TypeId == item.Id);
+                var matchedArticle = matchedNav?.Article;
+
+                var articleSelectList = SelectListHelpers.CreateSelectList((await DbContext.Articles.ToListAsync()).OrderBy(x => x.BiomarkerArticles.Count).ThenByDescending(x => x.Id), x => new SelectListModel
+                {
+                    Id = x.Id,
+                    Title = x.Id + " - " + x.Localize(Culture.Ru)?.Content?.Name
+                }, matchedArticle?.Id ?? 0);
+
+                var articleFormId = "articleForm" + item.Id;
+
+                <tr>
+                    <form id="@articleFormId" asp-action="AddArticle"></form>
+                    <input form="@articleFormId" hidden name="typeId" value="@item.Id"/>
+                    <input form="@articleFormId" hidden name="biomarkerId" value="@Model.Id"/>
+                    <td style="font-size: 12px">@item.Name</td>
+                    <td>
+                        <select form="@articleFormId" style="max-width: 200px" name="articleId" class="custom-select custom-select-sm @(matchedArticle == null ? "" : "border-primary")" asp-items="articleSelectList"></select>
+                    </td>
+                    <td class="p-0">
+
+                        @if (matchedArticle == null)
+                        {
+                            <input form="@articleFormId" style="width: 100%;" type="submit" class="btn btn-sm btn-outline-primary border-0 py-3" value="Добавить">
+                        }
+                        else
+                        {
+                            <div class="d-flex flex-column">
+                                <input form="@articleFormId" type="submit" class="btn btn-sm btn-outline-primary border-0" value="Сохранить">
+                                <a asp-area="Admin" asp-controller="Biomarker" asp-action="RemoveArticle" asp-route-navId="@matchedNav.Id" class="btn btn-sm btn-outline-danger border-0">Убрать</a>
+                            </div>
+                        }
+                    </td>
+
+                </tr>
+            }
+            </tbody>
+        </table>
+
+    </div>
 </div>
 <div class="card mt-3">
     <div class="card-header p-3 font-weight-bold">Референсы</div>

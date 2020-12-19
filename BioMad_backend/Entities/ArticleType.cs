@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using BioMad_backend.Infrastructure.Interfaces;
 
 namespace BioMad_backend.Entities
 {
-    public class ArticleType
+    public class ArticleType : IWithId
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }

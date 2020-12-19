@@ -1,6 +1,8 @@
-@using BioMad_backend.Extensions
+@using Microsoft.Extensions.Options
+@using BioMad_backend.Helpers
 @model Article
 @inject ApplicationContext DbContext;
+@inject IOptions<AppSettings> AppSettings;
 
 @section head {
     <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
@@ -22,23 +24,60 @@
 </div>
 
 <hr/>
-<div class="my-grid my-grid-entity-card">
-    <div class="card">
-        @Html.LocalizationSection(x => x.Content, DbContext, Model, selectedCultureId: (int) ViewBag.CultureId, selectedTranslationId: (int) ViewBag.TranslationId)
 
-        @{
-            var translationAction = (string) ViewData["translationAction"];
-            if (translationAction != null)
-            {
-                var translationEntity = translationAction == FormActionType.Edit
-                    ? Model.Translations.FirstOrDefault(x => x.Id == ViewBag.TranslationId)
-                    : new ArticleTranslation();
-                @await Html.PartialAsync("_TranslationForm", translationEntity)
-            }
+<div class="card">
+    @Html.LocalizationSection(x => x.Content, DbContext, Model, selectedCultureId: (int) ViewBag.CultureId, selectedTranslationId: (int) ViewBag.TranslationId)
+
+    @{
+        var translationAction = (string) ViewData["translationAction"];
+        if (translationAction != null)
+        {
+            var translationEntity = translationAction == FormActionType.Edit
+                ? Model.Translations.FirstOrDefault(x => x.Id == ViewBag.TranslationId)
+                : new ArticleTranslation();
+            @await Html.PartialAsync("_TranslationForm", translationEntity)
         }
+    }
+</div>
+
+<div class="my-grid my-grid-entity-card mt-3">
+    <div class="card">
+        <div class="card-header p-3">
+            Изображения
+        </div>
+        <div class="card-body">
+            @if (Model.Images.Any())
+            {
+                <div class="my-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, max-content)); grid-template-rows: repeat(auto-fit, minmax(100px, 200px))">
+                    @foreach (var img in Model.Images.Select(x => x.SetUrl(AppSettings?.Value?.BaseUrl)))
+                    {
+                        <div class="article-img">
+                            <img src="@img.Url" alt="@img.Url"/>
+                            <button class="article-img__copy btn btn-primary btn-sm" onclick="copyToClip('@img.Url')" >Копировать ссылку</button>
+                            <a asp-action="RemoveImage" asp-route-id="@img.Id" asp-route-articleId="@Model.Id" class="article-img__remove btn btn-danger btn-sm" >Удалить</a>
+                        </div>
+                    }
+                </div>
+                <hr/>
+            }
+            <form asp-area="Admin" asp-controller="Article" asp-action="AddImage" enctype="multipart/form-data">
+                <input hidden name="id" value="@Model.Id"/>
+                <div class="form-group">
+                    <label class="control-label">Изображение</label>
+                    <input type="file" accept="image/*" name="file" class="form-control"/>
+                </div>
+                <input type="submit" value="Добавить" class="btn btn-primary">
+            </form>
+        </div>
     </div>
 </div>
 
-@section Scripts {
-
-}
+<script>
+    function copyToClip(text) {
+        navigator.clipboard.writeText(text).then(function() {
+          console.log('Async: Copying to clipboard was successful!');
+        }, function(err) {
+          console.error('Async: Could not copy text: ', err);
+        });
+    }
+</script>

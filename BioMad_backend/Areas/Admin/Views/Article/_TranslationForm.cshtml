@@ -57,13 +57,13 @@
     </div>
 </div>
 
-    <script rel="prefetch" type="text/javascript">
-        const easyMDE = new EasyMDE({ element: document.getElementById("MdeEditor"), autoDownloadFontAwesome: true});
+<script rel="prefetch" type="text/javascript">
+    const easyMDE = new EasyMDE({ element: document.getElementById("MdeEditor"), autoDownloadFontAwesome: true});
 
-        const text = @(Model.Text == null ? Html.Raw("''") : JsStringHelpers.EncodeJavaScriptString(Model.Text));
-        easyMDE.value(text);
+    const text = @(Model.Text == null ? Html.Raw("''") : JsStringHelpers.EncodeJavaScriptString(Model.Text));
+    easyMDE.value(text);
 
-        function updateTextInput() {
-            document.getElementById('TextInput').value = easyMDE.value();
-        }
-    </script>
+    function updateTextInput() {
+        document.getElementById('TextInput').value = easyMDE.value();
+    }
+</script>

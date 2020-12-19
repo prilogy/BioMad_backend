@@ -6,6 +6,7 @@ using BioMad_backend.Areas.Admin.Helpers;
 using BioMad_backend.Areas.Admin.Models;
 using BioMad_backend.Data;
 using BioMad_backend.Entities;
+using BioMad_backend.Entities.ManyToMany;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +22,44 @@ namespace BioMad_backend.Areas.Admin.Controllers
 
         protected override IQueryable<Biomarker> Queryable => _context.Biomarkers;
 
+        [HttpPost]
+        public async Task<IActionResult> AddArticle(int articleId, int typeId, int biomarkerId)
+        {
+            var r = _context.BiomarkerArticles.FirstOrDefault(x =>
+                x.TypeId == typeId  && x.BiomarkerId == biomarkerId);
+
+            if (r != null)
+            {
+                _context.Remove(r);
+                await _context.SaveChangesAsync();
+            }
+
+            if (!await _context.Articles.AnyAsync(x => x.Id == articleId) ||
+                !await _context.Biomarkers.AnyAsync(x => x.Id == biomarkerId) ||
+                !await _context.BiomarkerArticleTypes.AnyAsync(x => x.Id == typeId))
+                return BadRequest();
+                
+            await _context.BiomarkerArticles.AddAsync(new BiomarkerArticle
+            {
+                ArticleId = articleId,
+                BiomarkerId = biomarkerId,
+                TypeId = typeId
+            });
+            await _context.SaveChangesAsync();
+            
+            return RedirectToEditById(biomarkerId);
+        }
+
+        public async Task<IActionResult> RemoveArticle(int navId)
+        {
+            var r = await _context.BiomarkerArticles.FirstOrDefaultAsync(x => x.Id == navId);
+            var biomarkerId = r.BiomarkerId;
+            _context.Remove(r);
+            await _context.SaveChangesAsync();
+
+            return RedirectToEditById(biomarkerId);
+        }
+        
         [HttpPost]
         public async Task<IActionResult> CreateReference(BiomarkerReferenceModel model)
         {

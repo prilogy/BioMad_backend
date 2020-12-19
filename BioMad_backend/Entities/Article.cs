@@ -1,4 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using BioMad_backend.Entities.ManyToMany;
 using BioMad_backend.Extensions;
 using BioMad_backend.Infrastructure.AbstractClasses;
 using BioMad_backend.Infrastructure.Interfaces;
@@ -10,6 +13,11 @@ namespace BioMad_backend.Entities
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        
+        [JsonIgnore] public virtual List<ArticleImage> ArticleImages { get; set; }
+        [JsonIgnore] public virtual List<BiomarkerArticle> BiomarkerArticles { get; set; }
+
+        [JsonIgnore, NotMapped] public IEnumerable<Image> Images => ArticleImages.Select(x => x.Image); 
 
         #region [ Localization ]
 

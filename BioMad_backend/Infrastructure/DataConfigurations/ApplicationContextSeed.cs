@@ -447,24 +447,28 @@ namespace BioMad_backend.Infrastructure.DataConfigurations
             {
                 new BiomarkerArticle
                 {
+                    Id = 1,
                     ArticleId = 1,
                     BiomarkerId = 1,
                     TypeId = BiomarkerArticleType.Increased.Id
                 },
                 new BiomarkerArticle
                 {
+                    Id = 1,
                     ArticleId = 2,
                     BiomarkerId = 1,
                     TypeId = BiomarkerArticleType.Decrease.Id
                 },
                 new BiomarkerArticle
                 {
+                    Id = 3,
                     ArticleId = 3,
                     BiomarkerId = 2,
                     TypeId = BiomarkerArticleType.Decreased.Id
                 },
                 new BiomarkerArticle
                 {
+                    Id = 4,
                     ArticleId = 4,
                     BiomarkerId = 2,
                     TypeId = BiomarkerArticleType.Increase.Id

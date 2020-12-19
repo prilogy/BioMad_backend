@@ -53,6 +53,8 @@ namespace BioMad_backend.Data
         public DbSet<MemberCategoryState> MemberCategoryStates { get; set; }
         public DbSet<Shared> Shared { get; set; }
         
+        public DbSet<Image> Images { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new RoleEntityConfiguration());
@@ -68,6 +70,7 @@ namespace BioMad_backend.Data
             builder.ApplyConfiguration(new MemberBiomarkerReferenceEntityConfiguration());
             builder.ApplyConfiguration(new SharedEntityConfiguration());
             builder.ApplyConfiguration(new UnitGroupUnitEntityConfiguration());
+            builder.ApplyConfiguration(new ArticleImageEntityConfiguration());
                             
             #if DEBUG
             builder.SeedData();
