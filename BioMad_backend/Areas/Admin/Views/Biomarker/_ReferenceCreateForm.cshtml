@@ -11,38 +11,36 @@
 
     var unitGroupId = (int) ViewData["unitGroupId"];
     var mainUnitId = (int) ViewData["mainUnitId"];
-
-    var unitSelectList = SelectListHelpers.CreateSelectList((await DbContext.UnitGroups.FindAsync(unitGroupId))?.Units.Localize(Culture.Ru), x => new SelectListModel
-    {
-        Id = x.Id,
-        Title = x.Content?.Shorthand
-    }, mainUnitId);
 }
 
 <tr class="table-reference-row">
-    <form asp-area="Admin" asp-controller="Biomarker" asp-action="CreateReference">
-        <input hidden asp-for="BiomarkerId" value="@ViewData["biomarkerId"]">
+    <form id="RefCreate" asp-area="Admin" asp-controller="Biomarker" asp-action="CreateReference"></form>
+        <input form="RefCreate" hidden asp-for="BiomarkerId" value="@ViewData["biomarkerId"]">
         <td class="p-3 text-primary" style="font-size: 20px; line-height: 1">+</td>
         <td>
-            <select asp-for="GenderId" asp-items="genderSelectList"></select>
+            <select form="RefCreate" asp-for="GenderId" asp-items="genderSelectList"></select>
         </td>
         <td>
-            <input type="number" step="0.1" asp-for="AgeLower" value="">
+            <input form="RefCreate" type="number" step="0.1" asp-for="AgeLower" value="">
         </td>
         <td>
-            <input type="number" step="0.1" asp-for="AgeUpper" value="">
+            <input form="RefCreate" type="number" step="0.1" asp-for="AgeUpper" value="">
         </td>
         <td>
-            <select asp-for="UnitId" asp-items="unitSelectList"></select>
+            <select form="RefCreate" asp-for="UnitId">
+                @foreach (var item in (await DbContext.UnitGroups.FindAsync(unitGroupId))?.Units?.Localize(Culture.Ru))
+                {
+                    <option value="@item.Id" selected="@(item.Id == mainUnitId)">@item?.Content.Shorthand</option>
+                }
+            </select>
         </td>
         <td>
-            <input type="number" step="0.00001" asp-for="ValueA" value="">
+            <input form="RefCreate" type="number" step="0.00001" asp-for="ValueA" value="">
         </td>
         <td>
-            <input type="number" step="0.00001" asp-for="ValueB" value="">
+            <input form="RefCreate" type="number" step="0.00001" asp-for="ValueB" value="">
         </td>
         <td>
-            <input class="btn btn-sm btn-outline-primary" value="Добавить" type="submit">
+            <input form="RefCreate" class="btn btn-sm btn-outline-primary" value="Добавить" type="submit">
         </td>
-    </form>
 </tr>
