@@ -71,10 +71,8 @@ namespace BioMad_backend.Data
             builder.ApplyConfiguration(new SharedEntityConfiguration());
             builder.ApplyConfiguration(new UnitGroupUnitEntityConfiguration());
             builder.ApplyConfiguration(new ArticleImageEntityConfiguration());
-                            
-            #if DEBUG
-            builder.SeedData();
-            #endif
+            
+            // builder.SeedData();
         }
         
         public DbSet<GenderTranslation> GenderTranslation { get; set; }
