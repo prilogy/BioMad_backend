@@ -74,7 +74,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
             if (!biomarker.UnitGroup.UnitIds.Contains(unit.Id))
                 return BadRequest();
 
-            var list = _db.MemberBiomarkers.Where(x => x.BiomarkerId == id).AsQueryable();
+            var list = _db.MemberBiomarkers.Where(x => x.BiomarkerId == id && x.Analysis.MemberId == _userService.CurrentMemberId).AsQueryable();
             return await PagingExtension.Paging(list, page, (x) => x.InUnit(unit).Localize(_userService.Culture),
                 pageSize,
                 orderByDate);
