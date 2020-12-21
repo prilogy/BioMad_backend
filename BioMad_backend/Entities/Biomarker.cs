@@ -117,7 +117,7 @@ namespace BioMad_backend.Entities
             Localize(culture);
             Reference = FindReference(member);
             if (MainUnit != null)
-                Reference = Reference.InUnit(MainUnit);
+                Reference = Reference?.InUnit(MainUnit);
             CurrentValue = db.MemberBiomarkers
                 .Where(x => x.BiomarkerId == Id && member.AnalysisIds.Contains(x.AnalysisId))
                 .OrderByDescending(x => x.Id)

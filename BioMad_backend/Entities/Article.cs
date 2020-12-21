@@ -17,7 +17,7 @@ namespace BioMad_backend.Entities
         [JsonIgnore] public virtual List<ArticleImage> ArticleImages { get; set; }
         [JsonIgnore] public virtual List<BiomarkerArticle> BiomarkerArticles { get; set; }
 
-        [JsonIgnore, NotMapped] public IEnumerable<Image> Images => ArticleImages.Select(x => x.Image); 
+        [JsonIgnore, NotMapped] public IEnumerable<Image> Images => ArticleImages?.Select(x => x.Image); 
 
         #region [ Localization ]
 
