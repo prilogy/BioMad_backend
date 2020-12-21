@@ -27,7 +27,7 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         /// <summary>
         /// Gets resource of type of given id
         /// </summary>
-        /// <param name="id">Number of page to get(starts from 1)</param>
+        /// <param name="id">Id of resource to get</param>
         /// <param name="unitId">Id of unit to represent the values</param>
         /// <response code="200">If everything went OK</response>
         /// <response code="400">If resource can't be translated to Unit of given unitId</response>

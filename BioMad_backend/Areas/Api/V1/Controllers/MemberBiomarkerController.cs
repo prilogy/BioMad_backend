@@ -218,15 +218,15 @@ namespace BioMad_backend.Areas.Api.V1.Controllers
         /// <summary>
         /// Deletes member's biomarker reference of given id
         /// </summary>
-        /// <param name="id">Id of biomarker's reference</param>
+        /// <param name="id">Id of biomarker to delete its custom reference</param>
         /// <returns>Action result</returns>
         /// <response code="200">If everything went OK</response>
         /// <response code="400">If anything went BAD</response> 
         [HttpDelete("reference/{id}")]
-        public async Task<IActionResult> DeleteMemberReference(int id)
+        public async Task<IActionResult> DeleteReference(int id)
         {
-            var r = await _db.BiomarkerReferences.FindAsync(id);
-            if (r == null || r.IsOwnReference == false || r.MemberReference.MemberId != _userService.CurrentMemberId)
+            var r = await _db.BiomarkerReferences.FirstOrDefaultAsync(x => x.BiomarkerId == id && x.MemberReference.MemberId == _userService.CurrentMemberId);
+            if (r == null || r.IsOwnReference == false)
                 return BadRequest();
 
             var changedBiomarkerIds = new List<int> { r.BiomarkerId };
