@@ -49,7 +49,7 @@ namespace BioMad_backend.Areas.Share.Controllers
             var history = new Dictionary<int, List<MemberBiomarker>>();
             foreach (var b in shared.Biomarkers)
             {
-                var values = (await _db.MemberBiomarkers.Where(x => x.BiomarkerId == b.Id).OrderByDescending(x => x.Id).Take(7).ToListAsync())
+                var values = (await _db.MemberBiomarkers.Where(x => x.BiomarkerId == b.Id && x.Analysis.MemberId == shared.MemberId).OrderByDescending(x => x.Id).Take(7).ToListAsync())
                     .Select(x => x.InUnit(b.CurrentValue.Unit)).ToList();
                 history.Add(b.Id, values);
             }
