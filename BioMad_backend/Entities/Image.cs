@@ -12,7 +12,7 @@ namespace BioMad_backend.Entities
         public int Id { get; set; }
         public string Path { get; set; }
         [NotMapped] public string Url { get; set; }
-        
+
         [JsonIgnore] public virtual List<ArticleImage> ArticleImages { get; set; }
 
         [JsonIgnore, NotMapped] public IEnumerable<Article> Articles => ArticleImages.Select(x => x.Article);

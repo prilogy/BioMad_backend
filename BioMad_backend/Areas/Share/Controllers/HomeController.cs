@@ -25,6 +25,8 @@ namespace BioMad_backend.Areas.Share.Controllers
             _localizer = localizer;
             _db = db;
         }
+        
+        
 
         [HttpGet("{token}")]
         public async Task<IActionResult> Index(string token, [FromQuery]string culture)

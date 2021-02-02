@@ -2,7 +2,7 @@
 
 namespace BioMad_backend.Infrastructure.Interfaces
 {
-    public interface ILocalizable<T>
+    public interface ILocalizable<out T>
     {
         T Localize(Culture culture);
     }

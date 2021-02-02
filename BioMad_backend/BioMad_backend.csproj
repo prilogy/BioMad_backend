@@ -37,6 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Policy\Views" />
     <Folder Include="Resources\Areas" />
     <Folder Include="Views" />
     <Folder Include="wwwroot\static" />
